@@ -1,0 +1,25 @@
+{
+  "defaultSeverity": "warning",
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier",
+    "tslint-config-standard"
+  ],
+  "rules": {
+    "import-spacing": true,
+    "semicolon": [
+      true,
+      "always"
+    ],
+    "import-blacklist": [
+      true,
+      "rxjs"
+    ],
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
+    "interface-name": false,
+    "object-literal-sort-keys": false
+  }
+}
