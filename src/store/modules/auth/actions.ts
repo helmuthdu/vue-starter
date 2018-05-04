@@ -1,4 +1,3 @@
-import { config } from '@/config';
 import { RootState } from '@/store';
 import { State } from '@/store/modules/auth/state';
 import { Types } from '@/store/modules/auth/types';
@@ -14,7 +13,7 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 export const actions: Actions<State, RootState> = {
   doLogin: async ({ commit }, payload: State) => {
     commit(Types.AUTH_SET_USER, {
-      ...(await axios.post(`${config.url.host}/token`, qs.stringify({
+      ...(await axios.post(`https://httpstat.us/200`, qs.stringify({
         username: payload.email,
         password: payload.password,
       }))).data,
