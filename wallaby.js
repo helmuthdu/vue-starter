@@ -16,7 +16,7 @@ module.exports = () => {
     },
 
     setup (wallaby) {
-      const jestConfig = require('./package').jest || require('./jest.config');
+      const jestConfig = require('./package.json').jest || require('./jest.config');
       delete jestConfig.transform['^.+\\.tsx?$'];
       wallaby.testFramework.configure(jestConfig);
     },
