@@ -6,7 +6,7 @@ import * as root from './root';
 Vue.use(Vuex);
 
 // More info about store: https://vuex.vuejs.org/en/core-concepts.html
-// See https://nuxtjs.org/guide/vuex-store#classic-mode
+// See https://vuejs.org/guide/vuex-store#classic-mode
 // structure of the store:
 // types: Types that represent the keys of the mutations to commit
 // state: The information of our app, we can get or update it.

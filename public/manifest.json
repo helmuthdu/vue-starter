@@ -1,6 +1,6 @@
 {
-  "name": "vue-cli",
-  "short_name": "vue-cli",
+  "name": "vue-typescript-starter",
+  "short_name": "vue-typescript-starter",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",

@@ -4,16 +4,27 @@
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
+    "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
-    "skipLibCheck" : true,
+    "noImplicitThis": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "allowJs": true,
-    "lib": ["dom", "es6"],
+    "types": [
+      "node",
+      "jest"
+    ],
+    "lib": [
+      "es2015",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
@@ -22,8 +33,10 @@
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ],
   "exclude": [
     "dist",

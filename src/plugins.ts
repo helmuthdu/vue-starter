@@ -1,7 +1,8 @@
 import Rx from 'rxjs/Rx';
-import SuiVue from 'semantic-ui-vue';
+import Vuetify from 'vuetify';
 import Vue from 'vue';
 import VueRx from 'vue-rx';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
-Vue.use(SuiVue);
+Vue.use(Vuetify);
 Vue.use(VueRx, Rx);
