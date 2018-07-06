@@ -1,6 +1,5 @@
+import { requestUser } from '@/api/authentication.api';
 import { RootState } from '@/store';
-import axios from 'axios';
-import qs from 'qs';
 import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
 import {
@@ -17,15 +16,11 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 export const actions: Actions<State, RootState> = {
   async [AUTHENTICATION_LOGIN]({ commit }, payload: State) {
     commit(AUTHENTICATION_SET_USER, {
-      ...(await axios.post(`https://httpstat.us/200`, qs.stringify({
-        username: payload.email,
-        password: payload.password,
-      }))).data,
+      ...(await requestUser(payload)).data,
       isLogged: true,
     });
   },
   [AUTHENTICATION_LOGOUT]({ commit }) {
-    commit(AUTHENTICATION_SET_USER,
-      { username: '', email: '', isLogged: false });
+    commit(AUTHENTICATION_SET_USER, { username: '', email: '', isLogged: false });
   },
 };
