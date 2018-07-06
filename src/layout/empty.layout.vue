@@ -1,5 +1,9 @@
 <template>
-<router-view/>
+<v-app>
+  <v-content fill-height>
+    <router-view/>
+  </v-content>
+</v-app>
 </template>
 
 <script lang="ts">
@@ -9,10 +13,12 @@ import { Getter } from 'vuex-class';
 
 @Component
 export default class extends Vue {
+  public path = '/';
   @Getter(AUTHENTICATION_IS_LOGGED)
   private isLogged: boolean;
 }
 </script>
 
 <style lang="stylus">
+@import '~vuetify/src/stylus/main'
 </style>

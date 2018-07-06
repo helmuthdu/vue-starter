@@ -1,6 +1,6 @@
+import * as auth from '@/modules/authentication/store';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as auth from './modules/auth';
 import * as root from './root';
 
 Vue.use(Vuex);
