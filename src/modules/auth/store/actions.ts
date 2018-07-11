@@ -1,4 +1,4 @@
-import { requestUser } from '@/api/authentication.api';
+import { authApi } from '@/api/auth.api';
 import { RootState } from '@/store';
 import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
@@ -16,7 +16,7 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 export const actions: Actions<State, RootState> = {
   async [AUTHENTICATION_LOGIN]({ commit }, payload: State) {
     commit(AUTHENTICATION_SET_USER, {
-      ...(await requestUser(payload)).data,
+      ...(await authApi.get(payload)).data,
       isLogged: true,
     });
   },

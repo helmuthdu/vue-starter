@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { AUTHENTICATION_IS_LOGGED } from '@/modules/authentication/store';
+import { AUTHENTICATION_IS_LOGGED } from '@/modules/auth/store';
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
@@ -86,7 +86,7 @@ export default class extends Vue {
   public items = [
     { icon: 'apps', title: 'Welcome', to: '/' },
     { icon: 'bubble_chart', title: 'Inspire', to: '/about' },
-    { icon: 'lock', title: 'Sign-In', to: '/authentication/sign-in' },
+    { icon: 'lock', title: 'Sign-In', to: '/sign-in' },
   ];
 
   @Getter(AUTHENTICATION_IS_LOGGED)

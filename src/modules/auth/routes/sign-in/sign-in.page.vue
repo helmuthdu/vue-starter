@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { AUTHENTICATION_LOGIN } from '@/modules/authentication/store';
+import { AUTHENTICATION_LOGIN } from '@/modules/auth/store';
 import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 

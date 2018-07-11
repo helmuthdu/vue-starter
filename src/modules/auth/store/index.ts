@@ -5,5 +5,3 @@ export * from './state';
 export * from './types';
 
 export const name = 'auth';
-
-export const namespaced = true;

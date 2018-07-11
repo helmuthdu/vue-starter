@@ -1,4 +1,4 @@
-import { authenticationRoutes } from '@/modules/authentication/router';
+import { authRoutes } from '@/modules/auth/router';
 import HomePage from '@/pages/home.page.vue';
 import AboutPage from '@/pages/about.page.vue';
 import Vue from 'vue';
@@ -14,7 +14,7 @@ export const MAIN_ROUTES = Object.freeze({
 export default new Router({
   mode: 'history',
   routes: [
-    ...authenticationRoutes,
+    ...authRoutes,
     {
       path: '/',
       component: () => import('@/layout/default.layout.vue'),

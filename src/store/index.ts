@@ -1,4 +1,4 @@
-import * as auth from '@/modules/authentication/store';
+import * as auth from '@/modules/auth/store';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as root from './root';
