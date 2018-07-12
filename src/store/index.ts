@@ -24,7 +24,5 @@ export default new Vuex.Store({
   getters: root.getters,
   mutations: root.mutations,
   actions: root.actions as any,
-  modules: {
-    [auth.name]: auth,
-  },
+  modules: { [auth.name]: auth }
 });

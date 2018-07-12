@@ -28,6 +28,4 @@ class LocalStorageMock {
   }
 }
 
-/* tslint:disable */
-global.localStorage = new LocalStorageMock;
-/* tslint:enable */
+global.localStorage = new LocalStorageMock();

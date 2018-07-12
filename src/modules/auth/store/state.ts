@@ -11,5 +11,5 @@ export const state = (): State => ({
   email: '',
   client: '',
   isLogged: false,
-  password: '',
+  password: ''
 });

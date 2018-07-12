@@ -1,70 +1,174 @@
 <template>
-<v-app id="app">
+<v-app id="inspire">
   <v-navigation-drawer
-    :mini-variant.sync="miniVariant"
-    :clipped="clipped"
+    :clipped="$vuetify.breakpoint.lgAndUp"
     v-model="drawer"
     fixed
     app>
-    <v-list>
-      <v-list-tile
-        router
-        :to="item.to"
-        :key="i"
-        v-for="(item, i) in items"
-        exact>
+    <v-list dense>
+      <template v-for="item in items">
+      <v-layout
+        v-if="item.heading"
+        :key="item.heading"
+        row
+        align-center>
+        <v-flex xs6>
+          <v-subheader v-if="item.heading">
+            {{ item.heading }}
+          </v-subheader>
+        </v-flex>
+        <v-flex xs6 class="text-xs-center">
+          <a href="#!" class="body-2 black--text">EDIT</a>
+        </v-flex>
+      </v-layout>
+      <v-list-group
+        v-else-if="item.children"
+        v-model="item.model"
+        :key="item.text"
+        :prepend-icon="item.model ? item.icon : item['icon-alt']"
+        append-icon="">
+        <v-list-tile slot="activator">
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{ item.text }}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile
+          v-for="(child, i) in item.children"
+          :key="i"
+          @click="">
+          <v-list-tile-action v-if="child.icon">
+            <v-icon>{{ child.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{ child.text }}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-tile v-else :key="item.text" @click="" :to="item.to" exact>
         <v-list-tile-action>
-          <v-icon v-html="item.icon"></v-icon>
+          <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title v-text="item.title"></v-list-tile-title>
+          <v-list-tile-title>
+            {{ item.text }}
+          </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
+      </template>
     </v-list>
   </v-navigation-drawer>
-  <v-toolbar fixed app :clipped-left="clipped">
-    <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
-    <v-btn icon
-           @click.stop="miniVariant = !miniVariant">
-      <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-    </v-btn>
-    <v-btn icon
-           @click.stop="clipped = !clipped">
-      <v-icon>web</v-icon>
-    </v-btn>
-    <v-btn icon
-           @click.stop="fixed = !fixed">
-      <v-icon>remove</v-icon>
-    </v-btn>
-    <v-toolbar-title v-text="title"></v-toolbar-title>
+  <v-toolbar
+    :clipped-left="$vuetify.breakpoint.lgAndUp"
+    color="blue darken-3"
+    dark
+    app
+    fixed>
+    <v-toolbar-title style="width: 300px">
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <span class="hidden-sm-and-down"></span>
+    </v-toolbar-title>
+    <v-text-field
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="search"
+      label="Search"
+      class="hidden-sm-and-down"/>
     <v-spacer></v-spacer>
-    <v-btn icon
-           @click.stop="rightDrawer = !rightDrawer">
-      <v-icon>menu</v-icon>
+    <v-btn icon>
+      <v-icon>apps</v-icon>
+    </v-btn>
+    <v-btn icon>
+      <v-icon>notifications</v-icon>
+    </v-btn>
+    <v-btn icon large>
+      <v-avatar size="32px" tile>
+        <img
+          src="https://cdn.vuetifyjs.com/images/logos/logo.svg"
+          alt="Vuetify">
+      </v-avatar>
     </v-btn>
   </v-toolbar>
   <v-content>
-    <v-container>
+    <v-container fluid fill-height>
       <router-view/>
     </v-container>
   </v-content>
-  <v-navigation-drawer
-    temporary
-    :right="right"
-    v-model="rightDrawer"
-    fixed>
-    <v-list>
-      <v-list-tile @click.native="right = !right">
-        <v-list-tile-action>
-          <v-icon light>compare_arrows</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-      </v-list-tile>
-    </v-list>
-  </v-navigation-drawer>
-  <v-footer :fixed="fixed" app>
-    <span>&copy; 2017</span>
-  </v-footer>
+  <v-btn
+    fab
+    bottom
+    right
+    color="pink"
+    dark
+    fixed
+    @click.stop="dialog = !dialog">
+    <v-icon>add</v-icon>
+  </v-btn>
+  <v-dialog v-model="dialog" width="800px">
+    <v-card>
+      <v-card-title class="grey lighten-4 py-4 title">
+        Create contact
+      </v-card-title>
+      <v-container grid-list-sm class="pa-4">
+        <v-layout row wrap>
+          <v-flex xs12 align-center justify-space-between>
+            <v-layout align-center>
+              <v-avatar size="40px" class="mr-3">
+                <img
+                  src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png"
+                  alt=""
+                >
+              </v-avatar>
+              <v-text-field
+                placeholder="Name"
+              ></v-text-field>
+            </v-layout>
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field
+              prepend-icon="business"
+              placeholder="Company"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field
+              placeholder="Job title"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field
+              prepend-icon="mail"
+              placeholder="Email"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field
+              type="tel"
+              prepend-icon="phone"
+              placeholder="(000) 000 - 0000"
+              mask="phone"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field
+              prepend-icon="notes"
+              placeholder="Notes"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-card-actions>
+        <v-btn flat color="primary">More</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
+        <v-btn flat @click="dialog = false">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </v-app>
 </template>
 
@@ -75,40 +179,43 @@ import { Getter } from 'vuex-class';
 
 @Component
 export default class extends Vue {
-  public path = '/';
-  public clipped = false;
-  public drawer = true;
-  public fixed = true;
-  public miniVariant = false;
-  public right = true;
-  public rightDrawer = false;
-  public title = 'Vuetify.js';
-  public items = [
-    { icon: 'apps', title: 'Welcome', to: '/' },
-    { icon: 'bubble_chart', title: 'Inspire', to: '/about' },
-    { icon: 'lock', title: 'Sign-In', to: '/sign-in' },
+  public dialog: boolean = false;
+  public drawer: any = null;
+  public items: any[] = [
+    { icon: 'contacts', text: 'Contacts', to: '/' },
+    { icon: 'history', text: 'Frequently contacted' },
+    { icon: 'content_copy', text: 'Duplicates' },
+    {
+      icon: 'keyboard_arrow_up',
+      'icon-alt': 'keyboard_arrow_down',
+      text: 'Labels',
+      model: true,
+      children: [{ icon: 'add', text: 'Create label' }]
+    },
+    {
+      icon: 'keyboard_arrow_up',
+      'icon-alt': 'keyboard_arrow_down',
+      text: 'More',
+      model: false,
+      children: [
+        { text: 'Import' },
+        { text: 'Export' },
+        { text: 'Print' },
+        { text: 'Undo changes' },
+        { text: 'Other contacts' }
+      ]
+    },
+    { icon: 'settings', text: 'Settings' },
+    { icon: 'chat_bubble', text: 'Send feedback' },
+    { icon: 'help', text: 'Help', to: '/about' },
+    { icon: 'phonelink', text: 'App downloads' },
+    { icon: 'keyboard', text: 'Go to the old version' }
   ];
 
-  @Getter(AUTHENTICATION_IS_LOGGED)
-  private isLogged: boolean;
+  @Getter(AUTHENTICATION_IS_LOGGED) private isLogged: boolean;
 }
 </script>
 
 <style lang="stylus">
-  @import '~vuetify/src/stylus/main'
-
-  #app
-    font-family 'Avenir', Helvetica, Arial, sans-serif
-    -webkit-font-smoothing antialiased
-    -moz-osx-font-smoothing grayscale
-    text-align center
-    color #2c3e50
-
-  #nav
-    padding 30px
-    a
-      font-weight bold
-      color #2c3e50
-      &.router-link-exact-active
-        color #42b983
+@import '~vuetify/src/stylus/main'
 </style>
