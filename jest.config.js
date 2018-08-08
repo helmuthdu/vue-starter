@@ -1,12 +1,11 @@
 module.exports = {
-  verbose: true,
   moduleFileExtensions: [
-    'ts',
-    'tsx',
     'js',
     'jsx',
     'json',
-    'vue'
+    'vue',
+    'ts',
+    'tsx'
   ],
   transform: {
     '^.+\\.vue$': 'vue-jest',
@@ -21,5 +20,6 @@ module.exports = {
   ],
   testMatch: [
     '<rootDir>/src/**/*.spec.ts'
-  ]
+  ],
+  testURL: 'http://localhost/'
 };

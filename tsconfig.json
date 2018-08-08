@@ -7,29 +7,27 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
-    "noImplicitThis": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
     "allowJs": true,
+    "sourceMap": true,
+    "baseUrl": ".",
     "types": [
       "node",
       "jest"
     ],
-    "lib": [
-      "es2015",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
       ]
-    }
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
   },
   "include": [
     "src/**/*.ts",
