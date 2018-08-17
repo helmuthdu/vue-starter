@@ -11,3 +11,5 @@ export const authRoutes = [
     children: [{ path: '', name: AUTHENTICATION_ROUTES.SIGN_IN, component: SignInPage }]
   }
 ];
+
+export default authRoutes;

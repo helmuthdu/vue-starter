@@ -1,28 +1,25 @@
-import * as auth from '@/modules/auth/store';
+import { rootStore } from '@/store/root';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as root from './root';
 
 Vue.use(Vuex);
 
-// More info about store: https://vuex.vuejs.org/en/core-concepts.html
-// See https://vuejs.org/guide/vuex-store#classic-mode
-// structure of the store:
-// types: Types that represent the keys of the mutations to commit
-// state: The information of our app, we can get or update it.
-// getters: Get complex information from state
-// action: Sync or async operations that commit mutations
-// mutations: Modify the state
-interface ModulesStates {
-  auth: auth.State;
-}
+const createStore = (modules: any[]) =>
+  // More info about store: https://vuex.vuejs.org/en/core-concepts.html
+  // See https://vuejs.org/guide/vuex-store#classic-mode
+  // structure of the store:
+  // types: Types that represent the keys of the mutations to commit
+  // state: The information of our app, we can get or update it.
+  // getters: Get complex information from state
+  // action: Sync or async operations that commit mutations
+  // mutations: Modify the state
 
-export type RootState = root.State & ModulesStates;
+  new Vuex.Store({
+    state: rootStore.state() as any,
+    getters: rootStore.getters,
+    mutations: rootStore.mutations,
+    actions: rootStore.actions as any,
+    modules: modules.reduce((acc, module: any) => ({...acc, [module.name]: module }), {})
+  });
 
-export default new Vuex.Store({
-  state: root.state() as any,
-  getters: root.getters,
-  mutations: root.mutations,
-  actions: root.actions as any,
-  modules: { [auth.name]: auth }
-});
+export default createStore;

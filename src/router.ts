@@ -1,4 +1,3 @@
-import { authRoutes } from '@/modules/auth/router';
 import AboutPage from '@/pages/about.page.vue';
 import HomePage from '@/pages/home.page.vue';
 import Vue from 'vue';
@@ -11,10 +10,10 @@ export const MAIN_ROUTES = Object.freeze({
   ABOUT: 'about-route'
 });
 
-export default new Router({
+const createRouter = (routes: any[]) => new Router({
   mode: 'history',
   routes: [
-    ...authRoutes,
+    ...routes.reduce((a, b) => a.concat(b), []),
     {
       path: '/',
       component: () => import('@/layout/default.layout.vue'),
@@ -25,3 +24,5 @@ export default new Router({
     }
   ]
 });
+
+export default createRouter;
