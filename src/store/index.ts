@@ -19,7 +19,7 @@ const createStore = (modules: any[]) =>
     getters: rootStore.getters,
     mutations: rootStore.mutations,
     actions: rootStore.actions as any,
-    modules: modules.reduce((acc, module: any) => ({...acc, [module.name]: module }), {})
+    modules: modules.reduce((acc, module: any) => ({ ...acc, [module.name]: module }), {})
   });
 
 export default createStore;

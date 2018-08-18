@@ -10,19 +10,20 @@ export const MAIN_ROUTES = Object.freeze({
   ABOUT: 'about-route'
 });
 
-const createRouter = (routes: any[]) => new Router({
-  mode: 'history',
-  routes: [
-    ...routes.reduce((a, b) => a.concat(b), []),
-    {
-      path: '/',
-      component: () => import('@/layout/default.layout.vue'),
-      children: [
-        { path: '/about', name: MAIN_ROUTES.ABOUT, component: AboutPage },
-        { path: '', name: MAIN_ROUTES.HOME, component: HomePage }
-      ]
-    }
-  ]
-});
+const createRouter = (routes: any[]) =>
+  new Router({
+    mode: 'history',
+    routes: [
+      ...routes.reduce((a, b) => a.concat(b), []),
+      {
+        path: '/',
+        component: () => import('@/layout/default.layout.vue'),
+        children: [
+          { path: '/about', name: MAIN_ROUTES.ABOUT, component: AboutPage },
+          { path: '', name: MAIN_ROUTES.HOME, component: HomePage }
+        ]
+      }
+    ]
+  });
 
 export default createRouter;

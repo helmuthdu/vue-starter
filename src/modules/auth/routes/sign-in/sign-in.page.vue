@@ -46,7 +46,8 @@ export default class extends Vue {
   public email = '';
   public password = '';
 
-  @Action(AUTHENTICATION_LOGIN) private doLogin: any;
+  @Action(AUTHENTICATION_LOGIN)
+  private doLogin: any;
 
   public submit() {
     this.doLogin({ email: this.email, password: this.password });

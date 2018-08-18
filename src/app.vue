@@ -9,7 +9,8 @@ import { Getter } from 'vuex-class';
 
 @Component
 export default class extends Vue {
-  @Getter(AUTHENTICATION_IS_LOGGED) private isLogged: boolean;
+  @Getter(AUTHENTICATION_IS_LOGGED)
+  private isLogged: boolean;
 }
 </script>
 

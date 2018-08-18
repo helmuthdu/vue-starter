@@ -10,13 +10,13 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 }
 
 export const actions: Actions<State, AppState> = {
-  async [AUTHENTICATION_LOGIN] ({ commit }, payload: State) {
+  async [AUTHENTICATION_LOGIN]({ commit }, payload: State) {
     commit(AUTHENTICATION_SET_USER, {
       ...(await authApi.get(payload)).data,
       isLogged: true
     });
   },
-  [AUTHENTICATION_LOGOUT] ({ commit }) {
+  [AUTHENTICATION_LOGOUT]({ commit }) {
     commit(AUTHENTICATION_SET_USER, { username: '', email: '', isLogged: false });
   }
 };

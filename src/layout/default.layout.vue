@@ -212,7 +212,8 @@ export default class extends Vue {
     { icon: 'keyboard', text: 'Go to the old version' }
   ];
 
-  @Getter(AUTHENTICATION_IS_LOGGED) private isLogged: boolean;
+  @Getter(AUTHENTICATION_IS_LOGGED)
+  private isLogged: boolean;
 }
 </script>
 

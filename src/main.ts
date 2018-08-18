@@ -16,11 +16,7 @@ export type AppState = RootState & {
 };
 
 new Vue({
-  router: createRouter([
-    authRoutes
-  ]),
-  store: createStore([
-    authStore
-  ]),
+  router: createRouter([authRoutes]),
+  store: createStore([authStore]),
   render: h => h(App)
 }).$mount('#app');
