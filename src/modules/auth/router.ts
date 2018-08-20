@@ -1,4 +1,4 @@
-import SignInPage from '@/modules/auth/routes/sign-in/sign-in.page.vue';
+import SignInPage from '@/modules/auth/routes/sign-in/sign-in.route.vue';
 
 export const AUTHENTICATION_ROUTES = Object.freeze({
   SIGN_IN: 'auth-sign-in-route'

@@ -12,7 +12,7 @@ import './registerServiceWorker';
 Vue.config.productionTip = false;
 
 export type AppState = RootState & {
-  auth: authStore.State;
+  [authStore.name]: authStore.State;
 };
 
 new Vue({

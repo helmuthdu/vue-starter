@@ -1,5 +1,5 @@
-import AboutPage from '@/pages/about.page.vue';
-import HomePage from '@/pages/home.page.vue';
+import About from '@/routes/about.route.vue';
+import Home from '@/routes/home.route.vue';
 import Vue from 'vue';
 import Router from 'vue-router';
 
@@ -19,8 +19,8 @@ const createRouter = (routes: any[]) =>
         path: '/',
         component: () => import('@/layout/default.layout.vue'),
         children: [
-          { path: '/about', name: MAIN_ROUTES.ABOUT, component: AboutPage },
-          { path: '', name: MAIN_ROUTES.HOME, component: HomePage }
+          { path: '/about', name: MAIN_ROUTES.ABOUT, component: About },
+          { path: '', name: MAIN_ROUTES.HOME, component: Home }
         ]
       }
     ]
