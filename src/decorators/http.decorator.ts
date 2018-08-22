@@ -7,7 +7,7 @@ export const Http = (method: httpRequestMethod, ...args: any[]) => {
   return beforeMethod((meta: any) => {
     const [params] = meta.args;
     // @ts-ignore
-    axios[method](...args.map((arg: any) => (typeof arg === 'function' ? arg() : arg)))
+    axios[method](...args.map((arg: any) => (typeof arg === 'function' ? arg(meta.scope) : arg)))
       .then((res: AxiosResponse) => {
         meta.args = [params, null, res.data];
         meta.commit();
