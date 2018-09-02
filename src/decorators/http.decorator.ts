@@ -11,9 +11,10 @@ export const Http = (method: httpRequestMethod, ...args: any[]) =>
     axios[method](...args.map((arg: any) => (typeof arg === 'function' ? arg(meta.scope) : arg)))
       .then((res: AxiosResponse) => {
         if (meta.args.length && meta.args[meta.args.length - 1] === httpDecorator) {
-          meta.args = [meta.args[0], meta.args[1], [meta.args[2], res.data]];
+          const data = Array.isArray(meta.args[2]) ? [...meta.args[2], res] : [meta.args[2], res];
+          meta.args = [meta.args[0], meta.args[1], data];
         } else {
-          meta.args = [meta.args, null, res.data, httpDecorator];
+          meta.args = [meta.args, null, res, httpDecorator];
         }
         meta.commit();
       })
