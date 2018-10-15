@@ -1,4 +1,4 @@
-import { authApi } from '@/api/auth.api';
+import { authApi } from '@/modules/auth/api/auth.api';
 import { AppState } from '@/main';
 import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';

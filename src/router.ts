@@ -17,7 +17,7 @@ const createRouter = (routes: any[]) =>
       ...routes.reduce((a, b) => a.concat(b), []),
       {
         path: '/',
-        component: () => import('@/layout/default.layout.vue'),
+        component: () => import('@/layouts/default.layout.vue'),
         children: [
           { path: '/about', name: MAIN_ROUTES.ABOUT, component: About },
           { path: '', name: MAIN_ROUTES.HOME, component: Home }

@@ -38,14 +38,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
-export default Vue.extend({
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-});
+@Component
+export default class extends Vue {
+  @Prop()
+  public msg: string;
+}
 </script>
 
 <style scoped lang="stylus">

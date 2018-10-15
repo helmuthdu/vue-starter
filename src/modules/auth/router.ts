@@ -7,7 +7,7 @@ export const AUTHENTICATION_ROUTES = Object.freeze({
 export const authRoutes = [
   {
     path: '/sign-in',
-    component: () => import('@/layout/empty.layout.vue'),
+    component: () => import('@/modules/auth/layouts/empty.layout.vue'),
     children: [{ path: '', name: AUTHENTICATION_ROUTES.SIGN_IN, component: SignInPage }]
   }
 ];
