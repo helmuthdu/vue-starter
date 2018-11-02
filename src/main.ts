@@ -1,10 +1,10 @@
+import Vue from 'vue';
+
 import { authRoutes, authStore } from '@/modules/auth';
-import { RootState } from '@/store/root';
 import createRouter from '@/router';
 import createStore from '@/store';
-
-import Vue from 'vue';
-import App from './app.vue';
+import { RootState } from '@/store/root';
+import App from '@/app.vue';
 
 import './plugins';
 import './registerServiceWorker';
@@ -18,5 +18,5 @@ export type AppState = RootState & {
 new Vue({
   router: createRouter([authRoutes]),
   store: createStore([authStore]),
-  render: h => h(App)
+  render: h => h(App),
 }).$mount('#app');

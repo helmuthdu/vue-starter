@@ -1,13 +1,14 @@
-import About from '@/routes/about.route.vue';
-import Home from '@/routes/home.route.vue';
 import Vue from 'vue';
 import Router from 'vue-router';
+
+import About from '@/routes/about/about.route.vue';
+import Home from '@/routes/home/home.route.vue';
 
 Vue.use(Router);
 
 export const MAIN_ROUTES = Object.freeze({
   HOME: 'home-route',
-  ABOUT: 'about-route'
+  ABOUT: 'about-route',
 });
 
 const createRouter = (routes: any[]) =>
@@ -20,10 +21,10 @@ const createRouter = (routes: any[]) =>
         component: () => import('@/layouts/default.layout.vue'),
         children: [
           { path: '/about', name: MAIN_ROUTES.ABOUT, component: About },
-          { path: '', name: MAIN_ROUTES.HOME, component: Home }
-        ]
-      }
-    ]
+          { path: '', name: MAIN_ROUTES.HOME, component: Home },
+        ],
+      },
+    ],
   });
 
 export default createRouter;

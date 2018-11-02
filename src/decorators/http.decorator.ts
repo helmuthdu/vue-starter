@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { beforeMethod } from 'kaop-ts';
 
 type httpRequestMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
