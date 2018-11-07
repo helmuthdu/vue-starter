@@ -1,15 +1,21 @@
-import axios from 'axios';
-
 export interface AuthenticatePayload {
   email: string;
   password: string;
 }
 
-const get = (payload: AuthenticatePayload) =>
-  axios.post(`https://httpstat.us/200`, {
-    username: payload.email,
-    password: payload.password,
+const get = (payload: AuthenticatePayload): any => {
+  return new Promise((resolve, reject) => {
+    resolve({
+      status: 200,
+      data: {
+        username: 'user_name',
+        email: 'user_email',
+        token: 'user_token',
+        isLogged: true,
+      }
+    });
   });
+};
 
 export const authApi = {
   get,

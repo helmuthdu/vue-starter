@@ -1,30 +1,27 @@
 import { mutations } from '../mutations';
-import { initialState } from '../state';
-import { AUTH_SET_USER } from '../types';
+import { state, State } from '../state';
+import { AUTHENTICATION_SET_USER } from '../types';
 
 describe('auth/store -> reducer', () => {
+  let authState: State;
+
+  beforeEach(() => {
+    authState = { ...state() };
+  });
+
   it('should handle the initial state', () => {
-    expect(mutations(initialState, {})).toEqual(initialState);
+    mutations[AUTHENTICATION_SET_USER](authState, {});
+
+    expect(authState).toEqual(state());
   });
 
-  it(`should handle ${AUTH_SET_USER}: login`, () => {
-    const res = mutations(initialState, {
-      type: AUTH_SET_USER,
-      payload: {
-        username: 'user_name',
-        email: 'user_email',
-        isLogged: true,
-        token: 'user_token',
-      },
+  it(`should handle ${AUTHENTICATION_SET_USER}`, () => {
+    mutations[AUTHENTICATION_SET_USER](authState, {
+      username: 'user_name',
+      email: 'user_email',
+      token: 'user_token',
+      isLogged: true,
     });
-    expect(res.isLogged).toEqual(true);
-  });
-
-  it(`should handle ${AUTH_SET_USER}: logout`, () => {
-    const res = mutations(initialState, {
-      type: AUTH_SET_USER,
-      payload: { ...initialState },
-    });
-    expect(res).toEqual(initialState);
+    expect(authState.isLogged).toEqual(true);
   });
 });
