@@ -12,7 +12,7 @@ const get = (payload: AuthenticatePayload): any => {
         email: 'user_email',
         token: 'user_token',
         isLogged: true,
-      }
+      },
     });
   });
 };

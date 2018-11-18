@@ -1,5 +1,5 @@
 <template>
-<router-view/>
+  <router-view />
 </template>
 
 <script lang="ts">
@@ -14,5 +14,4 @@ export default class extends Vue {
 }
 </script>
 
-<style lang="stylus">
-</style>
+<style lang="stylus"></style>

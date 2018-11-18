@@ -6,5 +6,5 @@ import { AUTHENTICATION_IS_LOGGED } from './types';
 export const getters: GetterTree<State, AppState> = {
   [AUTHENTICATION_IS_LOGGED](state) {
     return state.isLogged;
-  }
+  },
 };
