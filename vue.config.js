@@ -1,6 +1,6 @@
 module.exports = {
   // Project deployment base
-  baseUrl: '/',
+  publicPath: '/',
 
   // configure webpack-dev-server behavior
   devServer: {
