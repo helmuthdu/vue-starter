@@ -43,7 +43,7 @@
     </v-navigation-drawer>
     <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
       <v-toolbar-title style="width: 300px">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer;"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span class="hidden-sm-and-down"></span>
       </v-toolbar-title>
       <v-text-field
@@ -66,7 +66,7 @@
     <v-content>
       <v-container fluid fill-height> <router-view /> </v-container>
     </v-content>
-    <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog;"> <v-icon>add</v-icon> </v-btn>
+    <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog"> <v-icon>add</v-icon> </v-btn>
     <v-dialog v-model="dialog" width="800px">
       <v-card>
         <v-card-title class="grey lighten-4 py-4 title"> Create contact </v-card-title>
@@ -92,8 +92,8 @@
         <v-card-actions>
           <v-btn flat color="primary">More</v-btn>
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="dialog = false;">Cancel</v-btn>
-          <v-btn flat @click="dialog = false;">Save</v-btn>
+          <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
+          <v-btn flat @click="dialog = false">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
