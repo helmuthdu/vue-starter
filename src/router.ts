@@ -15,7 +15,7 @@ const createRouter = (routes: any[]) =>
   new Router({
     mode: 'history',
     routes: [
-      ...routes.reduce((a, b) => a.concat(b), []),
+      ...routes.reduce((a, b) => [...a, b], []),
       {
         path: '/',
         component: () => import('@/layouts/default.layout.vue'),

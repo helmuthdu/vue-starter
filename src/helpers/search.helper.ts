@@ -15,7 +15,7 @@ interface SearchObservableOptions {
  * @param options
  * @return Observable<string>
  */
-export const createSearchObservable = (
+export const createSearchInputObservable = (
   observable: Observable<WatchObservable<string>>,
   options: SearchObservableOptions,
 ): Observable<string> => {
