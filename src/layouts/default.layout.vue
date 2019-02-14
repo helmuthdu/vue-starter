@@ -1,103 +1,148 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" clipped fixed app>
-      <v-list dense>
-        <template v-for="item in items">
-          <v-layout v-if="item.heading" :key="item.heading" row align-center>
-            <v-flex xs6>
-              <v-subheader v-if="item.heading"> {{ item.heading }} </v-subheader>
-            </v-flex>
-            <v-flex xs6 class="text-xs-center"> <a href="#!" class="body-2 black--text">EDIT</a> </v-flex>
-          </v-layout>
-          <v-list-group
-            v-else-if="item.children"
-            v-model="item.model"
-            :key="item.text"
-            :prepend-icon="item.model ? item.icon : item['icon-alt']"
-            append-icon=""
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-content>
-                <v-list-tile-title> {{ item.text }} </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile v-for="(child, i) in item.children" :key="i" @click="">
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title> {{ child.text }} </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list-group>
-          <v-list-tile v-else :key="item.text" @click="" :to="item.to" exact>
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title> {{ item.text }} </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
-      <v-toolbar-title style="width: 300px">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down"></span>
-      </v-toolbar-title>
-      <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="search"
-        label="Search"
-        class="hidden-sm-and-down"
-      />
-      <v-spacer></v-spacer>
-      <v-btn icon> <v-icon>apps</v-icon> </v-btn>
-      <v-btn icon> <v-icon>notifications</v-icon> </v-btn>
-      <v-btn icon large>
-        <v-avatar size="32px" tile>
-          <img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify" />
-        </v-avatar>
-      </v-btn>
-    </v-toolbar>
-    <v-content>
-      <v-container fluid fill-height> <router-view /> </v-container>
-    </v-content>
-    <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog"> <v-icon>add</v-icon> </v-btn>
-    <v-dialog v-model="dialog" width="800px">
-      <v-card>
-        <v-card-title class="grey lighten-4 py-4 title"> Create contact </v-card-title>
-        <v-container grid-list-sm class="pa-4">
-          <v-layout row wrap>
-            <v-flex xs12 align-center justify-space-between>
-              <v-layout align-center>
-                <v-avatar size="40px" class="mr-3">
-                  <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt="" />
-                </v-avatar>
-                <v-text-field placeholder="Name"></v-text-field>
-              </v-layout>
-            </v-flex>
-            <v-flex xs6> <v-text-field prepend-icon="business" placeholder="Company"></v-text-field> </v-flex>
-            <v-flex xs6> <v-text-field placeholder="Job title"></v-text-field> </v-flex>
-            <v-flex xs12> <v-text-field prepend-icon="mail" placeholder="Email"></v-text-field> </v-flex>
-            <v-flex xs12>
-              <v-text-field type="tel" prepend-icon="phone" placeholder="(000) 000 - 0000" mask="phone"></v-text-field>
-            </v-flex>
-            <v-flex xs12> <v-text-field prepend-icon="notes" placeholder="Notes"></v-text-field> </v-flex>
-          </v-layout>
-        </v-container>
-        <v-card-actions>
-          <v-btn flat color="primary">More</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-          <v-btn flat @click="dialog = false">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-app>
+  <div>
+    <section class="hero is-medium is-primary">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-8-desktop is-offset-2-desktop">
+              <h1 class="title is-2 is-spaced">
+                Hello Bulma!
+              </h1>
+              <h2 class="subtitle is-4">
+                Congratulations! You're running the <strong>Bulma start</strong> project.
+                <br />
+                It includes everything you need to <strong>build your own website</strong> with Bulma.
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8-desktop is-offset-2-desktop">
+            <div class="content">
+              <h3>What's included</h3>
+              <p>The <code>npm</code> dependencies included in <code>package.json</code> are:</p>
+              <ul>
+                <li>
+                  <code><a href="https://github.com/jgthms/bulma">bulma</a></code>
+                </li>
+                <li>
+                  <code><a href="https://github.com/sass/node-sass">node-sass</a></code> to compile your own Sass file
+                </li>
+                <li>
+                  <code><a href="https://github.com/postcss/postcss-cli">postcss-cli</a></code> and
+                  <code><a href="https://github.com/postcss/autoprefixer">autoprefixer</a></code> to add support for
+                  older browsers
+                </li>
+                <li>
+                  <code><a href="https://babeljs.io/docs/usage/cli/">babel-cli</a></code
+                  >,
+                  <code><a href="https://github.com/babel/babel-preset-env">babel-preset-env</a></code>
+                  and
+                  <code><a href="https://github.com/jmcriffey/babel-preset-es2015-ie">babel-preset-es2015-ie</a></code>
+                  for compiling ES6 JavaScript files
+                </li>
+              </ul>
+              <router-view />
+            </div>
+            <table class="table is-bordered is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>CSS class</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Columns</th>
+                  <td>
+                    <code><a href="http://bulma.io/documentation/columns/basics">columns</a></code>
+                    <code><a href="http://bulma.io/documentation/columns/basics">column</a></code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Layout</th>
+                  <td>
+                    <code><a href="http://bulma.io/documentation/layout/section">section</a></code>
+                    <code><a href="http://bulma.io/documentation/layout/container">container</a></code>
+                    <code><a href="http://bulma.io/documentation/layout/footer">footer</a></code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Elements</th>
+                  <td>
+                    <code><a href="http://bulma.io/documentation/elements/button">button</a></code>
+                    <code><a href="http://bulma.io/documentation/elements/content">content</a></code>
+                    <code><a href="http://bulma.io/documentation/elements/title">title</a></code>
+                    <code><a href="http://bulma.io/documentation/elements/title">subtitle</a></code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Form</th>
+                  <td>
+                    <code><a href="http://bulma.io/documentation/form/general">field</a></code>
+                    <code><a href="http://bulma.io/documentation/form/general">control</a></code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Helpers</th>
+                  <td>
+                    <code
+                      ><a href="http://bulma.io/documentation/modifiers/typography-helpers/">has-text-centered</a></code
+                    >
+                    <code
+                      ><a href="http://bulma.io/documentation/modifiers/typography-helpers/"
+                        >has-text-weight-semibold</a
+                      ></code
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="content">
+              <p>If you want to <strong>learn more</strong>, follow these links:</p>
+            </div>
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-medium is-primary" href="http://bulma.io">
+                  <strong class="has-text-weight-semibold">Bulma homepage</strong>
+                </a>
+              </p>
+              <p class="control">
+                <a class="button is-medium is-link" href="http://bulma.io/documentation/overview/start/">
+                  <strong class="has-text-weight-semibold">Documentation</strong>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer has-text-centered">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8-desktop is-offset-2-desktop">
+            <p>
+              <strong class="has-text-weight-semibold">
+                <a href="https://www.npmjs.com/package/bulma-start">bulma-start@0.0.3</a>
+              </strong>
+            </p>
+            <p>
+              <small> Source code licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a> </small>
+            </p>
+            <p style="margin-top: 1rem;">
+              <a href="http://bulma.io">
+                <img src="made-with-bulma.png" alt="Made with Bulma" width="128" height="24" />
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
 </template>
 
 <script lang="ts">
@@ -107,44 +152,9 @@ import { Getter } from 'vuex-class';
 
 @Component
 export default class extends Vue {
-  public dialog: boolean = false;
-  public drawer: any = null;
-  public items: any[] = [
-    { icon: 'contacts', text: 'Contacts', to: '/' },
-    { icon: 'history', text: 'Frequently contacted' },
-    { icon: 'content_copy', text: 'Duplicates' },
-    {
-      icon: 'keyboard_arrow_up',
-      'icon-alt': 'keyboard_arrow_down',
-      text: 'Labels',
-      model: true,
-      children: [{ icon: 'add', text: 'Create label' }],
-    },
-    {
-      icon: 'keyboard_arrow_up',
-      'icon-alt': 'keyboard_arrow_down',
-      text: 'More',
-      model: false,
-      children: [
-        { text: 'Import' },
-        { text: 'Export' },
-        { text: 'Print' },
-        { text: 'Undo changes' },
-        { text: 'Other contacts' },
-      ],
-    },
-    { icon: 'settings', text: 'Settings' },
-    { icon: 'chat_bubble', text: 'Send feedback' },
-    { icon: 'help', text: 'Help', to: '/about' },
-    { icon: 'phonelink', text: 'App downloads' },
-    { icon: 'keyboard', text: 'Go to the old version' },
-  ];
-
   @Getter(AUTHENTICATION_IS_LOGGED)
   private isLogged: boolean;
 }
 </script>
 
-<style lang="stylus">
-@import '~vuetify/src/stylus/main'
-</style>
+<style lang="scss"></style>

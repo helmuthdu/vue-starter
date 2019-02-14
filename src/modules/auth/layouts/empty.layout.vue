@@ -1,7 +1,7 @@
 <template>
-  <v-app>
-    <v-content fill-height> <router-view /> </v-content>
-  </v-app>
+  <div>
+    <router-view />
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,6 +17,4 @@ export default class extends Vue {
 }
 </script>
 
-<style lang="stylus">
-@import '~vuetify/src/stylus/main'
-</style>
+<style lang="scss"></style>
