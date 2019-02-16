@@ -1,6 +1,6 @@
 import { mutations } from '../mutations';
 import { state, State } from '../state';
-import { AUTHENTICATION_SET_USER } from '../types';
+import { AuthActions } from '../types';
 
 describe('auth/store -> reducer', () => {
   let authState: State;
@@ -10,13 +10,13 @@ describe('auth/store -> reducer', () => {
   });
 
   it('should handle the initial state', () => {
-    mutations[AUTHENTICATION_SET_USER](authState, {});
+    mutations[AuthActions.SET_USER](authState, {});
 
     expect(authState).toEqual(state());
   });
 
-  it(`should handle ${AUTHENTICATION_SET_USER}`, () => {
-    mutations[AUTHENTICATION_SET_USER](authState, {
+  it(`should handle ${AuthActions.SET_USER}`, () => {
+    mutations[AuthActions.SET_USER](authState, {
       username: 'user_name',
       email: 'user_email',
       token: 'user_token',

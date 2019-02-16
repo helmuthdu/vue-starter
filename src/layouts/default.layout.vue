@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { AUTHENTICATION_IS_LOGGED } from '@/modules/auth/store';
+import { AuthActions } from '@/modules/auth/store';
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
@@ -140,7 +140,7 @@ export default class extends Vue {
     { icon: 'keyboard', text: 'Go to the old version' },
   ];
 
-  @Getter(AUTHENTICATION_IS_LOGGED)
+  @Getter(AuthActions.IS_LOGGED)
   private isLogged: boolean;
 }
 </script>

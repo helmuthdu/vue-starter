@@ -1,23 +1,22 @@
-import { ActionContext, ActionTree } from 'vuex';
-
 import { AppState } from '@/main';
 import { authApi, AuthenticatePayload } from '@/modules/auth/api/auth.api';
+import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
-import { AUTHENTICATION_LOGIN, AUTHENTICATION_LOGOUT, AUTHENTICATION_SET_USER } from './types';
+import { AuthActions } from './types';
 
 export interface Actions<S, R> extends ActionTree<S, R> {
-  [AUTHENTICATION_LOGIN]: (context: ActionContext<S, R>, payload: any) => void;
-  [AUTHENTICATION_LOGOUT]: (context: ActionContext<S, R>) => void;
+  [AuthActions.LOGIN]: (context: ActionContext<S, R>, payload: any) => void;
+  [AuthActions.LOGOUT]: (context: ActionContext<S, R>) => void;
 }
 
 export const actions: Actions<State, AppState> = {
-  async [AUTHENTICATION_LOGIN]({ commit }, payload: AuthenticatePayload) {
-    commit(AUTHENTICATION_SET_USER, {
+  async [AuthActions.LOGIN]({ commit }, payload: AuthenticatePayload) {
+    commit(AuthActions.SET_USER, {
       ...(await authApi.get(payload)).data,
       isLogged: true,
     });
   },
-  [AUTHENTICATION_LOGOUT]({ commit }) {
-    commit(AUTHENTICATION_SET_USER, { username: '', email: '', isLogged: false });
+  [AuthActions.LOGOUT]({ commit }) {
+    commit(AuthActions.SET_USER, { username: '', email: '', isLogged: false });
   },
 };

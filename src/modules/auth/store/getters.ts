@@ -1,10 +1,14 @@
 import { AppState } from '@/main';
 import { GetterTree } from 'vuex';
 import { State } from './state';
-import { AUTHENTICATION_IS_LOGGED } from './types';
+import { AuthActions } from './types';
 
-export const getters: GetterTree<State, AppState> = {
-  [AUTHENTICATION_IS_LOGGED](state) {
+export interface Getters<S, R> extends GetterTree<S, R> {
+  [AuthActions.IS_LOGGED]: (state: S) => boolean;
+}
+
+export const getters: Getters<State, AppState> = {
+  [AuthActions.IS_LOGGED](state) {
     return state.isLogged;
   },
 };
