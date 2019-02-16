@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { AUTHENTICATION_LOGIN } from '@/modules/auth/store';
+import { AuthActions } from '@/modules/auth/store';
 import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
@@ -18,7 +18,7 @@ export default class extends Vue {
   public email = '';
   public password = '';
 
-  @Action(AUTHENTICATION_LOGIN)
+  @Action(AuthActions.LOGIN)
   private doLogin: any;
 
   public submit() {

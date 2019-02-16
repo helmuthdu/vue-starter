@@ -1,8 +1,10 @@
 module.exports = wallaby => {
-  return {
-    files: ['src/**/*', '!src/**/__tests__/**/*.js', 'jest.config.js', 'package.json', 'tsconfig.json'],
+  process.env.VUE_CLI_BABEL_TRANSPILE_MODULES = true;
 
-    tests: ['src/**/__tests__/**/*.js'],
+  return {
+    files: ['src/**/*', '!src/**/__tests__/**/*.ts', 'jest.config.js', 'package.json', 'tsconfig.json'],
+
+    tests: ['src/**/__tests__/**/*.ts'],
 
     env: {
       type: 'node',
@@ -11,11 +13,11 @@ module.exports = wallaby => {
 
     preprocessors: {
       '**/*.js?(x)': file =>
-        require('babel-core').transform(file.content, {
+        require('@babel/core').transform(file.content, {
           sourceMap: true,
           compact: false,
           filename: file.path,
-          plugins: ['transform-es2015-modules-commonjs'],
+          plugins: ['babel-plugin-jest-hoist'],
         }),
     },
 
