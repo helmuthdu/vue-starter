@@ -17,7 +17,7 @@ interface SearchObservableOptions {
  */
 export const createSearchInputObservable = (
   observable: Observable<WatchObservable<string>>,
-  options: SearchObservableOptions,
+  options: SearchObservableOptions = {},
 ): Observable<string> => {
   const { time = 400, scheduler, minLength = 3 } = options;
   return observable.pipe(
