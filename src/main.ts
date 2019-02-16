@@ -1,11 +1,12 @@
 import Vue from 'vue';
-
-import { authRoutes, authStore } from '@/modules/auth';
+import App from '@/app.vue';
 import createRouter from '@/router';
 import createStore from '@/store';
 import { RootState } from '@/store/root';
-import App from '@/app.vue';
 
+import { authRoutes, authStore } from '@/modules/auth';
+
+import './hooks';
 import './plugins';
 import './registerServiceWorker';
 
