@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomeRoute component should renders with props 1`] = `
+<div>
+  <form><input label="Email" required="required"> <input type="password" label="Password" required="required"> <button color="pink" dark="">Sign-in</button></form>
+</div>
+`;
