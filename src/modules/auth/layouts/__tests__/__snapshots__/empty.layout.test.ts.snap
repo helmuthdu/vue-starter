@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`About route component should renders with props 1`] = `
+<v-app-stub id="app">
+  <v-content-stub tag="main" fill-height="">
+    <router-view-stub name="default"></router-view-stub>
+  </v-content-stub>
+</v-app-stub>
+`;

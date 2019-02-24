@@ -10,7 +10,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
 @Component
-export default class extends Vue {
+export default class EmptyLayout extends Vue {
   public path = '/';
   @Getter(AuthActions.IS_LOGGED)
   private isLogged: boolean;
