@@ -1,5 +1,5 @@
-import HomeRoute from '../home.route.vue';
 import { shallowMount, Wrapper } from '@vue/test-utils';
+import HomeRoute from '../home.route.vue';
 
 describe('HomeRoute component', () => {
   let wrapper: Wrapper<HomeRoute>;

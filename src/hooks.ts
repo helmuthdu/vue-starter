@@ -6,5 +6,5 @@ Component.registerHooks([
   'beforeRouteEnter',
   'beforeRouteLeave',
   'beforeRouteUpdate', // for vue-router 2.2+
-  'subscriptions' // for vue-rx
+  'subscriptions', // for vue-rx
 ]);
