@@ -1,5 +1,5 @@
 import { Observable, SchedulerLike } from 'rxjs';
-import { debounceTime, distinctUntilChanged, pluck, startWith, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, pluck, startWith } from 'rxjs/operators';
 import { WatchObservable } from 'vue-rx';
 
 interface SearchObservableOptions {

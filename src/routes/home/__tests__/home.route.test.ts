@@ -1,6 +1,6 @@
-import HomeRoute from '../home.route.vue';
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuetify from 'vuetify';
+import HomeRoute from '../home.route.vue';
 
 const localVue = createLocalVue();
 

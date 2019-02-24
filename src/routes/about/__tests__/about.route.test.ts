@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import AboutRoute from '../about.route.vue';
 import Vuetify from 'vuetify';
+import AboutRoute from '../about.route.vue';
 
 const localVue = createLocalVue();
 

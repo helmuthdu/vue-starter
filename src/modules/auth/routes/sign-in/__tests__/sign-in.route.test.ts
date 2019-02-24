@@ -1,8 +1,8 @@
 import SignInRoute from '@/modules/auth/routes/sign-in/sign-in.route.vue';
 import { AuthActions, State } from '@/modules/auth/store';
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
 import Vuetify from 'vuetify';
+import Vuex, { Store } from 'vuex';
 
 const localVue = createLocalVue();
 
@@ -16,7 +16,7 @@ describe('HomeRoute component', () => {
   beforeEach(() => {
     store = new Vuex.Store({
       actions: {
-        [AuthActions.LOGIN]: jest.fn()
+        [AuthActions.LOGIN]: jest.fn(),
       },
     });
     wrapper = shallowMount(SignInRoute, {
