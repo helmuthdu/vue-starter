@@ -1,3 +1,4 @@
+import DefaultLayout from '../default.layout.vue';
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import DefaultLayout from '../default.layout.vue';
