@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HomeRoute component should renders with props 1`] = `
-<v-layout column="" justify-center="" align-center="">
-  <v-flex xs12="" sm8="" md6="">
-    <v-card>
-      <v-card-title class="headline">Welcome to the Vuetify + Vue.js template</v-card-title>
-      <v-card-text>
+<v-layout-stub tag="div" column="" justify-center="" align-center="">
+  <v-flex-stub tag="div" xs12="" sm8="" md6="">
+    <v-card-stub tag="div">
+      <v-card-title-stub class="headline">Welcome to the Vuetify + Vue.js template</v-card-title-stub>
+      <v-card-text-stub>
         <p>
           Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower
           developers to create amazing applications.
@@ -27,12 +27,12 @@ exports[`HomeRoute component should renders with props 1`] = `
         </p>
         <div class="text-xs-right"><em><small>— John Leider</small></em></div>
         <hr class="my-3"> <a href="https://vuejs.org/" target="_blank">vue Documentation</a> <br> <a href="https://github.com/vue/vue.js" target="_blank">vue GitHub</a>§
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" flat="" router="" to="/about">Continue</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-flex>
-</v-layout>
+      </v-card-text-stub>
+      <v-card-actions-stub>
+        <v-spacer-stub></v-spacer-stub>
+        <v-btn-stub color="primary" activeclass="v-btn--active" to="/about" tag="button" flat="true" type="button" router="">Continue</v-btn-stub>
+      </v-card-actions-stub>
+    </v-card-stub>
+  </v-flex-stub>
+</v-layout-stub>
 `;
