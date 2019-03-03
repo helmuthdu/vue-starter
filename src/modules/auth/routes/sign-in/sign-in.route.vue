@@ -31,7 +31,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 @Component
-export default class extends Vue {
+export default class SignInRoute extends Vue {
   public email = '';
   public password = '';
 
