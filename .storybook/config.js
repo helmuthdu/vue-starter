@@ -1,4 +1,12 @@
-import { configure } from '@storybook/vue';
+import { addParameters, configure } from '@storybook/vue';
+import { themes } from '@storybook/theming';
+
+// Option defaults.
+addParameters({
+  options: {
+    theme: themes.dark,
+  },
+});
 
 // Stories loader
 const req = require.context('../src', true, /.stories.[jt]sx?$/);
