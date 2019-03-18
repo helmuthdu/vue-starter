@@ -1,4 +1,8 @@
-import authRoutes from './router';
-import * as authStore from './store';
+import { routes } from './routes';
+import * as stores from './store';
 
-export { authRoutes, authStore };
+export interface State {
+  [stores.name]: stores.State;
+}
+
+export { routes, stores };
