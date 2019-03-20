@@ -10,7 +10,7 @@ export const routes = [
       {
         path: '',
         name: AUTHENTICATION_ROUTES.SIGN_IN,
-        component: () => import('sign-in/sign-in.route.vue'),
+        component: () => import('./sign-in/sign-in.route.vue'),
       },
     ],
   },
