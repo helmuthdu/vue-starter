@@ -13,12 +13,12 @@ describe('HomeRoute component', () => {
   beforeEach(() => {
     store = new Vuex.Store({
       actions: {
-        [AuthActions.LOGIN]: jest.fn(),
-      },
+        [AuthActions.LOGIN]: jest.fn()
+      }
     });
     wrapper = shallowMount(SignInRoute, {
       store,
-      localVue,
+      localVue
     });
   });
 

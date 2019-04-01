@@ -16,5 +16,5 @@ export type AppState = RootState & State;
 new Vue({
   router: createRouter(routes),
   store: createStore(stores),
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app');

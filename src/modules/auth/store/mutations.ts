@@ -8,5 +8,5 @@ export const mutations: MutationTree<State> = {
     state.email = payload.email || '';
     state.isLogged = payload.isLogged || false;
     state.token = payload.token || '';
-  },
+  }
 };

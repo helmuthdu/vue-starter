@@ -13,10 +13,10 @@ export const actions: Actions<State, AppState> = {
   async [AuthActions.LOGIN]({ commit }, payload: AuthenticatePayload) {
     commit(AuthActions.SET_USER, {
       ...(await authApi.get(payload)).data,
-      isLogged: true,
+      isLogged: true
     });
   },
   [AuthActions.LOGOUT]({ commit }) {
     commit(AuthActions.SET_USER, { username: '', email: '', isLogged: false });
-  },
+  }
 };
