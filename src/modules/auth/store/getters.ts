@@ -10,5 +10,5 @@ export interface Getters<S, R> extends GetterTree<S, R> {
 export const getters: Getters<State, AppState> = {
   [AuthActions.IS_LOGGED](state) {
     return state.isLogged;
-  },
+  }
 };

@@ -9,5 +9,5 @@ export const state = (): State => ({
   username: '',
   email: '',
   isLogged: false,
-  token: '',
+  token: ''
 });

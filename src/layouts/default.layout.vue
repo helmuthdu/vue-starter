@@ -21,7 +21,7 @@
                 <v-list-tile-title> {{ item.text }} </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile v-for="(child, i) in item.children" :key="i" @click="">
+            <v-list-tile v-for="(child, i) in item.children" :key="i">
               <v-list-tile-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-tile-action>
@@ -30,7 +30,7 @@
               </v-list-tile-content>
             </v-list-tile>
           </v-list-group>
-          <v-list-tile v-else :key="item.text" @click="" :to="item.to" exact>
+          <v-list-tile v-else :key="item.text" :to="item.to" exact>
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -118,7 +118,7 @@ export default class extends Vue {
       'icon-alt': 'keyboard_arrow_down',
       text: 'Labels',
       model: true,
-      children: [{ icon: 'add', text: 'Create label' }],
+      children: [{ icon: 'add', text: 'Create label' }]
     },
     {
       icon: 'keyboard_arrow_up',
@@ -130,14 +130,14 @@ export default class extends Vue {
         { text: 'Export' },
         { text: 'Print' },
         { text: 'Undo changes' },
-        { text: 'Other contacts' },
-      ],
+        { text: 'Other contacts' }
+      ]
     },
     { icon: 'settings', text: 'Settings' },
     { icon: 'chat_bubble', text: 'Send feedback' },
     { icon: 'help', text: 'Help', to: '/about' },
     { icon: 'phonelink', text: 'App downloads' },
-    { icon: 'keyboard', text: 'Go to the old version' },
+    { icon: 'keyboard', text: 'Go to the old version' }
   ];
 
   @Getter(AuthActions.IS_LOGGED)

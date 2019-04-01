@@ -8,7 +8,7 @@ module.exports = wallaby => {
 
     env: {
       type: 'node',
-      runner: 'node',
+      runner: 'node'
     },
 
     preprocessors: {
@@ -17,8 +17,8 @@ module.exports = wallaby => {
           sourceMap: true,
           compact: false,
           filename: file.path,
-          plugins: ['babel-plugin-jest-hoist'],
-        }),
+          plugins: ['babel-plugin-jest-hoist']
+        })
     },
 
     setup(wallaby) {
@@ -29,6 +29,6 @@ module.exports = wallaby => {
 
     testFramework: 'jest',
 
-    debug: true,
+    debug: true
   };
 };

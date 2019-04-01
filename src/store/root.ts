@@ -8,7 +8,7 @@ export interface RootState {
 }
 
 export const state = (): RootState => ({
-  version: '1.0.0',
+  version: '1.0.0'
 });
 
 export const getters: GetterTree<RootState, AppState> = {};
@@ -20,7 +20,7 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 export const actions: Actions<RootState, AppState> = {
   async getVersion(context: ActionContext<RootState, AppState>) {
     return context.state.version;
-  },
+  }
 };
 
 export const mutations: MutationTree<RootState> = {};
@@ -29,5 +29,5 @@ export const rootStore = {
   state,
   getters,
   mutations,
-  actions,
+  actions
 };

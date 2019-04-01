@@ -11,12 +11,12 @@ const get = (payload: AuthenticatePayload): any => {
         username: 'user_name',
         email: 'user_email',
         token: 'user_token',
-        isLogged: true,
-      },
+        isLogged: true
+      }
     });
   });
 };
 
 export const authApi = {
-  get,
+  get
 };

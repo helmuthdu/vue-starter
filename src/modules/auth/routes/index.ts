@@ -1,5 +1,5 @@
 export const AUTHENTICATION_ROUTES = Object.freeze({
-  SIGN_IN: 'auth-sign-in-route',
+  SIGN_IN: 'auth-sign-in-route'
 });
 
 export const routes = [
@@ -10,8 +10,8 @@ export const routes = [
       {
         path: '',
         name: AUTHENTICATION_ROUTES.SIGN_IN,
-        component: () => import('./sign-in/sign-in.route.vue'),
-      },
-    ],
-  },
+        component: () => import('./sign-in/sign-in.route.vue')
+      }
+    ]
+  }
 ];
