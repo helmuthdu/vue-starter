@@ -6,7 +6,7 @@ import Vuex, { Store } from 'vuex';
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-describe('HomeRoute component', () => {
+describe('Auth/Route -> SignIn', () => {
   let store: Store<State>;
   let wrapper: Wrapper<SignInRoute>;
 

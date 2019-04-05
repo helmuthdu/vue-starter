@@ -6,7 +6,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class extends Vue {}
+export default class DefaultLayout extends Vue {}
 </script>
 
 <style lang="scss"></style>

@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import AboutRoute from '../about.route.vue';
 
-describe('About route component', () => {
+describe('Home/Route -> About', () => {
   let wrapper: Wrapper<AboutRoute>;
 
   beforeEach(() => {
