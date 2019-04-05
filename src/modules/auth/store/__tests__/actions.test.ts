@@ -3,7 +3,7 @@ import { actions } from '../actions';
 import { mutations } from '../mutations';
 import { state, State } from '../state';
 
-describe('store: authentication -> actions', () => {
+describe('auth/store -> actions', () => {
   const authState: State = state();
 
   const commit = (type: string, payload: any) => {
