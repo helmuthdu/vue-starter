@@ -6,7 +6,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuetify);
 
-describe('HomeRoute component', () => {
+describe('Route -> Home', () => {
   let wrapper: Wrapper<HomeRoute>;
 
   beforeEach(() => {

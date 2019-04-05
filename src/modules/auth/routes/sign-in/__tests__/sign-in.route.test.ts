@@ -9,7 +9,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(Vuetify);
 
-describe('HomeRoute component', () => {
+describe('Auth/Route -> SignIn', () => {
   let store: Store<State>;
   let wrapper: Wrapper<SignInRoute>;
 

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HomeRoute component should renders with props 1`] = `
+exports[`Auth/Route -> SignIn should renders with props 1`] = `
 <v-layout-stub tag="div" fill-height="" justify-center="" align-center="">
   <v-flex-stub tag="div" xs12="" sm5="" md4="" lg3="">
     <v-card-stub tag="div">

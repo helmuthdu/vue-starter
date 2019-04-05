@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`About route component should renders with props 1`] = `
+exports[`Home/Layout -> Default should renders with props 1`] = `
 <v-app-stub id="inspire">
   <v-navigation-drawer-stub fixed="true" app="true" clipped="true" height="100%" minivariantwidth="80" mobilebreakpoint="1264" width="300">
     <v-list-stub dense="true">

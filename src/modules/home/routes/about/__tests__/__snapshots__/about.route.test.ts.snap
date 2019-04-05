@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`About route component should renders with props 1`] = `
+exports[`Route -> About should renders with props 1`] = `
 <v-layout-stub tag="div">
   <v-flex-stub tag="div" text-xs-center="">
     <blockquote class="blockquote">

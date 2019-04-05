@@ -9,7 +9,7 @@ const router = new VueRouter();
 localVue.use(VueRouter);
 localVue.use(Vuetify);
 
-describe('About route component', () => {
+describe('Layout -> Default', () => {
   let wrapper: Wrapper<DefaultLayout>;
 
   beforeEach(() => {

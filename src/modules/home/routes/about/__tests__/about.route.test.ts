@@ -6,7 +6,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuetify);
 
-describe('About route component', () => {
+describe('Route -> About', () => {
   let wrapper: Wrapper<AboutRoute>;
 
   beforeEach(() => {
