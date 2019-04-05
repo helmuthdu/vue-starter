@@ -1,6 +1,6 @@
-export const AUTHENTICATION_ROUTES = Object.freeze({
-  SIGN_IN: 'auth-sign-in-route'
-});
+export enum AUTHENTICATION_ROUTES {
+  SIGN_IN = 'auth-sign-in-route'
+}
 
 export const routes = [
   {
