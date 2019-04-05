@@ -3,11 +3,6 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-export const MAIN_ROUTES = Object.freeze({
-  HOME: 'home-route',
-  ABOUT: 'about-route'
-});
-
 const createRouter = (routes: any[]) =>
   new Router({
     mode: 'history',
@@ -15,12 +10,8 @@ const createRouter = (routes: any[]) =>
     routes: [
       ...routes.reduce((a, b) => a.concat(b), []),
       {
-        path: '/',
-        component: () => import('@/layouts/default.layout.vue'),
-        children: [
-          { path: '/about', name: MAIN_ROUTES.ABOUT, component: () => import('@/routes/about/about.route.vue') },
-          { path: '', name: MAIN_ROUTES.HOME, component: () => import('@/routes/home/home.route.vue') }
-        ]
+        path: '*',
+        component: () => import('@/routes/not-found/not-found.route.vue')
       }
     ]
   });

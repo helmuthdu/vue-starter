@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Route -> NotFound should renders with props 1`] = `
+<v-layout-stub tag="div">
+  <v-flex-stub tag="div" text-xs-center="">
+    <blockquote class="blockquote">
+      You are here!
+      <footer><small><em>—But nothing found for you #404</em></small></footer>
+    </blockquote>
+  </v-flex-stub>
+</v-layout-stub>
+`;
