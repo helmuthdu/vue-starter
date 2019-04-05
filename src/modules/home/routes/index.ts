@@ -6,17 +6,17 @@ export enum HOME_ROUTES {
 export const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default.layout.vue'),
+    component: () => import('../layouts/default.layout.vue'),
     children: [
       {
         path: '/about',
         name: HOME_ROUTES.ABOUT,
-        component: () => import('@/modules/home/routes/about/about.route.vue')
+        component: () => import('./about/about.route.vue')
       },
       {
         path: '',
         name: HOME_ROUTES.HOME,
-        component: () => import('@/modules/home/routes/home/home.route.vue')
+        component: () => import('./home/home.route.vue')
       }
     ]
   }
