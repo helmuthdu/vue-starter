@@ -1,15 +1,13 @@
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import VueRouter from 'vue-router';
-import Vuetify from 'vuetify';
 import DefaultLayout from '../default.layout.vue';
 
 const localVue = createLocalVue();
 const router = new VueRouter();
 
 localVue.use(VueRouter);
-localVue.use(Vuetify);
 
-describe('About route component', () => {
+describe('Home/Layout -> default', () => {
   let wrapper: Wrapper<DefaultLayout>;
 
   beforeEach(() => {
