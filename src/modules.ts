@@ -1,5 +1,5 @@
 import * as authModule from '@/modules/auth';
-import * as homeModule from '@/modules/home';
+import * as homeModule from '@/modules/root';
 
 export type State = authModule.State;
 
