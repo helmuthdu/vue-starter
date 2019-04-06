@@ -1,8 +1,8 @@
 import App from '@/app.vue';
 import { routes, State, stores } from '@/modules';
 import createRouter from '@/routes';
-import createStore from '@/store';
-import { RootState } from '@/store/root';
+import createStore from '@/stores';
+import { RootState } from '@/stores/root';
 import Vue from 'vue';
 
 import './hooks';

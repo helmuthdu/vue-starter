@@ -1,5 +1,5 @@
 import { routes } from './routes';
-import * as stores from './store';
+import * as stores from './stores';
 
 export interface State {
   [stores.name]: stores.State;
