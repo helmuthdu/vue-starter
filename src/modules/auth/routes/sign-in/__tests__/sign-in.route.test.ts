@@ -1,5 +1,5 @@
 import SignInRoute from '@/modules/auth/routes/sign-in/sign-in.route.vue';
-import { AuthActions, State } from '@/modules/auth/store';
+import { AuthActions, State } from '@/modules/auth/stores';
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import Vuex, { Store } from 'vuex';
