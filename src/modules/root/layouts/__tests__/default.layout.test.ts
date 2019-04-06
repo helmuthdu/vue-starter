@@ -7,7 +7,7 @@ const router = new VueRouter();
 
 localVue.use(VueRouter);
 
-describe('Home/Layout -> default', () => {
+describe('Home/Layout -> Default', () => {
   let wrapper: Wrapper<DefaultLayout>;
 
   beforeEach(() => {
