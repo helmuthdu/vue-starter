@@ -1,6 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Home/Route -> Home should renders with props 1`] = `
-<section>
-  <hr> <a href="https://vuejs.org/" target="_blank">vue Documentation</a> <br> <a href="https://github.com/vue/vue.js" target="_blank">vue GitHub</a></section>
-`;
