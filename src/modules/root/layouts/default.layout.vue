@@ -146,15 +146,10 @@
 </template>
 
 <script lang="ts">
-import { AuthActions } from '@/modules/auth/stores';
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 
 @Component
-export default class DefaultLayout extends Vue {
-  @Getter(AuthActions.IS_LOGGED)
-  private isLogged: boolean;
-}
+export default class DefaultLayout extends Vue {}
 </script>
 
 <style lang="scss"></style>

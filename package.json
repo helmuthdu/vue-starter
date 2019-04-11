@@ -12,7 +12,7 @@
   "dependencies": {
     "@mdi/font": "^3.5.95",
     "axios": "^0.18.0",
-    "buefy": "^0.7.3",
+    "buefy": "^0.7.4",
     "core-js": "^2.6.5",
     "kaop-ts": "^4.1.1",
     "lodash": "^4.17.11",
@@ -21,7 +21,7 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",
-    "vue-router": "^3.0.2",
+    "vue-router": "^3.0.3",
     "vue-rx": "^6.1.0",
     "vuex": "^3.1.0",
     "vuex-class": "^0.3.2"
@@ -49,10 +49,10 @@
     "jest-watch-typeahead": "^0.3.0",
     "lint-staged": "^8.1.5",
     "prettier": "^1.16.4",
-    "sass": "^1.17.4",
+    "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
-    "ts-jest": "^24.0.1",
-    "typescript": "^3.4.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.3",
     "vue-template-compiler": "^2.6.10",
     "wallaby-vue-compiler": "^1.0.5"
   },
