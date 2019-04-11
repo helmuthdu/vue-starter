@@ -1,5 +1,5 @@
-import { AppState } from '@/main';
-import { authApi, AuthenticatePayload } from '@/modules/auth/api/auth.api';
+import { AppState } from '../../../main';
+import { authApi, AuthenticatePayload } from '../api/auth.api';
 import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
 import { AuthActions } from './types';

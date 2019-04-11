@@ -1,4 +1,4 @@
-import api from '@/api';
+import api from '../api';
 import { AxiosError, AxiosResponse } from 'axios';
 import { beforeMethod } from 'kaop-ts';
 

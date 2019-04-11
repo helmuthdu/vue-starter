@@ -101,9 +101,7 @@
 </template>
 
 <script lang="ts">
-import { AuthActions } from '@/modules/auth/stores';
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 
 @Component
 export default class extends Vue {
@@ -139,9 +137,6 @@ export default class extends Vue {
     { icon: 'phonelink', text: 'App downloads' },
     { icon: 'keyboard', text: 'Go to the old version' }
   ];
-
-  @Getter(AuthActions.IS_LOGGED)
-  private isLogged: boolean;
 }
 </script>
 
