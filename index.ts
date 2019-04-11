@@ -1,5 +1,5 @@
-import * as authModule from './auth';
-import * as rootModule from './root';
+import * as authModule from './src/modules/auth';
+import * as rootModule from './src/modules/root';
 
 export type State = authModule.State;
 

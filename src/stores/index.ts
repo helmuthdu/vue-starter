@@ -1,5 +1,5 @@
-import { AppState } from '@/main';
-import { rootStore } from '@/stores/root';
+import { AppState } from '../main';
+import { rootStore } from './root';
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 

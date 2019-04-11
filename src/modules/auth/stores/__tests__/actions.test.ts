@@ -1,4 +1,4 @@
-import { AuthActions } from '@/modules/auth/stores';
+import { AuthActions } from '../types';
 import { actions } from '../actions';
 import { mutations } from '../mutations';
 import { state, State } from '../state';

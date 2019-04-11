@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { AuthActions } from '@/modules/auth/stores';
+import { AuthActions } from '../../stores';
 import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
