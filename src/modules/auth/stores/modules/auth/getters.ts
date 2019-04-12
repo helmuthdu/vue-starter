@@ -1,4 +1,4 @@
-import { AppState } from '../../../main';
+import { State as AppState } from '../../';
 import { GetterTree } from 'vuex';
 import { State } from './state';
 import { AuthActions } from './types';

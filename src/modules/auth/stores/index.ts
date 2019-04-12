@@ -1,7 +1,7 @@
-export * from './actions';
-export * from './getters';
-export * from './mutations';
-export * from './state';
-export * from './types';
+import * as auth from './modules/auth';
 
-export const name = 'auth';
+export type State = Readonly<{
+  [auth.name]: auth.State;
+}>;
+
+export { auth };
