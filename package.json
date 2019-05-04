@@ -23,7 +23,7 @@
     "vue-property-decorator": "^8.1.0",
     "vue-router": "^3.0.6",
     "vue-rx": "^6.1.0",
-    "vuetify": "^1.5.13",
+    "vuetify": "^1.5.14",
     "vuex": "^3.1.0",
     "vuex-class": "^0.3.2"
   },
@@ -43,7 +43,7 @@
     "axios-mock-adapter": "^1.16.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "cypress-testing-library": "^2.6.0",
+    "cypress-testing-library": "^3.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "jest-watch-typeahead": "^0.3.0",
