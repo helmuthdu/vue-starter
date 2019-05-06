@@ -1,4 +1,4 @@
-export enum AUTHENTICATION_ROUTES {
+export enum USER_ROUTES {
   SIGN_IN = 'auth-sign-in-route'
 }
 
@@ -9,7 +9,7 @@ export const routes = [
     children: [
       {
         path: '',
-        name: AUTHENTICATION_ROUTES.SIGN_IN,
+        name: USER_ROUTES.SIGN_IN,
         component: () => import('./sign-in/sign-in.route.vue')
       }
     ]

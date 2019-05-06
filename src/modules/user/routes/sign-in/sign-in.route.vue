@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { AuthActions } from '../../stores/modules/auth';
+import { UserActionTypes } from '../../stores/modules/user';
 import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
@@ -35,7 +35,7 @@ export default class SignInRoute extends Vue {
   public email = '';
   public password = '';
 
-  @Action(AuthActions.LOGIN)
+  @Action(UserActionTypes.LOGIN)
   private doLogin: any;
 
   public submit() {
