@@ -17,6 +17,6 @@ const get = (payload: AuthenticatePayload): any => {
   });
 };
 
-export const authApi = {
+export const userApi = {
   get
 };

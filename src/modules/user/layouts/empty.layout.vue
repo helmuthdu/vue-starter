@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts">
-import { AuthActions } from '../stores/modules/auth';
+import { UserActionTypes } from '../stores/modules/user';
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
 @Component
 export default class EmptyLayout extends Vue {
   public path = '/';
-  @Getter(AuthActions.IS_LOGGED)
+  @Getter(UserActionTypes.IS_LOGGED)
   private isLogged: boolean;
 }
 </script>
