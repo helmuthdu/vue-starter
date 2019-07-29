@@ -44,10 +44,11 @@ export default class SignInRoute extends Vue {
 }
 </script>
 
-<style lang="stylus" scoped>
-.headline
+<style lang="scss" scoped>
+.headline {
   color: #e91e63;
   border-left: 1rem solid #e91e63;
   padding-left: 1rem;
   margin-left: -1.125rem;
+}
 </style>

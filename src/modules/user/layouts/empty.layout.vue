@@ -19,6 +19,4 @@ export default class EmptyLayout extends Vue {
 }
 </script>
 
-<style lang="stylus">
-@import '~vuetify/src/stylus/main'
-</style>
+<style lang="scss"></style>
