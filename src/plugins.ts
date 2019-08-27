@@ -1,5 +1,5 @@
 import Buefy from 'buefy';
-import VeeValidate from 'vee-validate';
+import * as VeeValidate from 'vee-validate';
 import Vue from 'vue';
 import VueRx from 'vue-rx';
 

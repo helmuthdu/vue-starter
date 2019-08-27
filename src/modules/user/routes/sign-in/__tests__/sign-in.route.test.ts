@@ -1,7 +1,7 @@
-import SignInRoute from '@/modules/auth/routes/sign-in/sign-in.route.vue';
-import { UserActionTypes, State } from '../../../stores/modules/user';
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
+import { State, UserActionTypes } from '../../../stores/modules/user';
+import SignInRoute from '../sign-in.route.vue';
 
 const localVue = createLocalVue();
 
