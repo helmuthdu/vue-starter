@@ -3,16 +3,16 @@
 exports[`Auth/Route -> SignIn should renders with props 1`] = `
 <v-layout-stub tag="div" fill-height="" justify-center="" align-center="">
   <v-flex-stub tag="div" xs12="" sm5="" md4="" lg3="">
-    <v-card-stub tag="div">
-      <v-card-title-stub primarytitle="true">
+    <v-card-stub loaderheight="4" tag="div">
+      <v-card-title-stub primarytitle="" primary-title="">
         <v-layout-stub tag="div" column="">
           <v-flex-stub tag="div">
             <h2 class="headline">LOGIN</h2>
           </v-flex-stub>
           <v-flex-stub tag="div">
             <v-form-stub>
-              <v-text-field-stub label="Email" required="" value=""></v-text-field-stub>
-              <v-text-field-stub type="password" label="Password" required="" value=""></v-text-field-stub>
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Email" loaderheight="2" clearicon="$vuetify.icons.clear" type="text" required=""></v-text-field-stub>
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Password" loaderheight="2" clearicon="$vuetify.icons.clear" type="password" required=""></v-text-field-stub>
             </v-form-stub>
           </v-flex-stub>
         </v-layout-stub>
@@ -21,7 +21,7 @@ exports[`Auth/Route -> SignIn should renders with props 1`] = `
         <v-container-stub tag="div">
           <v-layout-stub tag="div" column="" align-center="">
             <v-flex-stub tag="div">
-              <v-btn-stub color="pink" activeclass="v-btn--active" tag="button" dark="true" type="button">Sign-in</v-btn-stub>
+              <v-btn-stub color="pink" dark="true" tag="button" activeclass="" type="button">Sign-in</v-btn-stub>
             </v-flex-stub>
           </v-layout-stub>
         </v-container-stub>

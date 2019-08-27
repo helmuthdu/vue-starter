@@ -1,10 +1,8 @@
-import VeeValidate from 'vee-validate';
 import Vue from 'vue';
+import * as VeeValidate from 'vee-validate';
 import VueRx from 'vue-rx';
 import Vuetify from 'vuetify/lib';
 
-import '@mdi/font/css/materialdesignicons.css';
-
-Vue.use(VeeValidate);
 Vue.use(VueRx);
 Vue.use(Vuetify);
+Vue.use(VeeValidate);

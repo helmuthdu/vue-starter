@@ -1,47 +1,103 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <v-card>
-        <v-card-title class="headline">Welcome to the Vuetify + Vue.js template</v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower
-            developers to create amazing applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a href="https://vuetifyjs.com" target="_blank">documentation</a>.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">discord</a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a href="https://github.com/vuetifyjs/vuetify/issues" target="_blank" title="contribute">issue board</a>.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em> <small>&mdash; John Leider</small> </em>
-          </div>
-          <hr class="my-3" />
-          <a href="https://vuejs.org/" target="_blank">vue Documentation</a> <br />
-          <a href="https://github.com/vue/vue.js" target="_blank">vue GitHub</a>§
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" flat router to="/about">Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <v-container>
+    <v-layout text-center wrap>
+      <v-flex xs12>
+        <v-img :src="require('../../../../assets/images/logo.png')" class="my-3" contain height="200"></v-img>
+      </v-flex>
+      <v-flex mb-4>
+        <h1 class="display-2 font-weight-bold mb-3">
+          Welcome to Vuetify
+        </h1>
+        <p class="subheading font-weight-regular">
+          For help and collaboration with other Vuetify developers,
+          <br />please join our online
+          <a href="https://community.vuetifyjs.com" target="_blank">Discord Community</a>
+        </p>
+      </v-flex>
+      <v-flex mb-5 xs12>
+        <h2 class="headline font-weight-bold mb-3">What's next?</h2>
+        <v-layout justify-center>
+          <a v-for="(next, i) in whatsNext" :key="i" :href="next.href" class="subheading mx-3" target="_blank">
+            {{ next.text }}
+          </a>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12 mb-5>
+        <h2 class="headline font-weight-bold mb-3">Important Links</h2>
+        <v-layout justify-center>
+          <a v-for="(link, i) in importantLinks" :key="i" :href="link.href" class="subheading mx-3" target="_blank">
+            {{ link.text }}
+          </a>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12 mb-5>
+        <h2 class="headline font-weight-bold mb-3">Ecosystem</h2>
+        <v-layout justify-center>
+          <a v-for="(eco, i) in ecosystem" :key="i" :href="eco.href" class="subheading mx-3" target="_blank">
+            {{ eco.text }}
+          </a>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class HomeRoute extends Vue {}
+export default class HomeRoute extends Vue {
+  ecosystem = [
+    {
+      text: 'vuetify-loader',
+      href: 'https://github.com/vuetifyjs/vuetify-loader'
+    },
+    {
+      text: 'github',
+      href: 'https://github.com/vuetifyjs/vuetify'
+    },
+    {
+      text: 'awesome-vuetify',
+      href: 'https://github.com/vuetifyjs/awesome-vuetify'
+    }
+  ];
+
+  importantLinks = [
+    {
+      text: 'Documentation',
+      href: 'https://vuetifyjs.com'
+    },
+    {
+      text: 'Chat',
+      href: 'https://community.vuetifyjs.com'
+    },
+    {
+      text: 'Made with Vuetify',
+      href: 'https://madewithvuejs.com/vuetify'
+    },
+    {
+      text: 'Twitter',
+      href: 'https://twitter.com/vuetifyjs'
+    },
+    {
+      text: 'Articles',
+      href: 'https://medium.com/vuetify'
+    }
+  ];
+
+  whatsNext = [
+    {
+      text: 'Explore components',
+      href: 'https://vuetifyjs.com/components/api-explorer'
+    },
+    {
+      text: 'Select a layout',
+      href: 'https://vuetifyjs.com/layout/pre-defined'
+    },
+    {
+      text: 'Frequently Asked Questions',
+      href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions'
+    }
+  ];
+}
 </script>

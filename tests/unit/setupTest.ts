@@ -1,8 +1,4 @@
-import Vue from 'vue';
-
 declare const global: any;
-
-Vue.config.productionTip = false;
 
 class LocalStorageMock {
   public store: any;
