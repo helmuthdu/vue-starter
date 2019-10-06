@@ -4,7 +4,7 @@ exports[`Route -> Home should renders with props 1`] = `
 <v-container-stub tag="div">
   <v-layout-stub tag="div" text-center="" wrap="">
     <v-flex-stub tag="div" xs12="">
-      <v-img-stub height="200" contain="true" position="center center" src="" transition="fade-transition" class="my-3"></v-img-stub>
+      <v-img-stub height="200" contain="true" options="[object Object]" position="center center" src="" transition="fade-transition" class="my-3"></v-img-stub>
     </v-flex-stub>
     <v-flex-stub tag="div" mb-4="">
       <h1 class="display-2 font-weight-bold mb-3">

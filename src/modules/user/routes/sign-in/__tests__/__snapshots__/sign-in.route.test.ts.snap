@@ -11,8 +11,8 @@ exports[`Auth/Route -> SignIn should renders with props 1`] = `
           </v-flex-stub>
           <v-flex-stub tag="div">
             <v-form-stub>
-              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Email" loaderheight="2" clearicon="$vuetify.icons.clear" type="text" required=""></v-text-field-stub>
-              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Password" loaderheight="2" clearicon="$vuetify.icons.clear" type="password" required=""></v-text-field-stub>
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Email" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Password" loaderheight="2" clearicon="$clear" type="password" required=""></v-text-field-stub>
             </v-form-stub>
           </v-flex-stub>
         </v-layout-stub>
