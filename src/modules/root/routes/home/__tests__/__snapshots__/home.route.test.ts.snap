@@ -1,54 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Route -> Home should renders with props 1`] = `
-<v-container-stub tag="div">
-  <v-layout-stub tag="div" text-center="" wrap="">
-    <v-flex-stub tag="div" xs12="">
-      <v-img-stub height="200" contain="true" options="[object Object]" position="center center" src="" transition="fade-transition" class="my-3"></v-img-stub>
-    </v-flex-stub>
-    <v-flex-stub tag="div" mb-4="">
-      <h1 class="display-2 font-weight-bold mb-3">
-        Welcome to Vuetify
-      </h1>
-      <p class="subheading font-weight-regular">
-        For help and collaboration with other Vuetify developers,
-        <br>please join our online
-        <a href="https://community.vuetifyjs.com" target="_blank">Discord Community</a></p>
-    </v-flex-stub>
-    <v-flex-stub tag="div" mb-5="" xs12="">
-      <h2 class="headline font-weight-bold mb-3">What's next?</h2>
-      <v-layout-stub tag="div" justify-center=""><a href="https://vuetifyjs.com/components/api-explorer" target="_blank" class="subheading mx-3">
-          Explore components
-        </a><a href="https://vuetifyjs.com/layout/pre-defined" target="_blank" class="subheading mx-3">
-          Select a layout
-        </a><a href="https://vuetifyjs.com/getting-started/frequently-asked-questions" target="_blank" class="subheading mx-3">
-          Frequently Asked Questions
-        </a></v-layout-stub>
-    </v-flex-stub>
-    <v-flex-stub tag="div" xs12="" mb-5="">
-      <h2 class="headline font-weight-bold mb-3">Important Links</h2>
-      <v-layout-stub tag="div" justify-center=""><a href="https://vuetifyjs.com" target="_blank" class="subheading mx-3">
-          Documentation
-        </a><a href="https://community.vuetifyjs.com" target="_blank" class="subheading mx-3">
-          Chat
-        </a><a href="https://madewithvuejs.com/vuetify" target="_blank" class="subheading mx-3">
-          Made with Vuetify
-        </a><a href="https://twitter.com/vuetifyjs" target="_blank" class="subheading mx-3">
-          Twitter
-        </a><a href="https://medium.com/vuetify" target="_blank" class="subheading mx-3">
-          Articles
-        </a></v-layout-stub>
-    </v-flex-stub>
-    <v-flex-stub tag="div" xs12="" mb-5="">
-      <h2 class="headline font-weight-bold mb-3">Ecosystem</h2>
-      <v-layout-stub tag="div" justify-center=""><a href="https://github.com/vuetifyjs/vuetify-loader" target="_blank" class="subheading mx-3">
-          vuetify-loader
-        </a><a href="https://github.com/vuetifyjs/vuetify" target="_blank" class="subheading mx-3">
-          github
-        </a><a href="https://github.com/vuetifyjs/awesome-vuetify" target="_blank" class="subheading mx-3">
-          awesome-vuetify
-        </a></v-layout-stub>
-    </v-flex-stub>
-  </v-layout-stub>
+<v-container-stub tag="div" fluid="true" class="fill-height">
+  <v-row-stub tag="div" align="center" justify="center">
+    <v-tooltip-stub opendelay="0" closedelay="0" contentclass="" fixed="true" right="true" openonhover="true" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" tag="span"> <span>Source</span></v-tooltip-stub>
+    <v-tooltip-stub opendelay="0" closedelay="0" contentclass="" fixed="true" right="true" openonhover="true" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" tag="span"> <span>Codepen</span></v-tooltip-stub>
+  </v-row-stub>
 </v-container-stub>
 `;

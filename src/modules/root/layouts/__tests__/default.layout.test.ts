@@ -11,9 +11,15 @@ localVue.use(Vuetify);
 
 describe('Home/Layout -> Default', () => {
   let wrapper: Wrapper<DefaultLayout>;
+  let vuetify;
 
   beforeEach(() => {
-    wrapper = shallowMount(DefaultLayout, { localVue, router });
+    vuetify = new Vuetify();
+    wrapper = shallowMount(DefaultLayout, {
+      localVue,
+      vuetify,
+      router
+    });
   });
 
   it('should renders with props', () => {

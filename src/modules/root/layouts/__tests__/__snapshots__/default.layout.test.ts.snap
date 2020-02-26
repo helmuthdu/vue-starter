@@ -1,14 +1,205 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home/Layout -> Default should renders with props 1`] = `
-<v-app-stub id="app">
-  <v-app-bar-stub tag="header" tile="true" extensionheight="48" src="" value="true" app="true">
-    <v-toolbar-title-stub class="headline text-uppercase"><span>Vuetify</span> <span class="font-weight-light">MATERIAL DESIGN</span></v-toolbar-title-stub>
+<v-app-stub id="inspire">
+  <v-navigation-drawer-stub app="true" height="100vh" minivariantwidth="56" mobilebreakpoint="1264" src="" tag="nav" width="256">
+    <v-list-stub tag="div" tile="true" dense="true">
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-contacts</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Contacts
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-history</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Frequently contacted
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-content-copy</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Duplicates
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-group-stub color="primary" value="true" activeclass="" appendicon="" prependicon="mdi-chevron-up" ripple="true">
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <v-list-item-action-stub>
+            <v-icon-stub>mdi-plus</v-icon-stub>
+          </v-list-item-action-stub>
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Create label
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+      </v-list-group-stub>
+      <v-list-group-stub color="primary" activeclass="" appendicon="" prependicon="mdi-chevron-down" ripple="true">
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <!---->
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Import
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <!---->
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Export
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <!---->
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Print
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <!---->
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Undo changes
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+        <v-list-item-stub activeclass="" link="true" tag="div">
+          <!---->
+          <v-list-item-content-stub>
+            <v-list-item-title-stub>
+              Other contacts
+            </v-list-item-title-stub>
+          </v-list-item-content-stub>
+        </v-list-item-stub>
+      </v-list-group-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-settings</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Settings
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-message</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Send feedback
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-help-circle</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Help
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-cellphone-link</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            App downloads
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+      <v-list-item-stub activeclass="" link="true" tag="div">
+        <v-list-item-action-stub>
+          <v-icon-stub>mdi-keyboard</v-icon-stub>
+        </v-list-item-action-stub>
+        <v-list-item-content-stub>
+          <v-list-item-title-stub>
+            Go to the old version
+          </v-list-item-title-stub>
+        </v-list-item-content-stub>
+      </v-list-item-stub>
+    </v-list-stub>
+  </v-navigation-drawer-stub>
+  <v-app-bar-stub color="blue darken-3" dark="true" tag="header" tile="true" extensionheight="48" src="" value="true" app="true">
+    <v-app-bar-nav-icon-stub></v-app-bar-nav-icon-stub>
+    <v-toolbar-title-stub class="ml-0 pl-4"><span class="hidden-sm-and-down">Google Contacts</span></v-toolbar-title-stub>
+    <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" hidedetails="true" label="Search" loaderheight="2" clearicon="$clear" flat="true" prependinnericon="mdi-magnify" soloinverted="true" type="text" class="hidden-sm-and-down"></v-text-field-stub>
     <v-spacer-stub></v-spacer-stub>
-    <v-btn-stub tag="button" activeclass="" href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank" text="true" type="button"><span class="mr-2">Latest Release</span></v-btn-stub>
+    <v-btn-stub tag="button" activeclass="" icon="true" type="button">
+      <v-icon-stub>mdi-apps</v-icon-stub>
+    </v-btn-stub>
+    <v-btn-stub tag="button" activeclass="" icon="true" type="button">
+      <v-icon-stub>mdi-bell</v-icon-stub>
+    </v-btn-stub>
+    <v-btn-stub tag="button" activeclass="" large="true" icon="true" type="button">
+      <v-avatar-stub size="32px" item="">
+        <v-img-stub alt="Vuetify" options="[object Object]" position="center center" src="https://cdn.vuetifyjs.com/images/logos/logo.svg" transition="fade-transition"></v-img-stub>
+      </v-avatar-stub>
+    </v-btn-stub>
   </v-app-bar-stub>
   <v-content-stub tag="main">
     <router-view-stub name="default"></router-view-stub>
   </v-content-stub>
+  <v-btn-stub color="pink" dark="true" tag="button" activeclass="" bottom="true" fixed="true" right="true" fab="true" type="button">
+    <v-icon-stub>mdi-plus</v-icon-stub>
+  </v-btn-stub>
+  <v-dialog-stub opendelay="0" closedelay="0" contentclass="" maxwidth="none" origin="center center" retainfocus="true" transition="dialog-transition" width="800px">
+    <v-card-stub loaderheight="4" tag="div">
+      <v-card-title-stub class="grey darken-2">
+        Create contact
+      </v-card-title-stub>
+      <v-container-stub tag="div">
+        <v-row-stub tag="div" class="mx-2">
+          <v-col-stub cols="12" tag="div" class="align-center justify-space-between">
+            <v-row-stub tag="div" align="center" class="mr-0">
+              <v-avatar-stub size="40px" class="mx-3"><img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt=""></v-avatar-stub>
+              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" loaderheight="2" clearicon="$clear" placeholder="Name" type="text"></v-text-field-stub>
+            </v-row-stub>
+          </v-col-stub>
+          <v-col-stub cols="6" tag="div">
+            <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" prependicon="mdi-account-card-details-outline" loaderheight="2" clearicon="$clear" placeholder="Company" type="text"></v-text-field-stub>
+          </v-col-stub>
+          <v-col-stub cols="6" tag="div">
+            <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" loaderheight="2" clearicon="$clear" placeholder="Job title" type="text"></v-text-field-stub>
+          </v-col-stub>
+          <v-col-stub cols="12" tag="div">
+            <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" prependicon="mdi-mail" loaderheight="2" clearicon="$clear" placeholder="Email" type="text"></v-text-field-stub>
+          </v-col-stub>
+          <v-col-stub cols="12" tag="div">
+            <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" prependicon="mdi-phone" loaderheight="2" clearicon="$clear" placeholder="(000) 000 - 0000" type="tel"></v-text-field-stub>
+          </v-col-stub>
+          <v-col-stub cols="12" tag="div">
+            <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" prependicon="mdi-text" loaderheight="2" clearicon="$clear" placeholder="Notes" type="text"></v-text-field-stub>
+          </v-col-stub>
+        </v-row-stub>
+      </v-container-stub>
+      <v-card-actions-stub>
+        <v-btn-stub color="primary" tag="button" activeclass="" text="true" type="button">More</v-btn-stub>
+        <v-spacer-stub></v-spacer-stub>
+        <v-btn-stub color="primary" tag="button" activeclass="" text="true" type="button">Cancel</v-btn-stub>
+        <v-btn-stub tag="button" activeclass="" text="true" type="button">Save</v-btn-stub>
+      </v-card-actions-stub>
+    </v-card-stub>
+  </v-dialog-stub>
 </v-app-stub>
 `;
