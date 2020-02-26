@@ -12,11 +12,13 @@ declare global {
   }
 }
 
-type Enum<E> = Record<keyof E, number | string> & { [k: number]: string };
-
 type ValueOf<T> = T[keyof T];
 
-type Dictionary<T, K extends keyof any> = { [P in K]: T };
+type Nullable<T> = T | null;
+
+type Dictionary<T> = Record<T[keyof T] | keyof T | string, T | T[keyof T] | any>;
+
+type DictionaryArray<T> = Record<T[keyof T] | keyof T | string, T[] | any[]>;
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
