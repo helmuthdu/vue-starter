@@ -10,12 +10,12 @@ interface SearchObservableOptions {
 /**
  * Creates an observable variable to be used with a search input
  * @example
- * createSearchObservable(this.$watchAsObservable('search'))
+ * debounceObservable(this.$watchAsObservable('search'))
  * @param observable
  * @param options
  * @return Observable<string>
  */
-export const createSearchInputObservable = (
+export const debounceObservable = (
   observable: Observable<WatchObservable<string>>,
   options: SearchObservableOptions = {}
 ): Observable<string> => {

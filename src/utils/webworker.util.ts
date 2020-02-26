@@ -1,4 +1,4 @@
-export interface IWebWorkerService {
+export interface WebWorkerService {
   run<T>(workerFunction: (input: any) => T, data?: any): Promise<T>;
 
   runUrl(url: string, data?: any): Promise<any>;
@@ -8,7 +8,7 @@ export interface IWebWorkerService {
   getWorker(promise: Promise<any>): Worker;
 }
 
-export class WebWorker implements IWebWorkerService {
+export class WebWorker implements WebWorkerService {
   private workerFunctionToUrlMap = new WeakMap<(input: any) => any, string>();
   private promiseToWorkerMap = new WeakMap<Promise<any>, Worker>();
 

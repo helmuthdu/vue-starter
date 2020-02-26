@@ -4,7 +4,8 @@ export interface AuthenticatePayload {
 }
 
 const get = (payload: AuthenticatePayload): any => {
-  return new Promise((resolve, reject) => {
+  console.log(`requesting user for ${payload.email}`);
+  return new Promise(resolve => {
     resolve({
       status: 200,
       data: {

@@ -1,15 +1,14 @@
-import api from '../api';
 import { AxiosError, AxiosResponse } from 'axios';
-import { beforeMethod } from 'kaop-ts';
+import { beforeMethod, Metadata } from 'kaop-ts';
+import http from '../utils/http.util';
 
 type httpRequestMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 const httpDecorator = Symbol.for('Http');
 
-export const Http = (method: httpRequestMethod, ...args: any[]) =>
-  beforeMethod((meta: any) => {
-    // @ts-ignore
-    api[method](...args.map((arg: any) => (typeof arg === 'function' ? arg(meta.scope) : arg)))
+export const Http = <T = any>(method: httpRequestMethod, ...args: any[]) =>
+  beforeMethod((meta: Metadata<AxiosResponse>) =>
+    (http[method] as any)(...args.map((arg: any) => (typeof arg === 'function' ? arg(meta.scope) : arg)))
       .then((res: AxiosResponse) => {
         if (meta.args.length && meta.args[meta.args.length - 1] === httpDecorator) {
           const data = Array.isArray(meta.args[2]) ? [...meta.args[2], res] : [meta.args[2], res];
@@ -22,5 +21,5 @@ export const Http = (method: httpRequestMethod, ...args: any[]) =>
       .catch((err: AxiosError) => {
         meta.args = [meta.args, err, null, httpDecorator];
         meta.commit();
-      });
-  });
+      })
+  );

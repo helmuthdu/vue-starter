@@ -16,7 +16,9 @@ type Enum<E> = Record<keyof E, number | string> & { [k: number]: string };
 
 type ValueOf<T> = T[keyof T];
 
-type Dictionary<T> = { [k: string]: T };
+type Dictionary<T, K extends keyof any> = { [P in K]: T };
+
+type DictionaryList<T, K extends keyof any> = { [P in K]: [T] };
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
@@ -25,5 +27,3 @@ type DeepPartial<T> = {
     ? readonly DeepPartial<U>[]
     : DeepPartial<T[P]>;
 };
-
-type DictionaryList<T> = { [k: string]: [T] };
