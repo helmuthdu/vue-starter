@@ -18,8 +18,6 @@ type ValueOf<T> = T[keyof T];
 
 type Dictionary<T, K extends keyof any> = { [P in K]: T };
 
-type DictionaryList<T, K extends keyof any> = { [P in K]: [T] };
-
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
