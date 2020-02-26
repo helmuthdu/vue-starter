@@ -1,6 +1,5 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
-
+import Vue, { CreateElement } from 'vue';
+import Vuetify from 'vuetify';
 import App from '@/app.vue';
 import { routes, State, stores } from './modules';
 import createRouter from './routes';
@@ -26,5 +25,5 @@ new Vue({
   }),
   router: createRouter(routes),
   store: createStore(stores),
-  render: h => h(App)
+  render: (h: CreateElement) => h(App)
 }).$mount('#app');
