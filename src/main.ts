@@ -1,5 +1,5 @@
 import Vue, { CreateElement } from 'vue';
-import Vuetify from 'vuetify';
+import Vuetify from 'vuetify/lib';
 import App from '@/app.vue';
 import { routes, State, stores } from './modules';
 import createRouter from './routes';
@@ -9,9 +9,6 @@ import { RootState } from './stores/root';
 import './plugins';
 import './hooks';
 import './registerServiceWorker';
-
-import 'vuetify/dist/vuetify.css';
-import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
 
