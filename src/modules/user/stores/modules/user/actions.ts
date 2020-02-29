@@ -13,7 +13,7 @@ export const actions: Actions<State, AppState> = {
   async [UserActionTypes.SIGN_IN]({ commit }, payload: AuthenticatePayload) {
     commit(UserActionTypes.SET_USER, {
       ...(await userApi.get(payload)).data,
-      isLogged: true
+      isLoggedIn: true
     });
   },
   [UserActionTypes.SIGN_OUT]({ commit }) {

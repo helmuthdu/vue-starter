@@ -20,8 +20,8 @@ describe('user/store -> reducer', () => {
       username: 'user_name',
       email: 'user_email',
       token: 'user_token',
-      isLogged: true
+      isLoggedIn: true
     });
-    expect(authState.isLogged).toEqual(true);
+    expect(authState.isLoggedIn).toEqual(true);
   });
 });

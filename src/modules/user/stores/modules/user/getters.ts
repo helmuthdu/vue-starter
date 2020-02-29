@@ -8,7 +8,7 @@ export interface Getters<S, R> extends GetterTree<S, R> {
 }
 
 export const getters: Getters<State, AppState> = {
-  [UserActionTypes.IS_LOGGED_IN](state) {
-    return state.isLogged;
+  [UserActionTypes.IS_LOGGED_IN](state: State) {
+    return state.isLoggedIn;
   }
 };

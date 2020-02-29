@@ -1,13 +1,15 @@
 export interface State {
   username: string;
   email: string;
-  isLogged: boolean;
+  isLoggedIn: boolean;
   token: string;
 }
 
-export const state = (): State => ({
+export const initialState = {
   username: '',
   email: '',
-  isLogged: false,
+  isLoggedIn: false,
   token: ''
-});
+};
+
+export const state = (): State => ({ ...initialState });

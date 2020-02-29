@@ -16,13 +16,13 @@ describe('user/store -> actions', () => {
     // apply mutation
     await actions[UserActionTypes.SIGN_IN]({ commit } as any, { username: 'helmuthdu', email: 'helmuthdu@gmail.com' });
     // assert result
-    expect(authState.isLogged).toBe(true);
+    expect(authState.isLoggedIn).toBe(true);
   });
 
   it(`should handle ${UserActionTypes.SIGN_OUT}`, () => {
     // apply mutation
     actions[UserActionTypes.SIGN_OUT]({ commit } as any);
     // assert result
-    expect(authState.isLogged).toBe(false);
+    expect(authState.isLoggedIn).toBe(false);
   });
 });

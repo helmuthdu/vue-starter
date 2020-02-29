@@ -4,5 +4,5 @@ export enum UserActionTypes {
   DEL_USER = 'USER/DEL_USER',
   SIGN_UP = 'USER/SIGN_UP',
   SIGN_IN = 'USER/SIGN_IN',
-  SIGN_OUT = 'USER/LOGOUT'
+  SIGN_OUT = 'USER/SIGN_OUT'
 }
