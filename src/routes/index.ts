@@ -11,7 +11,7 @@ const createRouter = (routes: any[]) => {
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-      ...routes.reduce((a, b) => a.concat(b), []),
+      ...routes.flat(),
       {
         path: '*',
         component: () => import('@/routes/not-found/not-found.route.vue')

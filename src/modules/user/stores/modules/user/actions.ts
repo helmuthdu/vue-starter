@@ -1,4 +1,4 @@
-import { State as AppState } from '../../';
+import { State as AppState } from '../../..';
 import { userApi, AuthenticatePayload } from '../../../api/user.api';
 import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
@@ -17,6 +17,6 @@ export const actions: Actions<State, AppState> = {
     });
   },
   [UserActionTypes.SIGN_OUT]({ commit }) {
-    commit(UserActionTypes.SET_USER, { username: '', email: '', isLogged: false });
+    commit(UserActionTypes.DEL_USER);
   }
 };
