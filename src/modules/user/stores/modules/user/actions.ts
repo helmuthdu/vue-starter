@@ -5,18 +5,18 @@ import { State } from './state';
 import { UserActionTypes } from './types';
 
 export interface Actions<S, R> extends ActionTree<S, R> {
-  [UserActionTypes.LOGIN]: (context: ActionContext<S, R>, payload: any) => void;
-  [UserActionTypes.LOGOUT]: (context: ActionContext<S, R>) => void;
+  [UserActionTypes.SIGN_IN]: (context: ActionContext<S, R>, payload: any) => void;
+  [UserActionTypes.SIGN_OUT]: (context: ActionContext<S, R>) => void;
 }
 
 export const actions: Actions<State, AppState> = {
-  async [UserActionTypes.LOGIN]({ commit }, payload: AuthenticatePayload) {
+  async [UserActionTypes.SIGN_IN]({ commit }, payload: AuthenticatePayload) {
     commit(UserActionTypes.SET_USER, {
       ...(await userApi.get(payload)).data,
       isLogged: true
     });
   },
-  [UserActionTypes.LOGOUT]({ commit }) {
+  [UserActionTypes.SIGN_OUT]({ commit }) {
     commit(UserActionTypes.SET_USER, { username: '', email: '', isLogged: false });
   }
 };

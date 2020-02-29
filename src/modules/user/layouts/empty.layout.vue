@@ -12,7 +12,7 @@ import { Getter } from 'vuex-class';
 @Component
 export default class EmptyLayout extends Vue {
   public path = '/';
-  @Getter(UserActionTypes.IS_LOGGED)
+  @Getter(UserActionTypes.IS_LOGGED_IN)
   private isLogged: boolean;
 }
 </script>

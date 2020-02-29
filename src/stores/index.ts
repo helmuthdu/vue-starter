@@ -2,6 +2,8 @@ import { AppState } from '../main';
 import { rootStore } from './root';
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
+import VuexPersist from 'vuex-persist';
+import localForage from 'localforage';
 
 Vue.use(Vuex);
 
@@ -17,7 +19,13 @@ const createStore = (modules: any[]) => {
   // action: Sync or async operations that commit mutations
   // mutations: Modify the state
 
+  const vuexStorage = new VuexPersist({
+    key: 'snapshot',
+    storage: localForage
+  });
+
   store = new Vuex.Store({
+    plugins: [vuexStorage.plugin],
     state: rootStore.state() as any,
     getters: rootStore.getters,
     mutations: rootStore.mutations,
