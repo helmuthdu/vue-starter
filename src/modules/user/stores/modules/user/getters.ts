@@ -1,5 +1,5 @@
-import { State as AppState } from '../../';
 import { GetterTree } from 'vuex';
+import { State as AppState } from '../../..';
 import { State } from './state';
 import { UserActionTypes } from './types';
 
@@ -8,7 +8,7 @@ export interface Getters<S, R> extends GetterTree<S, R> {
 }
 
 export const getters: Getters<State, AppState> = {
-  [UserActionTypes.IS_LOGGED_IN](state) {
-    return state.isLogged;
+  [UserActionTypes.IS_LOGGED_IN](state: State) {
+    return state.isLoggedIn;
   }
 };

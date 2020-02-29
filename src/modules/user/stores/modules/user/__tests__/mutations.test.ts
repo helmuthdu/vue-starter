@@ -22,6 +22,6 @@ describe('user/store -> reducer', () => {
       token: 'user_token',
       isLogged: true
     });
-    expect(authState.isLogged).toEqual(true);
+    expect(authState.isLoggedIn).toEqual(true);
   });
 });

@@ -1,6 +1,6 @@
-import { State as AppState } from '../../';
-import { userApi, AuthenticatePayload } from '../../../api/user.api';
 import { ActionContext, ActionTree } from 'vuex';
+import { State as AppState } from '../../..';
+import { AuthenticatePayload, userApi } from '../../../api/user.api';
 import { State } from './state';
 import { UserActionTypes } from './types';
 
@@ -13,10 +13,10 @@ export const actions: Actions<State, AppState> = {
   async [UserActionTypes.SIGN_IN]({ commit }, payload: AuthenticatePayload) {
     commit(UserActionTypes.SET_USER, {
       ...(await userApi.get(payload)).data,
-      isLogged: true
+      isLoggedIn: true
     });
   },
   [UserActionTypes.SIGN_OUT]({ commit }) {
-    commit(UserActionTypes.SET_USER, { username: '', email: '', isLogged: false });
+    commit(UserActionTypes.DEL_USER);
   }
 };

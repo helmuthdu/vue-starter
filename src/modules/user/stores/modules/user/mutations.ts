@@ -4,9 +4,11 @@ import { UserActionTypes } from './types';
 
 export const mutations: MutationTree<State> = {
   [UserActionTypes.SET_USER](state: State, payload: State) {
-    state.username = payload.username || '';
-    state.email = payload.email || '';
-    state.isLogged = payload.isLogged || false;
-    state.token = payload.token || '';
+    state = Object.assign({}, state, payload);
+  },
+  [UserActionTypes.DEL_USER](state: State) {
+    Object.keys(state).forEach(key => {
+      (state as any)[key] = null;
+    });
   }
 };
