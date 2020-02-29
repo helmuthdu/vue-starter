@@ -1,6 +1,6 @@
-import { ActionContext, ActionTree } from 'vuex';
 import { State as AppState } from '../../..';
-import { AuthenticatePayload, userApi } from '../../../api/user.api';
+import { userApi, AuthenticatePayload } from '../../../api/user.api';
+import { ActionContext, ActionTree } from 'vuex';
 import { State } from './state';
 import { UserActionTypes } from './types';
 

@@ -5,9 +5,11 @@ export interface State {
   token: string;
 }
 
-export const state = (): State => ({
+export const initialState = {
   username: '',
   email: '',
   isLoggedIn: false,
   token: ''
-});
+};
+
+export const state = (): State => ({ ...initialState });

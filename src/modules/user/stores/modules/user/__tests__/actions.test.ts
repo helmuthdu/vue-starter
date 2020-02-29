@@ -1,7 +1,7 @@
+import { UserActionTypes } from '../types';
 import { actions } from '../actions';
 import { mutations } from '../mutations';
 import { state, State } from '../state';
-import { UserActionTypes } from '../types';
 
 describe('user/store -> actions', () => {
   const authState: State = state();
