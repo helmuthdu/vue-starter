@@ -16,7 +16,7 @@ describe('Auth/Route -> SignIn', () => {
   beforeEach(() => {
     store = new Vuex.Store({
       actions: {
-        [UserActionTypes.LOGIN]: jest.fn()
+        [UserActionTypes.SIGN_IN]: jest.fn()
       }
     });
     wrapper = shallowMount(SignInRoute, {

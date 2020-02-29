@@ -1,5 +1,7 @@
 import Vue, { CreateElement } from 'vue';
+import VueI18n from 'vue-i18n';
 import Vuetify from 'vuetify/lib';
+
 import App from '@/app.vue';
 import { routes, State, stores } from './modules';
 import createRouter from './routes';
@@ -19,6 +21,11 @@ new Vue({
     icons: {
       iconfont: 'mdi'
     }
+  }),
+  i18n: new VueI18n({
+    locale: 'en', // set locale
+    fallbackLocale: 'en',
+    messages: { en: {} } // set locale messages
   }),
   router: createRouter(routes),
   store: createStore(stores),

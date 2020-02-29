@@ -12,16 +12,16 @@ describe('user/store -> actions', () => {
     mutation(authState, { ...payload });
   };
 
-  it(`should handle ${UserActionTypes.LOGIN}`, async () => {
+  it(`should handle ${UserActionTypes.SIGN_IN}`, async () => {
     // apply mutation
-    await actions[UserActionTypes.LOGIN]({ commit } as any, { username: 'helmuthdu', email: 'helmuthdu@gmail.com' });
+    await actions[UserActionTypes.SIGN_IN]({ commit } as any, { username: 'helmuthdu', email: 'helmuthdu@gmail.com' });
     // assert result
     expect(authState.isLogged).toBe(true);
   });
 
-  it(`should handle ${UserActionTypes.LOGOUT}`, () => {
+  it(`should handle ${UserActionTypes.SIGN_OUT}`, () => {
     // apply mutation
-    actions[UserActionTypes.LOGOUT]({ commit } as any);
+    actions[UserActionTypes.SIGN_OUT]({ commit } as any);
     // assert result
     expect(authState.isLogged).toBe(false);
   });
