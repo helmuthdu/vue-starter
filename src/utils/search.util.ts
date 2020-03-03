@@ -10,12 +10,12 @@ interface SearchObservableOptions {
 /**
  * Creates an observable variable to be used with a search input
  * @example
- * debounceObservable(this.$watchAsObservable('search'))
+ * debounceValueObservable(this.$watchAsObservable('search'))
  * @param observable
  * @param options
  * @return Observable<string>
  */
-export const debounceObservable = (
+export const debounceValueObservable = (
   observable: Observable<WatchObservable<string>>,
   options: SearchObservableOptions = {}
 ): Observable<string> => {
@@ -23,7 +23,7 @@ export const debounceObservable = (
   return observable.pipe(
     pluck<WatchObservable<string>, string>('newValue'),
     debounceTime(time, scheduler),
-    filter(query => query.length >= minLength || query.length === 0),
+    filter(query => !query || query.length >= minLength || query.length === 0),
     distinctUntilChanged(),
     startWith('')
   );

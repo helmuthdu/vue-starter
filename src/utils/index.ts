@@ -1,2 +1,2 @@
-export * from './search.helper';
-export * from './webworker.helper';
+export * from './search.util';
+export * from './webworker.util';
