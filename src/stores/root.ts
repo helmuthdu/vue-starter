@@ -1,8 +1,6 @@
 import { AppState } from '../main';
 import { ActionContext, ActionTree, GetterTree, MutationTree } from 'vuex';
 
-export const types = {};
-
 export interface RootState {
   version: string;
 }
