@@ -7,8 +7,14 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+export let router: Router;
+
 const createRouter = (routes: any[]) => {
-  const router = new Router({
+  if (router) {
+    return router;
+  }
+
+  router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
