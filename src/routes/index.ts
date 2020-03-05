@@ -7,7 +7,7 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-let router: Router;
+export let router: Router;
 
 const createRouter = (routes: any[]) => {
   if (router) {
