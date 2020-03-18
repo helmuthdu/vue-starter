@@ -13,3 +13,5 @@ export const initialState = {
 };
 
 export const state = (): State => ({ ...initialState });
+
+export const name = 'user';
