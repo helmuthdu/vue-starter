@@ -6,5 +6,10 @@ module.exports = {
   transpileDependencies: ['vuetify'],
   configureWebpack: {
     devtool: 'source-maps'
+  },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false
+    }
   }
 };
