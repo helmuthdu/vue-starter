@@ -1,13 +1,4 @@
-export enum ROOT_ROUTES {
-  HOME = 'home-route',
-  ABOUT = 'about-route'
-}
-
-export enum ROOT_PATHS {
-  ROOT = '/',
-  HOME = '/',
-  ABOUT = '/about'
-}
+import { ROOT_PATHS, ROOT_ROUTE_NAME } from '@/modules/root/routes/paths';
 
 export const routes = [
   {
@@ -16,12 +7,12 @@ export const routes = [
     children: [
       {
         path: ROOT_PATHS.ABOUT,
-        name: ROOT_ROUTES.ABOUT,
+        name: ROOT_ROUTE_NAME.ABOUT,
         component: () => import('./about/about.route.vue')
       },
       {
         path: ROOT_PATHS.HOME,
-        name: ROOT_ROUTES.HOME,
+        name: ROOT_ROUTE_NAME.HOME,
         component: () => import('./home/home.route.vue')
       }
     ]
