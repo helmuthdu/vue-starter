@@ -5,5 +5,10 @@ module.exports = {
   },
   configureWebpack: {
     devtool: 'source-maps'
+  },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false
+    }
   }
 };
