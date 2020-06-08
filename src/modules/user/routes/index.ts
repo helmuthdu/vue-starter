@@ -1,11 +1,4 @@
-export enum USER_ROUTES {
-  SIGN_IN = 'auth-sign-in-route'
-}
-
-export enum USER_PATHS {
-  ROOT = '/sign-in',
-  SIGN_IN = '/'
-}
+import { USER_PATHS, USER_ROUTE_NAME } from '@/modules/user/routes/paths';
 
 export const routes = [
   {
@@ -14,7 +7,7 @@ export const routes = [
     children: [
       {
         path: USER_PATHS.SIGN_IN,
-        name: USER_ROUTES.SIGN_IN,
+        name: USER_ROUTE_NAME.SIGN_IN,
         component: () => import('./sign-in/sign-in.route.vue')
       }
     ]
