@@ -30,7 +30,10 @@ const createStore = (modules: any[]) => {
     getters: rootStore.getters,
     mutations: rootStore.mutations,
     actions: rootStore.actions as any,
-    modules: modules.flat().reduce((acc: any, module: any) => ({ ...acc, [module.name]: module }), {})
+    modules: modules
+      .map(s => Object.values(s) as any)
+      .flat()
+      .reduce((acc, module: any) => ({ ...acc, [module.name]: module }), {})
   });
 
   return store;
