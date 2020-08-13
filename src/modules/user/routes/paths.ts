@@ -3,6 +3,6 @@ export enum USER_ROUTE_NAME {
 }
 
 export enum USER_PATHS {
-  ROOT = '/sign-in',
-  SIGN_IN = '/'
+  ROOT = '/',
+  SIGN_IN = '/sign-in'
 }

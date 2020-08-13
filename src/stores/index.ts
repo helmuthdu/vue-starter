@@ -1,30 +1,19 @@
+import { AsyncStorage } from 'vuex-persist/dist/types/AsyncStorage';
 import { AppState } from '../main';
 import { rootStore } from './root';
-import Vue from 'vue';
-import Vuex, { Store } from 'vuex';
+import { createStore, Store } from 'vuex';
 import VuexPersist from 'vuex-persist';
 import localForage from 'localforage';
 
-Vue.use(Vuex);
-
 export let store: Store<AppState>;
 
-const createStore = (modules: any[]) => {
-  // More info about store: https://vuex.vuejs.org/en/core-concepts.html
-  // See https://vuejs.org/guide/vuex-store#classic-mode
-  // structure of the store:
-  // types: Types that represent the keys of the mutations to commit
-  // state: The information of our app, we can get or update it.
-  // getters: Get complex information from state
-  // action: Sync or async operations that commit mutations
-  // mutations: Modify the state
-
+const buildStore = (modules: any[]) => {
   const vuexStorage = new VuexPersist({
     key: 'snapshot',
-    storage: localForage
+    storage: localForage as AsyncStorage
   });
 
-  store = new Vuex.Store({
+  store = createStore({
     plugins: [vuexStorage.plugin],
     state: rootStore.state() as any,
     getters: rootStore.getters,
@@ -39,4 +28,4 @@ const createStore = (modules: any[]) => {
   return store;
 };
 
-export default createStore;
+export default buildStore;

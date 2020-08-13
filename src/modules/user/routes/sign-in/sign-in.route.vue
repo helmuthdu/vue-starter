@@ -10,10 +10,10 @@
 
 <script lang="ts">
 import { UserActionTypes } from '../../stores/modules/user';
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 import { Action } from 'vuex-class';
 
-@Component
+@Options({})
 export default class SignInRoute extends Vue {
   public email = '';
   public password = '';

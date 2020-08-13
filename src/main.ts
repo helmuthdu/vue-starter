@@ -1,23 +1,14 @@
-import Vue, { CreateElement } from 'vue';
+import { createApp } from 'vue';
 
 import App from './app.vue';
 import i18n from './locales';
 import { routes, State, stores } from './modules';
-import createRouter from './routes';
-import createStore from './stores';
+import buildRouter from './routes';
+import buildStore from './stores';
 import { RootState } from './stores/root';
 
-import './plugins';
-import './hooks';
 import './registerServiceWorker';
-
-Vue.config.productionTip = false;
 
 export type AppState = RootState & State;
 
-new Vue({
-  i18n,
-  router: createRouter(routes),
-  store: createStore(stores),
-  render: (h: CreateElement) => h(App)
-}).$mount('#app');
+createApp(App).use(i18n).use(buildStore(stores)).use(buildRouter(routes)).mount('#app');

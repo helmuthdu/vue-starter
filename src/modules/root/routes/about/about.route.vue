@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <blockquote class="blockquote">
-      &#8220;First, solve the problem. Then, write the code.&#8221;
-      <footer>
-        <small> <em>&mdash;John Johnson</em> </small>
-      </footer>
-    </blockquote>
-  </div>
+  <blockquote class="blockquote">
+    &#8220;I'm about to...&#8221;
+    <footer>
+      <small> <em>&mdash;Some dude on internet</em> </small>
+    </footer>
+  </blockquote>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
-@Component
+@Options({})
 export default class AboutRoute extends Vue {}
 </script>

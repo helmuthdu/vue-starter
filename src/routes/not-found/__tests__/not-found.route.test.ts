@@ -1,11 +1,11 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import NotFoundRoute from '../not-found.route.vue';
 
 describe('Route -> NotFound', () => {
-  let wrapper: Wrapper<NotFoundRoute>;
+  let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = shallowMount(NotFoundRoute);
+    wrapper = mount(NotFoundRoute);
   });
 
   it('should renders with props', () => {

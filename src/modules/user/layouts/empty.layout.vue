@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <router-view />
-  </div>
+  <router-view />
 </template>
 
 <script lang="ts">
 import { UserActionTypes } from '../stores/modules/user';
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 import { Getter } from 'vuex-class';
 
-@Component
+@Options({})
 export default class EmptyLayout extends Vue {
   public path = '/';
   @Getter(UserActionTypes.IS_LOGGED_IN)

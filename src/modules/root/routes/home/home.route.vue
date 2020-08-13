@@ -1,14 +1,15 @@
 <template>
-  <section>
-    <hr />
-    <a href="https://vuejs.org/" target="_blank">vue Documentation</a> <br />
-    <a href="https://github.com/vue/vue.js" target="_blank">vue GitHub</a>
-  </section>
+  <blockquote class="blockquote">
+    &#8220;First, solve the problem. Then, write the code.&#8221;
+    <footer>
+      <small> <em>&mdash;John Johnson</em> </small>
+    </footer>
+  </blockquote>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
-@Component
+@Options({})
 export default class HomeRoute extends Vue {}
 </script>
