@@ -6,7 +6,7 @@ import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-rout
 
 export let router: Router;
 
-const buildRouter = (routes: Array<RouteRecordRaw>[]) => {
+const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
   if (router) {
     return router;
   }

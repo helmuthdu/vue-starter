@@ -14,14 +14,14 @@ export const i18n = createI18n({
   messages: {} // set locale messages
 });
 
-export const setLanguage = (lang: LocaleLanguages) => {
+export const setLanguage = (lang: LocaleLanguages): string => {
   (i18n.global.locale as any) = lang;
   axios.defaults.headers.common['Accept-Language'] = lang;
   (document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
   return lang;
 };
 
-export const loadLanguageAsync = (lang: LocaleLanguages = LocaleLanguages.English) => {
+export const loadLanguageAsync = (lang: LocaleLanguages = LocaleLanguages.English): Promise<string> => {
   // If the same language
   if ((i18n.global.locale as any) === lang && loadedLanguages.includes(lang)) {
     return Promise.resolve(setLanguage(lang));

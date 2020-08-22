@@ -1,4 +1,3 @@
-import { AsyncStorage } from 'vuex-persist/dist/types/AsyncStorage';
 import { AppState } from '../main';
 import { rootStore } from './root';
 import { createStore, Store } from 'vuex';
@@ -7,10 +6,10 @@ import localForage from 'localforage';
 
 export let store: Store<AppState>;
 
-const buildStore = (modules: any[]) => {
+const buildStore = (modules: any[]): Store<AppState> => {
   const vuexStorage = new VuexPersist({
     key: 'snapshot',
-    storage: localForage as AsyncStorage
+    storage: localForage as any
   });
 
   store = createStore({
