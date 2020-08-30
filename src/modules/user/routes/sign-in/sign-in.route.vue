@@ -21,7 +21,7 @@ export default class SignInRoute extends Vue {
   @Action(UserActionTypes.SIGN_IN)
   private doLogin: any;
 
-  public submit() {
+  public submit(): void {
     this.doLogin({ email: this.email, password: this.password });
   }
 }

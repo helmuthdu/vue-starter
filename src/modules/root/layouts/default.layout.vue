@@ -5,9 +5,7 @@
         <div class="container">
           <div class="columns">
             <div class="column is-8-desktop is-offset-2-desktop">
-              <h1 class="title is-2 is-spaced">
-                Hello Bulma!
-              </h1>
+              <h1 class="title is-2 is-spaced">Hello Bulma!</h1>
               <h2 class="subtitle is-4">
                 Congratulations! You're running the <strong>Bulma start</strong> project.
                 <br />
@@ -133,7 +131,7 @@
             <p>
               <small> Source code licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a> </small>
             </p>
-            <p style="margin-top: 1rem;">
+            <p style="margin-top: 1rem">
               <a href="http://bulma.io">
                 <img src="made-with-bulma.png" alt="Made with Bulma" width="128" height="24" />
               </a>
