@@ -64,8 +64,9 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.0-rc.5",
+    "version": "3.0.0-rc.9",
   },
+  "__isFunctionalComponent": false,
   "__setProps": [Function],
   "componentVM": Object {
     "__emitted": Object {},

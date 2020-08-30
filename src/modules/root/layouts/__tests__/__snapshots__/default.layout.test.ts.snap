@@ -31,7 +31,7 @@ VueWrapper {
                   <h1
                     class="title is-2 is-spaced"
                   >
-                     Hello Bulma! 
+                    Hello Bulma!
                   </h1>
                   <h2
                     class="subtitle is-4"
@@ -455,9 +455,21 @@ VueWrapper {
             "back": [Function],
             "beforeEach": [Function],
             "beforeResolve": [Function],
-            "currentRoute": Object {
+            "currentRoute": RefImpl {
               "__v_isRef": true,
-              "value": Object {
+              "_rawValue": Object {
+                "fullPath": "/",
+                "hash": "",
+                "matched": Array [],
+                "meta": Object {},
+                "name": undefined,
+                "params": Object {},
+                "path": "/",
+                "query": Object {},
+                "redirectedFrom": undefined,
+              },
+              "_shallow": true,
+              "_value": Object {
                 "fullPath": "/",
                 "hash": "",
                 "matched": Array [],
@@ -520,9 +532,21 @@ VueWrapper {
           "back": [Function],
           "beforeEach": [Function],
           "beforeResolve": [Function],
-          "currentRoute": Object {
+          "currentRoute": RefImpl {
             "__v_isRef": true,
-            "value": Object {
+            "_rawValue": Object {
+              "fullPath": "/",
+              "hash": "",
+              "matched": Array [],
+              "meta": Object {},
+              "name": undefined,
+              "params": Object {},
+              "path": "/",
+              "query": Object {},
+              "redirectedFrom": undefined,
+            },
+            "_shallow": true,
+            "_value": Object {
               "fullPath": "/",
               "hash": "",
               "matched": Array [],
@@ -585,9 +609,21 @@ VueWrapper {
           "back": [Function],
           "beforeEach": [Function],
           "beforeResolve": [Function],
-          "currentRoute": Object {
+          "currentRoute": RefImpl {
             "__v_isRef": true,
-            "value": Object {
+            "_rawValue": Object {
+              "fullPath": "/",
+              "hash": "",
+              "matched": Array [],
+              "meta": Object {},
+              "name": undefined,
+              "params": Object {},
+              "path": "/",
+              "query": Object {},
+              "redirectedFrom": undefined,
+            },
+            "_shallow": true,
+            "_value": Object {
               "fullPath": "/",
               "hash": "",
               "matched": Array [],
@@ -638,8 +674,9 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.0-rc.5",
+    "version": "3.0.0-rc.9",
   },
+  "__isFunctionalComponent": false,
   "__setProps": [Function],
   "componentVM": Object {
     "__emitted": Object {},
