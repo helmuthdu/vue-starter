@@ -12,6 +12,6 @@ export const initialState = {
   token: ''
 };
 
-export const state = (): State => ({ ...initialState });
-
 export const name = 'user';
+
+export const state = (): State => ({ ...initialState });

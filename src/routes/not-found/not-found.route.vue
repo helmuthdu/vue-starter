@@ -1,19 +1,13 @@
 <template>
-  <v-layout>
-    <v-flex text-xs-center>
-      <blockquote class="blockquote">
-        You are here!
-        <footer>
-          <small> <em>&mdash;But nothing found for you #404</em> </small>
-        </footer>
-      </blockquote>
-    </v-flex>
-  </v-layout>
+  <div>
+    <h1>You are here!</h1>
+    <h2>But nothing found for you #404</h2>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
-@Component
+@Options({})
 export default class NotFoundRoute extends Vue {}
 </script>

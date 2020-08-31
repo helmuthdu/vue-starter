@@ -1,31 +1,15 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-tooltip right>
-        <template v-slot:activator="{ on }">
-          <v-btn :href="source" icon large target="_blank" v-on="on">
-            <v-icon large>mdi-code-tags</v-icon>
-          </v-btn>
-        </template>
-        <span>Source</span>
-      </v-tooltip>
-      <v-tooltip right>
-        <template v-slot:activator="{ on }">
-          <v-btn icon large href="https://codepen.io/johnjleider/pen/MNYLdL" target="_blank" v-on="on">
-            <v-icon large>mdi-codepen</v-icon>
-          </v-btn>
-        </template>
-        <span>Codepen</span>
-      </v-tooltip>
-    </v-row>
-  </v-container>
+  <blockquote class="blockquote">
+    &#8220;First, solve the problem. Then, write the code.&#8221;
+    <footer>
+      <small> <em>&mdash;John Johnson</em> </small>
+    </footer>
+  </blockquote>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
-@Component
-export default class HomeRoute extends Vue {
-  source = '#';
-}
+@Options({})
+export default class HomeRoute extends Vue {}
 </script>

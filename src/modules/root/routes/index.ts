@@ -1,6 +1,7 @@
 import { ROOT_PATHS, ROOT_ROUTE_NAME } from '@/modules/root/routes/paths';
+import { RouteRecordRaw } from 'vue-router';
 
-export const routes = [
+export const routes: Array<RouteRecordRaw> = [
   {
     path: ROOT_PATHS.ROOT,
     component: () => import('../layouts/default.layout.vue'),

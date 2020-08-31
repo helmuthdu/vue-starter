@@ -1,16 +1,11 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vuetify from 'vuetify';
+import { mount, VueWrapper } from '@vue/test-utils';
 import HomeRoute from '../home.route.vue';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuetify);
-
 describe('Route -> Home', () => {
-  let wrapper: Wrapper<HomeRoute>;
+  let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = shallowMount(HomeRoute, { localVue });
+    wrapper = mount(HomeRoute);
   });
 
   it('should renders with props', () => {

@@ -1,32 +1,203 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Auth/Route -> SignIn should renders with props 1`] = `
-<v-layout-stub tag="div" fill-height="" justify-center="" align-center="">
-  <v-flex-stub tag="div" xs12="" sm5="" md4="" lg3="">
-    <v-card-stub loaderheight="4" tag="div">
-      <v-card-title-stub primarytitle="" primary-title="">
-        <v-layout-stub tag="div" column="">
-          <v-flex-stub tag="div">
-            <h2 class="headline">LOGIN</h2>
-          </v-flex-stub>
-          <v-flex-stub tag="div">
-            <v-form-stub>
-              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Email" loaderheight="2" clearicon="$clear" type="text" required=""></v-text-field-stub>
-              <v-text-field-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" value="" backgroundcolor="" label="Password" loaderheight="2" clearicon="$clear" type="password" required=""></v-text-field-stub>
-            </v-form-stub>
-          </v-flex-stub>
-        </v-layout-stub>
-      </v-card-title-stub>
-      <v-card-actions-stub>
-        <v-container-stub tag="div">
-          <v-layout-stub tag="div" column="" align-center="">
-            <v-flex-stub tag="div">
-              <v-btn-stub color="pink" dark="true" tag="button" activeclass="" type="button">Sign-in</v-btn-stub>
-            </v-flex-stub>
-          </v-layout-stub>
-        </v-container-stub>
-      </v-card-actions-stub>
-    </v-card-stub>
-  </v-flex-stub>
-</v-layout-stub>
+VueWrapper {
+  "__app": Object {
+    "_component": Object {
+      "__props": Array [],
+      "name": "VTU_ROOT",
+      "render": [Function],
+    },
+    "_container": <div
+      data-v-app=""
+      id="app"
+    >
+      <div>
+        <form>
+          <input
+            label="Email"
+            required=""
+          />
+          <input
+            label="Password"
+            required=""
+            type="password"
+          />
+          <button
+            color="pink"
+            dark=""
+          >
+            Sign-in
+          </button>
+        </form>
+      </div>
+    </div>,
+    "_context": Object {
+      "app": [Circular],
+      "components": Object {},
+      "config": Object {
+        "errorHandler": undefined,
+        "globalProperties": Object {
+          "$store": Store {
+            "_actionSubscribers": Array [],
+            "_actions": Object {
+              "USER/SIGN_IN": Array [
+                [Function],
+              ],
+            },
+            "_committing": false,
+            "_makeLocalGettersCache": Object {},
+            "_modules": ModuleCollection {
+              "root": Module {
+                "_children": Object {},
+                "_rawModule": Object {
+                  "actions": Object {
+                    "USER/SIGN_IN": [MockFunction],
+                  },
+                },
+                "context": Object {
+                  "commit": [Function],
+                  "dispatch": [Function],
+                },
+                "runtime": false,
+                "state": Object {},
+              },
+            },
+            "_modulesNamespaceMap": Object {},
+            "_mutations": Object {},
+            "_state": Object {
+              "data": Object {},
+            },
+            "_subscribers": Array [],
+            "_wrappedGetters": Object {},
+            "commit": [Function],
+            "dispatch": [Function],
+            "getters": Object {},
+            "strict": false,
+          },
+        },
+        "isCustomElement": [Function],
+        "isNativeTag": [Function],
+        "optionMergeStrategies": Object {},
+        "performance": false,
+        "warnHandler": undefined,
+      },
+      "directives": Object {},
+      "mixins": Array [
+        Object {
+          "__props": Array [],
+          "beforeCreate": [Function],
+        },
+        Object {
+          "__props": Array [],
+          "beforeCreate": [Function],
+        },
+      ],
+      "provides": Object {
+        "store": Store {
+          "_actionSubscribers": Array [],
+          "_actions": Object {
+            "USER/SIGN_IN": Array [
+              [Function],
+            ],
+          },
+          "_committing": false,
+          "_makeLocalGettersCache": Object {},
+          "_modules": ModuleCollection {
+            "root": Module {
+              "_children": Object {},
+              "_rawModule": Object {
+                "actions": Object {
+                  "USER/SIGN_IN": [MockFunction],
+                },
+              },
+              "context": Object {
+                "commit": [Function],
+                "dispatch": [Function],
+              },
+              "runtime": false,
+              "state": Object {},
+            },
+          },
+          "_modulesNamespaceMap": Object {},
+          "_mutations": Object {},
+          "_state": Object {
+            "data": Object {},
+          },
+          "_subscribers": Array [],
+          "_wrappedGetters": Object {},
+          "commit": [Function],
+          "dispatch": [Function],
+          "getters": Object {},
+          "strict": false,
+        },
+      },
+      "reload": [Function],
+    },
+    "_props": null,
+    "component": [Function],
+    "config": Object {
+      "errorHandler": undefined,
+      "globalProperties": Object {
+        "$store": Store {
+          "_actionSubscribers": Array [],
+          "_actions": Object {
+            "USER/SIGN_IN": Array [
+              [Function],
+            ],
+          },
+          "_committing": false,
+          "_makeLocalGettersCache": Object {},
+          "_modules": ModuleCollection {
+            "root": Module {
+              "_children": Object {},
+              "_rawModule": Object {
+                "actions": Object {
+                  "USER/SIGN_IN": [MockFunction],
+                },
+              },
+              "context": Object {
+                "commit": [Function],
+                "dispatch": [Function],
+              },
+              "runtime": false,
+              "state": Object {},
+            },
+          },
+          "_modulesNamespaceMap": Object {},
+          "_mutations": Object {},
+          "_state": Object {
+            "data": Object {},
+          },
+          "_subscribers": Array [],
+          "_wrappedGetters": Object {},
+          "commit": [Function],
+          "dispatch": [Function],
+          "getters": Object {},
+          "strict": false,
+        },
+      },
+      "isCustomElement": [Function],
+      "isNativeTag": [Function],
+      "optionMergeStrategies": Object {},
+      "performance": false,
+      "warnHandler": undefined,
+    },
+    "directive": [Function],
+    "mixin": [Function],
+    "mount": [Function],
+    "provide": [Function],
+    "unmount": [Function],
+    "use": [Function],
+    "version": "3.0.0-rc.9",
+  },
+  "__isFunctionalComponent": false,
+  "__setProps": [Function],
+  "componentVM": Object {
+    "__emitted": Object {},
+  },
+  "rootVM": Object {
+    "__emitted": Object {},
+  },
+}
 `;

@@ -1,12 +1,15 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <blockquote class="blockquote">
+    &#8220;I'm about to...&#8221;
+    <footer>
+      <small> <em>&mdash;Some dude on internet</em> </small>
+    </footer>
+  </blockquote>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
-@Component
+@Options({})
 export default class AboutRoute extends Vue {}
 </script>

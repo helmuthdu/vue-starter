@@ -1,19 +1,14 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import VueRouter from 'vue-router';
-import Vuetify from 'vuetify';
+import { State } from '@/modules/user/stores/modules/user';
+import { mount, VueWrapper } from '@vue/test-utils';
+import { Store } from 'vuex';
 import EmptyLayout from '../empty.layout.vue';
 
-const localVue = createLocalVue();
-const router = new VueRouter();
-
-localVue.use(VueRouter);
-localVue.use(Vuetify);
-
-describe('Auth/Layout -> Empty', () => {
-  let wrapper: Wrapper<EmptyLayout>;
+describe('User/Layout -> Empty', () => {
+  let store: Store<State>;
+  let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = shallowMount(EmptyLayout, { localVue, router });
+    wrapper = mount(EmptyLayout, { global: { plugins: [store] } });
   });
 
   it('should renders with props', () => {

@@ -1,19 +1,14 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import VueRouter from 'vue-router';
-import Vuetify from 'vuetify';
+import { mount, VueWrapper } from '@vue/test-utils';
+import { createMemoryHistory, createRouter } from 'vue-router';
 import DefaultLayout from '../default.layout.vue';
 
-const localVue = createLocalVue();
-const router = new VueRouter();
+const router = createRouter({ history: createMemoryHistory(), routes: [] });
 
-localVue.use(VueRouter);
-localVue.use(Vuetify);
-
-describe('Layout -> Default', () => {
-  let wrapper: Wrapper<DefaultLayout>;
+describe('Layout -> default', () => {
+  let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = shallowMount(DefaultLayout, { localVue, router });
+    wrapper = mount(DefaultLayout, { global: { plugins: [router] } });
   });
 
   it('should renders with props', () => {

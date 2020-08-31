@@ -3,7 +3,6 @@ module.exports = {
   devServer: {
     port: 3000
   },
-  transpileDependencies: ['vuetify'],
   configureWebpack: {
     devtool: 'source-maps'
   },

@@ -1,16 +1,11 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vuetify from 'vuetify';
+import { mount, VueWrapper } from '@vue/test-utils';
 import NotFoundRoute from '../not-found.route.vue';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuetify);
-
 describe('Route -> NotFound', () => {
-  let wrapper: Wrapper<NotFoundRoute>;
+  let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = shallowMount(NotFoundRoute, { localVue });
+    wrapper = mount(NotFoundRoute);
   });
 
   it('should renders with props', () => {

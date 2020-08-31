@@ -1,6 +1,7 @@
 import { USER_PATHS, USER_ROUTE_NAME } from '@/modules/user/routes/paths';
+import { RouteRecordRaw } from 'vue-router';
 
-export const routes = [
+export const routes: Array<RouteRecordRaw> = [
   {
     path: USER_PATHS.ROOT,
     component: () => import('../layouts/empty.layout.vue'),

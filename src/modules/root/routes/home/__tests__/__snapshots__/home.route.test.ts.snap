@@ -1,10 +1,82 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Route -> Home should renders with props 1`] = `
-<v-container-stub tag="div" fluid="true" class="fill-height">
-  <v-row-stub tag="div" align="center" justify="center">
-    <v-tooltip-stub opendelay="0" closedelay="0" contentclass="" fixed="true" right="true" openonhover="true" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" tag="span"> <span>Source</span></v-tooltip-stub>
-    <v-tooltip-stub opendelay="0" closedelay="0" contentclass="" fixed="true" right="true" openonhover="true" maxwidth="auto" nudgebottom="0" nudgeleft="0" nudgeright="0" nudgetop="0" nudgewidth="0" tag="span"> <span>Codepen</span></v-tooltip-stub>
-  </v-row-stub>
-</v-container-stub>
+VueWrapper {
+  "__app": Object {
+    "_component": Object {
+      "__props": Array [],
+      "name": "VTU_ROOT",
+      "render": [Function],
+    },
+    "_container": <div
+      data-v-app=""
+      id="app"
+    >
+      <blockquote
+        class="blockquote"
+      >
+         “First, solve the problem. Then, write the code.” 
+        <footer>
+          <small>
+            <em>
+              —John Johnson
+            </em>
+          </small>
+        </footer>
+      </blockquote>
+    </div>,
+    "_context": Object {
+      "app": [Circular],
+      "components": Object {},
+      "config": Object {
+        "errorHandler": undefined,
+        "globalProperties": Object {},
+        "isCustomElement": [Function],
+        "isNativeTag": [Function],
+        "optionMergeStrategies": Object {},
+        "performance": false,
+        "warnHandler": undefined,
+      },
+      "directives": Object {},
+      "mixins": Array [
+        Object {
+          "__props": Array [],
+          "beforeCreate": [Function],
+        },
+        Object {
+          "__props": Array [],
+          "beforeCreate": [Function],
+        },
+      ],
+      "provides": Object {},
+      "reload": [Function],
+    },
+    "_props": null,
+    "component": [Function],
+    "config": Object {
+      "errorHandler": undefined,
+      "globalProperties": Object {},
+      "isCustomElement": [Function],
+      "isNativeTag": [Function],
+      "optionMergeStrategies": Object {},
+      "performance": false,
+      "warnHandler": undefined,
+    },
+    "directive": [Function],
+    "mixin": [Function],
+    "mount": [Function],
+    "provide": [Function],
+    "unmount": [Function],
+    "use": [Function],
+    "version": "3.0.0-rc.9",
+  },
+  "__isFunctionalComponent": false,
+  "__setProps": [Function],
+  "componentVM": Object {
+    "__emitted": Object {},
+  },
+  "rootVM": Object {
+    "__emitted": Object {},
+  },
+}
 `;
