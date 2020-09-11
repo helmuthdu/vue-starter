@@ -4,7 +4,15 @@ exports[`Layout -> default should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
-      "__props": Array [],
+      "__emits": Object {
+        "0": Object {},
+      },
+      "__props": Object {
+        "0": Array [
+          Object {},
+          Array [],
+        ],
+      },
       "name": "VTU_ROOT",
       "render": [Function],
     },
@@ -415,24 +423,29 @@ VueWrapper {
           "setup": [Function],
         },
         "RouterView": Object {
-          "__props": Array [
-            Object {
-              "name": Object {
-                "0": false,
-                "1": true,
-                "default": "default",
-                "type": [Function],
+          "__emits": Object {
+            "0": Object {},
+          },
+          "__props": Object {
+            "0": Array [
+              Object {
+                "name": Object {
+                  "0": false,
+                  "1": true,
+                  "default": "default",
+                  "type": [Function],
+                },
+                "route": Object {
+                  "0": false,
+                  "1": true,
+                  "type": [Function],
+                },
               },
-              "route": Object {
-                "0": false,
-                "1": true,
-                "type": [Function],
-              },
-            },
-            Array [
-              "name",
+              Array [
+                "name",
+              ],
             ],
-          ],
+          },
           "name": "RouterView",
           "props": Object {
             "name": Object {
@@ -517,11 +530,21 @@ VueWrapper {
       "directives": Object {},
       "mixins": Array [
         Object {
-          "__props": Array [],
+          "__emits": Object {
+            "0": null,
+          },
+          "__props": Object {
+            "0": Array [],
+          },
           "beforeCreate": [Function],
         },
         Object {
-          "__props": Array [],
+          "__emits": Object {
+            "0": null,
+          },
+          "__props": Object {
+            "0": Array [],
+          },
           "beforeCreate": [Function],
         },
       ],
@@ -599,6 +622,7 @@ VueWrapper {
       "reload": [Function],
     },
     "_props": null,
+    "_uid": 0,
     "component": [Function],
     "config": Object {
       "errorHandler": undefined,
@@ -674,7 +698,7 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.0-rc.9",
+    "version": "3.0.0-rc.10",
   },
   "__isFunctionalComponent": false,
   "__setProps": [Function],
