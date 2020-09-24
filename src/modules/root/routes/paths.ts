@@ -3,7 +3,7 @@ export enum ROOT_ROUTE_NAME {
   ABOUT = 'about-route'
 }
 
-export enum ROOT_PATHS {
+export enum ROOT_ROUTE_PATH {
   ROOT = '/',
   HOME = '/',
   ABOUT = '/about'
