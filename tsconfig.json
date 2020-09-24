@@ -13,7 +13,6 @@
     "strictPropertyInitialization": false,
     "allowJs": true,
     "sourceMap": true,
-    "skipLibCheck": true,
     "baseUrl": ".",
     "types": [
       "webpack-env",
