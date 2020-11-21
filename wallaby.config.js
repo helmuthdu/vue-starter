@@ -14,6 +14,7 @@ module.exports = wallaby => {
 
     preprocessors: {
       '**/*.js?(x)': file =>
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('@babel/core').transform(file.content, {
           sourceMap: true,
           compact: false,
@@ -23,6 +24,7 @@ module.exports = wallaby => {
     },
 
     setup(wallaby) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const jestConfig = require('./package').jest || require('./jest.config');
       delete jestConfig.transform['^.+\\.tsx?$'];
       wallaby.testFramework.configure(jestConfig);
