@@ -4,7 +4,7 @@ import { RouteRecordRaw } from 'vue-router';
 export const routes: Array<RouteRecordRaw> = [
   {
     path: USER_ROUTE_PATH.ROOT,
-    component: () => import('../layouts/empty.layout.vue'),
+    component: () => import('../layouts/user.layout.vue'),
     children: [
       {
         path: USER_ROUTE_PATH.SIGN_IN,

@@ -6,7 +6,7 @@ import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-rout
 
 export let router: Router;
 
-const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
+export const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
   if (router) {
     return router;
   }
@@ -19,6 +19,10 @@ const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
         path: '/not-found',
         name: 'not-found',
         component: () => import('@/routes/not-found/not-found.route.vue')
+      },
+      {
+        path: '/:pathMatch(.*)*',
+        redirect: { name: 'not-found' }
       }
     ] as Array<RouteRecordRaw>
   });
@@ -33,5 +37,3 @@ const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
 
   return router;
 };
-
-export default buildRouter;

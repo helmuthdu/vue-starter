@@ -1,12 +1,14 @@
-import { AppState } from '../main';
-import { rootStore } from './root';
+import { State } from '@/modules';
+import { RootState, rootStore } from './root';
 import { createStore, Store } from 'vuex';
 import VuexPersist from 'vuex-persist';
 import localForage from 'localforage';
 
+export type AppState = RootState & State;
+
 export let store: Store<AppState>;
 
-const buildStore = (modules: any[]): Store<AppState> => {
+export const buildStore = (modules: any[]): Store<AppState> => {
   const vuexStorage = new VuexPersist({
     key: 'snapshot',
     storage: localForage as any
@@ -22,9 +24,7 @@ const buildStore = (modules: any[]): Store<AppState> => {
       .map(s => Object.values(s) as any)
       .flat()
       .reduce((acc, module: any) => ({ ...acc, [module.name]: module }), {})
-  });
+  }) as Store<AppState>;
 
   return store;
 };
-
-export default buildStore;

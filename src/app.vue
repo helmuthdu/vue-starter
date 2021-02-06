@@ -4,5 +4,5 @@
 
 <style lang="scss">
 @import '~@mdi/font/css/materialdesignicons.css';
-@import '~buefy/dist/buefy.css';
+@import '~bulma/bulma';
 </style>

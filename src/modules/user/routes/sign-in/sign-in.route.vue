@@ -9,22 +9,27 @@
 </template>
 
 <script lang="ts">
-import { UserActionTypes } from '../../stores/modules/user';
-import { Options, Vue } from 'vue-class-component';
-import { Action } from 'vuex-class';
+import { UserActionTypes } from '@/modules/user/stores/modules/user';
+import { defineComponent } from 'vue';
+import { mapActions } from 'vuex';
 
-@Options({})
-export default class SignInRoute extends Vue {
-  public email = '';
-  public password = '';
-
-  @Action(UserActionTypes.SIGN_IN)
-  private doLogin: any;
-
-  public submit(): void {
-    this.doLogin({ email: this.email, password: this.password });
+export default defineComponent({
+  name: 'SignInRoute',
+  data() {
+    return {
+      email: undefined,
+      password: undefined
+    };
+  },
+  methods: {
+    ...mapActions({
+      signIn: UserActionTypes.SIGN_IN
+    }),
+    submit() {
+      this.signIn({ email: this.email, password: this.password });
+    }
   }
-}
+});
 </script>
 
 <style lang="scss" scoped></style>

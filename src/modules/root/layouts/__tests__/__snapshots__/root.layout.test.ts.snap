@@ -4,21 +4,16 @@ exports[`Layout -> default should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
-      "__emits": Object {
-        "0": Object {},
-      },
-      "__props": Object {
-        "0": Array [
-          Object {},
-          Array [],
-        ],
-      },
+      "__emits": Object {},
+      "__props": Array [
+        Object {},
+        Array [],
+      ],
       "name": "VTU_ROOT",
       "render": [Function],
     },
     "_container": <div
       data-v-app=""
-      id="app"
     >
       <div>
         <section
@@ -67,283 +62,7 @@ VueWrapper {
           <div
             class="container"
           >
-            <div
-              class="columns"
-            >
-              <div
-                class="column is-8-desktop is-offset-2-desktop"
-              >
-                <div
-                  class="content"
-                >
-                  <h3>
-                    What's included
-                  </h3>
-                  <p>
-                    The 
-                    <code>
-                      npm
-                    </code>
-                     dependencies included in 
-                    <code>
-                      package.json
-                    </code>
-                     are:
-                  </p>
-                  <ul>
-                    <li>
-                      <code>
-                        <a
-                          href="https://github.com/jgthms/bulma"
-                        >
-                          bulma
-                        </a>
-                      </code>
-                    </li>
-                    <li>
-                      <code>
-                        <a
-                          href="https://github.com/sass/node-sass"
-                        >
-                          node-sass
-                        </a>
-                      </code>
-                       to compile your own Sass file 
-                    </li>
-                    <li>
-                      <code>
-                        <a
-                          href="https://github.com/postcss/postcss-cli"
-                        >
-                          postcss-cli
-                        </a>
-                      </code>
-                       and 
-                      <code>
-                        <a
-                          href="https://github.com/postcss/autoprefixer"
-                        >
-                          autoprefixer
-                        </a>
-                      </code>
-                       to add support for older browsers 
-                    </li>
-                    <li>
-                      <code>
-                        <a
-                          href="https://babeljs.io/docs/usage/cli/"
-                        >
-                          babel-cli
-                        </a>
-                      </code>
-                      , 
-                      <code>
-                        <a
-                          href="https://github.com/babel/babel-preset-env"
-                        >
-                          babel-preset-env
-                        </a>
-                      </code>
-                       and 
-                      <code>
-                        <a
-                          href="https://github.com/jmcriffey/babel-preset-es2015-ie"
-                        >
-                          babel-preset-es2015-ie
-                        </a>
-                      </code>
-                       for compiling ES6 JavaScript files 
-                    </li>
-                  </ul>
-                  <!---->
-                </div>
-                <table
-                  class="table is-bordered is-fullwidth"
-                >
-                  <thead>
-                    <tr>
-                      <th>
-                        Type
-                      </th>
-                      <th>
-                        CSS class
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>
-                        Columns
-                      </th>
-                      <td>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/columns/basics"
-                          >
-                            columns
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/columns/basics"
-                          >
-                            column
-                          </a>
-                        </code>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        Layout
-                      </th>
-                      <td>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/layout/section"
-                          >
-                            section
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/layout/container"
-                          >
-                            container
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/layout/footer"
-                          >
-                            footer
-                          </a>
-                        </code>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        Elements
-                      </th>
-                      <td>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/elements/button"
-                          >
-                            button
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/elements/content"
-                          >
-                            content
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/elements/title"
-                          >
-                            title
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/elements/title"
-                          >
-                            subtitle
-                          </a>
-                        </code>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        Form
-                      </th>
-                      <td>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/form/general"
-                          >
-                            field
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/form/general"
-                          >
-                            control
-                          </a>
-                        </code>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        Helpers
-                      </th>
-                      <td>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/modifiers/typography-helpers/"
-                          >
-                            has-text-centered
-                          </a>
-                        </code>
-                        <code>
-                          <a
-                            href="http://bulma.io/documentation/modifiers/typography-helpers/"
-                          >
-                            has-text-weight-semibold
-                          </a>
-                        </code>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div
-                  class="content"
-                >
-                  <p>
-                    If you want to 
-                    <strong>
-                      learn more
-                    </strong>
-                    , follow these links:
-                  </p>
-                </div>
-                <div
-                  class="field is-grouped"
-                >
-                  <p
-                    class="control"
-                  >
-                    <a
-                      class="button is-medium is-primary"
-                      href="http://bulma.io"
-                    >
-                      <strong
-                        class="has-text-weight-semibold"
-                      >
-                        Bulma homepage
-                      </strong>
-                    </a>
-                  </p>
-                  <p
-                    class="control"
-                  >
-                    <a
-                      class="button is-medium is-link"
-                      href="http://bulma.io/documentation/overview/start/"
-                    >
-                      <strong
-                        class="has-text-weight-semibold"
-                      >
-                        Documentation
-                      </strong>
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </div>
+            <!---->
           </div>
         </section>
         <footer
@@ -412,6 +131,7 @@ VueWrapper {
             },
             "custom": [Function],
             "exactActiveClass": [Function],
+            "replace": [Function],
             "to": Object {
               "required": true,
               "type": Array [
@@ -423,29 +143,26 @@ VueWrapper {
           "setup": [Function],
         },
         "RouterView": Object {
-          "__emits": Object {
-            "0": Object {},
-          },
-          "__props": Object {
-            "0": Array [
-              Object {
-                "name": Object {
-                  "0": false,
-                  "1": true,
-                  "default": "default",
-                  "type": [Function],
-                },
-                "route": Object {
-                  "0": false,
-                  "1": true,
-                  "type": [Function],
-                },
+          "__emits": Object {},
+          "__props": Array [
+            Object {
+              "name": Object {
+                "0": false,
+                "1": true,
+                "default": "default",
+                "type": [Function],
               },
-              Array [
-                "name",
-              ],
+              "route": Object {
+                "0": false,
+                "1": true,
+                "type": [Function],
+              },
+            },
+            Array [
+              "name",
             ],
-          },
+          ],
+          "inheritAttrs": false,
           "name": "RouterView",
           "props": Object {
             "name": Object {
@@ -457,6 +174,16 @@ VueWrapper {
             "route": [Function],
           },
           "setup": [Function],
+        },
+        "transition": Object {
+          "name": "transition",
+          "props": undefined,
+          "render": [Function],
+        },
+        "transition-group": Object {
+          "name": "transition-group",
+          "props": undefined,
+          "render": [Function],
         },
       },
       "config": Object {
@@ -530,21 +257,8 @@ VueWrapper {
       "directives": Object {},
       "mixins": Array [
         Object {
-          "__emits": Object {
-            "0": null,
-          },
-          "__props": Object {
-            "0": Array [],
-          },
-          "beforeCreate": [Function],
-        },
-        Object {
-          "__emits": Object {
-            "0": null,
-          },
-          "__props": Object {
-            "0": Array [],
-          },
+          "__emits": null,
+          "__props": Array [],
           "beforeCreate": [Function],
         },
       ],
@@ -617,6 +331,32 @@ VueWrapper {
           "path": "/",
           "query": Object {},
           "redirectedFrom": undefined,
+        },
+        Symbol([vue-router]: router view location): RefImpl {
+          "__v_isRef": true,
+          "_rawValue": Object {
+            "fullPath": "/",
+            "hash": "",
+            "matched": Array [],
+            "meta": Object {},
+            "name": undefined,
+            "params": Object {},
+            "path": "/",
+            "query": Object {},
+            "redirectedFrom": undefined,
+          },
+          "_shallow": true,
+          "_value": Object {
+            "fullPath": "/",
+            "hash": "",
+            "matched": Array [],
+            "meta": Object {},
+            "name": undefined,
+            "params": Object {},
+            "path": "/",
+            "query": Object {},
+            "redirectedFrom": undefined,
+          },
         },
       },
       "reload": [Function],
@@ -698,15 +438,10 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.0",
+    "version": "3.0.5",
   },
-  "__isFunctionalComponent": false,
   "__setProps": [Function],
-  "componentVM": Object {
-    "__emitted": Object {},
-  },
-  "rootVM": Object {
-    "__emitted": Object {},
-  },
+  "componentVM": Object {},
+  "rootVM": Object {},
 }
 `;

@@ -1,30 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`User/Layout -> Empty should renders with props 1`] = `
+exports[`User/Layout should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
-      "__emits": Object {
-        "0": Object {},
-      },
-      "__props": Object {
-        "0": Array [
-          Object {},
-          Array [],
-        ],
-      },
+      "__emits": Object {},
+      "__props": Array [
+        Object {},
+        Array [],
+      ],
       "name": "VTU_ROOT",
       "render": [Function],
     },
     "_container": <div
       data-v-app=""
-      id="app"
     >
       <router-view />
     </div>,
     "_context": Object {
       "app": [Circular],
-      "components": Object {},
+      "components": Object {
+        "transition": Object {
+          "name": "transition",
+          "props": undefined,
+          "render": [Function],
+        },
+        "transition-group": Object {
+          "name": "transition-group",
+          "props": undefined,
+          "render": [Function],
+        },
+      },
       "config": Object {
         "errorHandler": undefined,
         "globalProperties": Object {},
@@ -37,21 +43,8 @@ VueWrapper {
       "directives": Object {},
       "mixins": Array [
         Object {
-          "__emits": Object {
-            "0": null,
-          },
-          "__props": Object {
-            "0": Array [],
-          },
-          "beforeCreate": [Function],
-        },
-        Object {
-          "__emits": Object {
-            "0": null,
-          },
-          "__props": Object {
-            "0": Array [],
-          },
+          "__emits": null,
+          "__props": Array [],
           "beforeCreate": [Function],
         },
       ],
@@ -76,15 +69,10 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.0",
+    "version": "3.0.5",
   },
-  "__isFunctionalComponent": false,
   "__setProps": [Function],
-  "componentVM": Object {
-    "__emitted": Object {},
-  },
-  "rootVM": Object {
-    "__emitted": Object {},
-  },
+  "componentVM": Object {},
+  "rootVM": Object {},
 }
 `;

@@ -1,4 +1,4 @@
-import { AppState } from '../main';
+import { AppState } from './index';
 import { ActionContext, ActionTree, GetterTree, MutationTree } from 'vuex';
 
 export interface RootState {
