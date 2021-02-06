@@ -1,10 +1,7 @@
 export interface WebWorkerService {
-  run<T>(workerFunction: (input: any) => T, data?: any): Promise<T>;
-
-  runUrl(url: string, data?: any): Promise<any>;
-
+  run<T, K extends any>(workerFunction: (input: any) => T, data?: K): Promise<T>;
+  runUrl<T, K extends any>(url: string, data?: K): Promise<T>;
   terminate<T>(promise: Promise<T>): Promise<T>;
-
   getWorker(promise: Promise<any>): Worker;
 }
 
@@ -12,14 +9,14 @@ export class WebWorker implements WebWorkerService {
   private workerFunctionToUrlMap = new WeakMap<(input: any) => any, string>();
   private promiseToWorkerMap = new WeakMap<Promise<any>, Worker>();
 
-  public run<T>(workerFunction: (input: any) => T, data?: any): Promise<T> {
-    const url = this.getOrCreateWorkerUrl(workerFunction);
+  public run<T, K extends any>(workerFunction: (input: any) => T, data?: K): Promise<T> {
+    const url = this.getOrCreateWorkerUrl<T>(workerFunction);
     return this.runUrl(url, data);
   }
 
-  public runUrl(url: string, data?: any): Promise<any> {
+  public runUrl<T, K extends any>(url: string, data?: K): Promise<T> {
     const worker = new Worker(url);
-    const promise = this.createPromiseForWorker(worker, data);
+    const promise = this.createPromiseForWorker<T, K>(worker, data);
     const promiseCleaner = this.createPromiseCleaner(promise);
 
     this.promiseToWorkerMap.set(promise, worker);
@@ -37,7 +34,7 @@ export class WebWorker implements WebWorkerService {
     return this.promiseToWorkerMap.get(promise) as Worker;
   }
 
-  private createPromiseForWorker<T>(worker: Worker, data: any) {
+  private createPromiseForWorker<T, K extends any>(worker: Worker, data?: K) {
     return new Promise<T>((resolve, reject) => {
       worker.addEventListener('message', event => resolve(event.data));
       worker.addEventListener('error', reject);
@@ -57,10 +54,9 @@ export class WebWorker implements WebWorkerService {
   private createWorkerUrl<T>(resolve: (input: any) => T): string {
     const resolveString = resolve.toString();
     const webWorkerTemplate = `
-            self.addEventListener('message', function(e) {
-                postMessage((${resolveString})(e.data));
-            });
-        `;
+      self.addEventListener('message', function(e) {
+        postMessage((${resolveString})(e.data));
+      });`;
     const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
     return URL.createObjectURL(blob);
   }
