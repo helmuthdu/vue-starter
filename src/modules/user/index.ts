@@ -1,8 +1,9 @@
 import { routes } from './routes';
+import { paths } from './routes/paths';
 import * as stores from './stores';
 
 export type State = Readonly<{
-  [stores.user.name]: stores.user.State;
+  user: stores.user.State;
 }>;
 
-export { routes, stores };
+export { paths, routes, stores };

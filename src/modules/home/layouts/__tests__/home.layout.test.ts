@@ -1,14 +1,14 @@
 import { mount, VueWrapper } from '@vue/test-utils';
 import { createMemoryHistory, createRouter } from 'vue-router';
-import RootLayout from '../root.layout.vue';
+import HomeLayout from '../home.layout.vue';
 
 const router = createRouter({ history: createMemoryHistory(), routes: [] });
 
-describe('Layout -> default', () => {
+describe('Layout -> Home', () => {
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = mount(RootLayout, { global: { plugins: [router] } });
+    wrapper = mount(HomeLayout, { global: { plugins: [router] } });
   });
 
   it('should renders with props', () => {

@@ -1,8 +1,8 @@
-export enum USER_ROUTE_NAME {
-  SIGN_IN = 'sign-in-route'
-}
-
-export enum USER_ROUTE_PATH {
-  ROOT = '/',
-  SIGN_IN = '/sign-in'
-}
+export const paths = Object.freeze({
+  name: 'user',
+  path: '/',
+  signIn: {
+    name: 'sign-in-route',
+    path: '/sign-in'
+  }
+});

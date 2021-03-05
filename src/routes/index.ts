@@ -1,12 +1,12 @@
 import { loadLanguageAsync, LocaleLanguages } from '@/locales';
-import { USER_ROUTE_NAME } from '@/modules/user/routes/paths';
+import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
-import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory, Router } from 'vue-router';
 
 export let router: Router;
 
-export const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
+export const buildRouter = (): Router => {
   if (router) {
     return router;
   }
@@ -14,7 +14,7 @@ export const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
   router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes: [
-      ...routes.flat(),
+      ...routes,
       {
         path: '/not-found',
         name: 'not-found',
@@ -24,7 +24,7 @@ export const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
         path: '/:pathMatch(.*)*',
         redirect: { name: 'not-found' }
       }
-    ] as Array<RouteRecordRaw>
+    ]
   });
 
   router.beforeEach(async (to, from, next) => {
@@ -32,7 +32,7 @@ export const buildRouter = (routes: Array<RouteRecordRaw>[]): Router => {
     await loadLanguageAsync(lang);
     const isLoggedIn = store.getters[UserActionTypes.IS_LOGGED_IN];
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    return requiresAuth && !isLoggedIn ? next({ name: USER_ROUTE_NAME.SIGN_IN }) : next();
+    return requiresAuth && !isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
   });
 
   return router;

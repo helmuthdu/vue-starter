@@ -4,16 +4,21 @@ exports[`Layout -> default should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
-      "__emits": Object {},
-      "__props": Array [
-        Object {},
-        Array [],
-      ],
+      "__emits": Object {
+        "0": Object {},
+      },
+      "__props": Object {
+        "0": Array [
+          Object {},
+          Array [],
+        ],
+      },
       "name": "VTU_ROOT",
       "render": [Function],
     },
     "_container": <div
       data-v-app=""
+      id="app"
     >
       <!---->
     </div>,
@@ -30,7 +35,6 @@ VueWrapper {
             },
             "custom": [Function],
             "exactActiveClass": [Function],
-            "replace": [Function],
             "to": Object {
               "required": true,
               "type": Array [
@@ -42,26 +46,29 @@ VueWrapper {
           "setup": [Function],
         },
         "RouterView": Object {
-          "__emits": Object {},
-          "__props": Array [
-            Object {
-              "name": Object {
-                "0": false,
-                "1": true,
-                "default": "default",
-                "type": [Function],
+          "__emits": Object {
+            "0": Object {},
+          },
+          "__props": Object {
+            "0": Array [
+              Object {
+                "name": Object {
+                  "0": false,
+                  "1": true,
+                  "default": "default",
+                  "type": [Function],
+                },
+                "route": Object {
+                  "0": false,
+                  "1": true,
+                  "type": [Function],
+                },
               },
-              "route": Object {
-                "0": false,
-                "1": true,
-                "type": [Function],
-              },
-            },
-            Array [
-              "name",
+              Array [
+                "name",
+              ],
             ],
-          ],
-          "inheritAttrs": false,
+          },
           "name": "RouterView",
           "props": Object {
             "name": Object {
@@ -73,16 +80,6 @@ VueWrapper {
             "route": [Function],
           },
           "setup": [Function],
-        },
-        "transition": Object {
-          "name": "transition",
-          "props": undefined,
-          "render": [Function],
-        },
-        "transition-group": Object {
-          "name": "transition-group",
-          "props": undefined,
-          "render": [Function],
         },
       },
       "config": Object {
@@ -156,8 +153,21 @@ VueWrapper {
       "directives": Object {},
       "mixins": Array [
         Object {
-          "__emits": null,
-          "__props": Array [],
+          "__emits": Object {
+            "0": null,
+          },
+          "__props": Object {
+            "0": Array [],
+          },
+          "beforeCreate": [Function],
+        },
+        Object {
+          "__emits": Object {
+            "0": null,
+          },
+          "__props": Object {
+            "0": Array [],
+          },
           "beforeCreate": [Function],
         },
       ],
@@ -230,32 +240,6 @@ VueWrapper {
           "path": "/",
           "query": Object {},
           "redirectedFrom": undefined,
-        },
-        Symbol([vue-router]: router view location): RefImpl {
-          "__v_isRef": true,
-          "_rawValue": Object {
-            "fullPath": "/",
-            "hash": "",
-            "matched": Array [],
-            "meta": Object {},
-            "name": undefined,
-            "params": Object {},
-            "path": "/",
-            "query": Object {},
-            "redirectedFrom": undefined,
-          },
-          "_shallow": true,
-          "_value": Object {
-            "fullPath": "/",
-            "hash": "",
-            "matched": Array [],
-            "meta": Object {},
-            "name": undefined,
-            "params": Object {},
-            "path": "/",
-            "query": Object {},
-            "redirectedFrom": undefined,
-          },
         },
       },
       "reload": [Function],
@@ -337,10 +321,15 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.5",
+    "version": "3.0.0",
   },
+  "__isFunctionalComponent": false,
   "__setProps": [Function],
-  "componentVM": Object {},
-  "rootVM": Object {},
+  "componentVM": Object {
+    "__emitted": Object {},
+  },
+  "rootVM": Object {
+    "__emitted": Object {},
+  },
 }
 `;
