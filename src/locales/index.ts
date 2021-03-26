@@ -27,14 +27,15 @@ export const setLanguage = (lang: LocaleLanguages): string => {
 };
 
 export const loadLanguageAsync = (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
-  if ((i18n.global.locale as any) === language) {
-    return Promise.resolve();
-  }
+  const currentLocale = loadedLanguages.find(localeMessage => localeMessage.locale === language);
 
-  const localeMessage = loadedLanguages.find(localeMessage => localeMessage.locale === language);
-  if (localeMessage) {
-    i18n.global.setLocaleMessage(localeMessage.locale, localeMessage.messages);
-    setLanguage(localeMessage.locale);
+  if (currentLocale) {
+    if ((i18n.global.locale as any) === language) {
+      return Promise.resolve();
+    }
+
+    i18n.global.setLocaleMessage(currentLocale.locale, currentLocale.messages);
+    setLanguage(currentLocale.locale);
     return Promise.resolve();
   }
 
