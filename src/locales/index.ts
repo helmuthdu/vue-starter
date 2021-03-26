@@ -6,7 +6,12 @@ export enum LocaleLanguages {
   German = 'de-DE'
 }
 
-const loadedLanguages: LocaleLanguages[] = []; // our default language that is preloaded
+type LocaleMessage = {
+  locale: LocaleLanguages;
+  messages: Record<string, string>;
+};
+
+const loadedLanguages: LocaleMessage[] = []; // our default language that is preloaded
 
 export const i18n = createI18n({
   locale: LocaleLanguages.English, // set locale
@@ -21,17 +26,22 @@ export const setLanguage = (lang: LocaleLanguages): string => {
   return lang;
 };
 
-export const loadLanguageAsync = (lang: LocaleLanguages = LocaleLanguages.English): Promise<string> => {
-  // If the same language
-  if ((i18n.global.locale as any) === lang && loadedLanguages.includes(lang)) {
-    return Promise.resolve(setLanguage(lang));
+export const loadLanguageAsync = (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
+  if ((i18n.global.locale as any) === language) {
+    return Promise.resolve();
   }
 
-  // If the language hasn't been loaded yet
-  return import(/* webpackChunkName: "lang-[request]" */ `@/locales/messages/${lang}.json`).then(messages => {
-    i18n.global.setLocaleMessage(lang, messages.default);
-    loadedLanguages.push(lang);
-    return setLanguage(lang);
+  const localeMessage = loadedLanguages.find(localeMessage => localeMessage.locale === language);
+  if (localeMessage) {
+    i18n.global.setLocaleMessage(localeMessage.locale, localeMessage.messages);
+    setLanguage(localeMessage.locale);
+    return Promise.resolve();
+  }
+
+  return import(/* webpackChunkName: "lang-[request]" */ `@/locales/messages/${language}.json`).then(messages => {
+    i18n.global.setLocaleMessage(language, messages);
+    loadedLanguages.push({ locale: language, messages });
+    setLanguage(language);
   });
 };
 
