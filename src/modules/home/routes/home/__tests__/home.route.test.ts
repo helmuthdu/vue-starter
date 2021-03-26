@@ -5,7 +5,11 @@ describe('Route -> Home', () => {
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = mount(HomeRoute);
+    wrapper = mount(HomeRoute, {
+      global: {
+        mocks: { $t: (t: string) => t }
+      }
+    });
   });
 
   it('should renders with props', () => {

@@ -14,6 +14,7 @@ type LocaleMessage = {
 const loadedLanguages: LocaleMessage[] = []; // our default language that is preloaded
 
 export const i18n = createI18n({
+  globalInjection: true,
   locale: LocaleLanguages.English, // set locale
   fallbackLocale: LocaleLanguages.English,
   messages: {} // set locale messages
@@ -26,22 +27,22 @@ export const setLanguage = (lang: LocaleLanguages): string => {
   return lang;
 };
 
-export const loadLanguageAsync = (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
+export const loadLanguageAsync = async (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
   const currentLocale = loadedLanguages.find(localeMessage => localeMessage.locale === language);
 
   if (currentLocale) {
     if ((i18n.global.locale as any) === language) {
-      return Promise.resolve();
+      return;
     }
 
     i18n.global.setLocaleMessage(currentLocale.locale, currentLocale.messages);
     setLanguage(currentLocale.locale);
-    return Promise.resolve();
+    return;
   }
 
   return import(/* webpackChunkName: "lang-[request]" */ `@/locales/messages/${language}.json`).then(messages => {
-    i18n.global.setLocaleMessage(language, messages);
-    loadedLanguages.push({ locale: language, messages });
+    i18n.global.setLocaleMessage(language, messages.default);
+    loadedLanguages.push({ locale: language, messages: messages.default });
     setLanguage(language);
   });
 };

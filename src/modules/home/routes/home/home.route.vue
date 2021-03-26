@@ -6,7 +6,9 @@
         <p>The <code>npm</code> dependencies included in <code>package.json</code> are:</p>
         <ul>
           <li>
-            <code><router-link to="/about">About</router-link></code>
+            <code
+              ><router-link to="/about">{{ $t('COMMON.ABOUT') }}</router-link></code
+            >
           </li>
           <li>
             <code><a href="https://github.com/jgthms/bulma">bulma</a></code>
