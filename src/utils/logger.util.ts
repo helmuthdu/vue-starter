@@ -1,7 +1,7 @@
 export enum LogColors {
   GROUP = '#EC407A',
-  TRACE = '#9C27B0',
-  TIME = '#00BCD4',
+  TRACE = '#00BCD4',
+  TIME = '#9C27B0',
   DEBUG = '#9E9E9E',
   INFO = '#2196F3',
   SUCCESS = '#8BC34A',
@@ -21,11 +21,13 @@ export enum LogLevel {
   OFF
 }
 
+type LogLevelKey = keyof typeof LogLevel;
+
 let logLevel = LogLevel.TRACE;
 
-const print = (level: keyof typeof LogLevel, color: string, ...args: any[]) => {
+const print = (level: LogLevelKey, color: string, ...args: any[]) => {
   if (logLevel > LogLevel[level]) return;
-  const type = ['DEBUG', 'SUCCESS'].some(t => LogLevel[level] === LogLevel[t as keyof typeof LogLevel])
+  const type = (<LogLevelKey[]>['DEBUG', 'SUCCESS']).some(t => LogLevel[level] === LogLevel[t])
     ? 'log'
     : level.toLowerCase();
   console[type as keyof Console](`%c[${level}]%c`, `color: ${color};`, 'color: inherit;', ...args);
