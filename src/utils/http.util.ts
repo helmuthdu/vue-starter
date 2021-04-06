@@ -20,10 +20,13 @@ const log = <T>(
   time: number
 ) => {
   const url = req.url?.split('/') as string[];
+  const timestamp = Logger.getTimestamp();
   Logger.groupCollapsed(`Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`, time);
+  Logger.setTimestamp(false);
   Logger.info('url:', req.url);
   Logger.info('req: ', req);
-  Logger[type]('res:', (res as AxiosError<T>).isAxiosError ? res : (res as AxiosResponse<T>).data);
+  Logger[type]('res:' as never, (res as AxiosError<T>).isAxiosError ? res : (res as AxiosResponse<T>).data);
+  Logger.setTimestamp(timestamp);
   Logger.groupEnd();
 };
 
