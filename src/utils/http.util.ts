@@ -16,7 +16,7 @@ enum HttpMethod {
 const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: any, time: number) => {
   const url = req.url?.split('/') as string[];
   const timestamp = Logger.getTimestamp();
-  Logger.groupCollapsed(`Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`, time);
+  Logger.groupCollapsed(`Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`, time, 'HTTP');
   Logger.setTimestamp(false);
   Logger.info('url:', req.url);
   Logger.info('req: ', req);
