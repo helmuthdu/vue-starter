@@ -31,7 +31,7 @@ const getTimestamp = (): string => new Date().toISOString().split('T')[1].substr
 
 const print = (level: LogLevelKey, color: string, ...args: any[]) => {
   if (logLevel > LogLevel[level]) return;
-  const type = ((<LogLevelKey[]>['DEBUG', 'SUCCESS']).some(t => LogLevel[level] === LogLevel[t])
+  const type = ((['DEBUG', 'SUCCESS'] as LogLevelKey[]).some(t => LogLevel[level] === LogLevel[t])
     ? 'log'
     : level.toLowerCase()) as keyof Console;
   if (timestamp) {
@@ -84,12 +84,12 @@ export const Logger = {
   error(...args: any[]): void {
     print('ERROR', LogColors.ERROR, ...args);
   },
-  groupCollapsed(str: string, time?: number): void {
+  groupCollapsed(str: string, time?: number, label = 'GROUP'): void {
     if (logLevel > LogLevel.DEBUG) return;
 
     const elapsed = time ? Date.now() - time : 0;
     console.groupCollapsed(
-      `%c[GROUP] %c${timestamp ? `${getTimestamp()} ` : ''}%c${str} %c${elapsed ? `${elapsed}ms` : ''} `,
+      `%c[${label}] %c${timestamp ? `${getTimestamp()} ` : ''}%c${str} %c${elapsed ? `${elapsed}ms` : ''} `,
       `color: ${LogColors.GROUP}; font-weight: lighter;`,
       'color: gray; font-weight: lighter;',
       'color: inherit;',
