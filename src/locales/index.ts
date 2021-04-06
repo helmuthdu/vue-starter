@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { createI18n } from 'vue-i18n';
+import { ref } from 'vue';
 
 export enum LocaleLanguages {
-  English = 'en-US',
-  German = 'de-DE'
+  English = 'en',
+  German = 'de'
 }
 
 type LocaleMessage = {
@@ -11,7 +12,10 @@ type LocaleMessage = {
   messages: Record<string, string>;
 };
 
-const loadedLanguages: LocaleMessage[] = []; // our default language that is preloaded
+const currentLocale = ref<LocaleMessage>({
+  locale: LocaleLanguages.English,
+  messages: {}
+});
 
 export const i18n = createI18n({
   globalInjection: true,
@@ -28,21 +32,20 @@ export const setLanguage = (lang: LocaleLanguages): string => {
 };
 
 export const loadLanguageAsync = async (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
-  const currentLocale = loadedLanguages.find(localeMessage => localeMessage.locale === language);
-
-  if (currentLocale) {
+  const { locale, messages } = currentLocale.value;
+  if (locale === language) {
     if ((i18n.global.locale as any) === language) {
       return;
     }
 
-    i18n.global.setLocaleMessage(currentLocale.locale, currentLocale.messages);
-    setLanguage(currentLocale.locale);
+    i18n.global.setLocaleMessage(locale, messages);
+    setLanguage(locale);
     return;
   }
 
   return import(/* webpackChunkName: "lang-[request]" */ `@/locales/messages/${language}.json`).then(messages => {
     i18n.global.setLocaleMessage(language, messages.default);
-    loadedLanguages.push({ locale: language, messages: messages.default });
+    currentLocale.value = { locale: language, messages: messages.default };
     setLanguage(language);
   });
 };
