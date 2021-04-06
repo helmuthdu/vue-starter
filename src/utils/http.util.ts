@@ -21,9 +21,9 @@ const log = <T>(
 ) => {
   const url = req.url?.split('/') as string[];
   Logger.groupCollapsed(`Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`, time);
-  Logger.info('url:     ', req.url);
-  Logger.info('request: ', req);
-  Logger[type]('response:', (res as AxiosError<T>).isAxiosError ? res : (res as AxiosResponse<T>).data);
+  Logger.info('url:', req.url);
+  Logger.info('req: ', req);
+  Logger[type]('res:', (res as AxiosError<T>).isAxiosError ? res : (res as AxiosResponse<T>).data);
   Logger.groupEnd();
 };
 
