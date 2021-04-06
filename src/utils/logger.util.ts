@@ -25,12 +25,20 @@ type LogLevelKey = keyof typeof LogLevel;
 
 let logLevel = LogLevel.TRACE;
 
+let timestamp = false;
+
+const getTimestamp = (): string => new Date().toISOString().split('T')[1].substr(0, 12);
+
 const print = (level: LogLevelKey, color: string, ...args: any[]) => {
   if (logLevel > LogLevel[level]) return;
-  const type = (<LogLevelKey[]>['DEBUG', 'SUCCESS']).some(t => LogLevel[level] === LogLevel[t])
+  const type = ((<LogLevelKey[]>['DEBUG', 'SUCCESS']).some(t => LogLevel[level] === LogLevel[t])
     ? 'log'
-    : level.toLowerCase();
-  console[type as keyof Console](`%c[${level}]%c`, `color: ${color};`, 'color: inherit;', ...args);
+    : level.toLowerCase()) as keyof Console;
+  if (timestamp) {
+    console[type](`%c[${level}]%c ${getTimestamp()}%c`, `color: ${color};`, 'color: gray;', 'color: inherit;', ...args);
+  } else {
+    console[type](`%c[${level}]%c`, `color: ${color};`, 'color: inherit;', ...args);
+  }
 };
 
 export const Logger = {
@@ -39,6 +47,12 @@ export const Logger = {
   },
   setLogLevel(level: LogLevel): void {
     logLevel = level;
+  },
+  getTimestamp(): boolean {
+    return timestamp;
+  },
+  setTimestamp(enable: boolean): void {
+    timestamp = enable;
   },
   trace(...args: any[]): void {
     print('TRACE', LogColors.TRACE, ...args);
@@ -70,14 +84,14 @@ export const Logger = {
   error(...args: any[]): void {
     print('ERROR', LogColors.ERROR, ...args);
   },
-  groupCollapsed(name: string, time?: number): void {
+  groupCollapsed(str: string, time?: number): void {
     if (logLevel > LogLevel.DEBUG) return;
 
     const elapsed = time ? Date.now() - time : 0;
-    const timestamp = time ? new Date().toISOString().split('T')[1].substr(0, 12) : '';
     console.groupCollapsed(
-      `%c[GROUP] %c${name} ${time ? `%c| ${timestamp} ${elapsed ? `| ${elapsed}ms` : ''}` : ''}`,
+      `%c[GROUP] %c${timestamp ? `${getTimestamp()} ` : ''}%c${str} %c${elapsed ? `${elapsed}ms` : ''} `,
       `color: ${LogColors.GROUP}; font-weight: lighter;`,
+      'color: gray; font-weight: lighter;',
       'color: inherit;',
       'color: gray; font-weight: lighter;'
     );
