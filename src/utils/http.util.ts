@@ -13,19 +13,14 @@ enum HttpMethod {
   Delete = 'delete'
 }
 
-const log = <T>(
-  type: keyof typeof Logger,
-  req: AxiosRequestConfig,
-  res: AxiosResponse<T> | AxiosError<T>,
-  time: number
-) => {
+const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: any, time: number) => {
   const url = req.url?.split('/') as string[];
   const timestamp = Logger.getTimestamp();
   Logger.groupCollapsed(`Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`, time);
   Logger.setTimestamp(false);
   Logger.info('url:', req.url);
   Logger.info('req: ', req);
-  Logger[type]('res:' as never, (res as AxiosError<T>).isAxiosError ? res : (res as AxiosResponse<T>).data);
+  Logger[type]('res:' as never, res);
   Logger.setTimestamp(timestamp);
   Logger.groupEnd();
 };
@@ -58,7 +53,7 @@ export class Http {
 
     return axiosInstance({ ...req })
       .then((res: AxiosResponse<T>) => {
-        log('success', req, res, time);
+        log('success', req, res.data, time);
         return res;
       })
       .catch((error: AxiosError<T>) => {
