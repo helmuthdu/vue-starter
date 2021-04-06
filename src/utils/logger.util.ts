@@ -84,12 +84,11 @@ export const Logger = {
   error(...args: any[]): void {
     print('ERROR', LogColors.ERROR, ...args);
   },
-  groupCollapsed(str: string, time?: number, label = 'GROUP'): void {
+  groupCollapsed(text: string, label = 'GROUP', time: number = Date.now()): void {
     if (logLevel > LogLevel.DEBUG) return;
-
-    const elapsed = time ? Date.now() - time : 0;
+    const elapsed = Date.now() - time;
     console.groupCollapsed(
-      `%c[${label}] %c${timestamp ? `${getTimestamp()} ` : ''}%c${str} %c${elapsed ? `${elapsed}ms` : ''} `,
+      `%c[${label}] %c${timestamp ? `${getTimestamp()} ` : ''}%c${text} %c${elapsed ? `${elapsed}ms` : ''} `,
       `color: ${LogColors.GROUP}; font-weight: lighter;`,
       'color: gray; font-weight: lighter;',
       'color: inherit;',
