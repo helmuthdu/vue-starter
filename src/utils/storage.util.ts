@@ -6,7 +6,7 @@ const generatePrefix = (): string => {
   return `${appName}_${environment.substr(0, 3)}`;
 };
 
-const getKey = (key: string) => `${generatePrefix()}_${key}`;
+const getKey = (key: string) => `${generatePrefix()}_${key}`.toLowerCase();
 
 export const removeStorageItem = (key: string): void => {
   try {
