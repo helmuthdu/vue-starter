@@ -1,4 +1,4 @@
-import Logger from '@/utils/logger.util';
+import Logger from './logger.util';
 
 const generatePrefix = (): string => {
   const appName = process.env.APP_NAME ?? '_app';
@@ -40,10 +40,4 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined 
     Logger.error('Failed to get data from storage');
     return defaultValue;
   }
-};
-
-export default {
-  get: getStorageItem,
-  set: setStorageItem,
-  remove: removeStorageItem
 };
