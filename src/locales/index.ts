@@ -1,52 +1,43 @@
-import axios from 'axios';
 import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import Logger from '@/utils/logger.util';
+import Http from '@/utils/http.util';
 
 export enum LocaleLanguages {
   English = 'en',
   German = 'de'
 }
 
-type LocaleMessage = {
-  locale: LocaleLanguages;
-  messages?: Record<string, string>;
-};
-
-const currentLocale = ref<LocaleMessage>({
-  locale: LocaleLanguages.English,
-  messages: undefined
-});
+const currentLocale = ref<LocaleLanguages | undefined>(undefined);
 
 export const i18n = createI18n({
   globalInjection: true,
-  locale: LocaleLanguages.English, // set locale
+  locale: LocaleLanguages.English,
   fallbackLocale: LocaleLanguages.English,
-  messages: {} // set locale messages
+  messages: {}
 });
 
 export const setLanguage = (lang: LocaleLanguages): string => {
-  (i18n.global.locale as any) = lang;
-  axios.defaults.headers.common['Accept-Language'] = lang;
+  i18n.global.locale = lang;
+  Http.setHeaders({ 'Accept-Language': lang });
   (document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
   return lang;
 };
 
-export const loadLanguageAsync = async (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
-  const { messages } = currentLocale.value;
-  if ((i18n.global.locale as any) === language && messages) {
+export const updateTranslationsAsync = async (locale: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
+  if (i18n.global.locale === currentLocale.value) {
     return;
   }
 
   try {
-    return import(/* webpackChunkName: "lang-[request]" */ `./messages/${language}.json`).then(messages => {
-      i18n.global.setLocaleMessage(language, messages.default);
-      currentLocale.value = { locale: language, messages: messages.default };
-      setLanguage(language);
+    return import(/* webpackChunkName: "lang-[request]" */ `./messages/${locale}.json`).then(messages => {
+      i18n.global.setLocaleMessage(locale, messages.default);
+      currentLocale.value = locale;
+      setLanguage(locale);
     });
   } catch (err) {
     Logger.error('Failed to load translations');
-    return Promise.resolve();
+    return;
   }
 };
 

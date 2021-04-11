@@ -1,4 +1,4 @@
-import { loadLanguageAsync, LocaleLanguages } from '@/locales';
+import { updateTranslationsAsync, LocaleLanguages } from '@/locales';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
@@ -22,7 +22,7 @@ export const router: Router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const lng = to.params.lang as LocaleLanguages;
-  await loadLanguageAsync(lng);
+  await updateTranslationsAsync(lng);
   const isLoggedIn = store.getters[UserActionTypes.IS_LOGGED_IN];
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   return requiresAuth && !isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
