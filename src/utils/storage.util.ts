@@ -4,7 +4,7 @@ const generatePrefix = (): string => {
   const appName = process.env.APP_NAME ?? '_app';
   const environment = process.env.NODE_ENV ?? 'development';
   const suffix = `-${environment.substr(0, 3)}`;
-  return `${appName.name}_${suffix}`;
+  return `${appName}_${suffix}`;
 };
 
 export const removeStorageItem = (key: string): void => {
