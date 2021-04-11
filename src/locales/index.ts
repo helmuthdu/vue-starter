@@ -1,6 +1,7 @@
 import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import Http from '@/utils/http.util';
+import { getStorageItem, setStorageItem } from '@/utils/storage.util';
 
 export enum LocaleLanguages {
   English = 'en-US'
@@ -8,11 +9,13 @@ export enum LocaleLanguages {
 
 const currentLocale = ref<LocaleLanguages | undefined>(undefined);
 
+const STORAGE_KEY = 'locale';
+
 export const i18n = createI18n({
   globalInjection: true,
   locale: LocaleLanguages.English,
   fallbackLocale: LocaleLanguages.English,
-  messages: {}
+  messages: getStorageItem(STORAGE_KEY, {})
 });
 
 export const setLanguage = (lang: LocaleLanguages): string => {
@@ -29,11 +32,13 @@ export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLang
     return;
   }
 
-  return import(/* webpackChunkName: "lang-[request]" */ `./messages/${locale}.json`).then(messages => {
-    i18n.global.setLocaleMessage(locale, messages.default);
+  const messages = (await Http.get<Record<string, string>>({ url: `/locales/${locale}.json` }))?.data;
+  if (messages) {
+    i18n.global.setLocaleMessage(locale, messages);
+    setStorageItem(STORAGE_KEY, messages);
     currentLocale.value = locale;
     setLanguage(locale);
-  });
+  }
 };
 
 export default i18n;
