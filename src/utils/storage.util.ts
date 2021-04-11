@@ -6,10 +6,12 @@ const generatePrefix = (): string => {
   return `${appName}_${environment.substr(0, 3)}`;
 };
 
+const getKey = (key: string) => `${generatePrefix()}_${key}`;
+
 export const removeStorageItem = (key: string): void => {
   try {
-    localStorage.removeItem(`${generatePrefix()}-${key}`);
-    sessionStorage.removeItem(`${generatePrefix()}-${key}`);
+    localStorage.removeItem(getKey(key));
+    sessionStorage.removeItem(getKey(key));
   } catch {
     Logger.error('Failed to remove data from storage');
   }
@@ -18,12 +20,10 @@ export const removeStorageItem = (key: string): void => {
 export const setStorageItem = <T>(key: string, value?: T, session = false): void => {
   try {
     const storage = session ? sessionStorage : localStorage;
-    const itemKey = `${generatePrefix()}-${key}`;
-
     if (value === undefined) {
-      storage.removeItem(itemKey);
+      storage.removeItem(getKey(key));
     } else {
-      storage.setItem(itemKey, typeof value !== 'string' ? JSON.stringify(value) : value);
+      storage.setItem(getKey(key), typeof value !== 'string' ? JSON.stringify(value) : value);
     }
   } catch {
     Logger.error('Failed to save data to storage');
@@ -32,8 +32,7 @@ export const setStorageItem = <T>(key: string, value?: T, session = false): void
 
 export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined => {
   try {
-    const prefix = generatePrefix();
-    const item = sessionStorage.getItem(`${prefix}_${key}`) ?? localStorage.getItem(`${prefix}-${key}`);
+    const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
   } catch {
     Logger.error('Failed to get data from storage');
