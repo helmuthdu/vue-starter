@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import Logger from '@/utils/logger.util';
 
 export enum LocaleLanguages {
   English = 'en',
@@ -9,12 +10,12 @@ export enum LocaleLanguages {
 
 type LocaleMessage = {
   locale: LocaleLanguages;
-  messages: Record<string, string>;
+  messages?: Record<string, string>;
 };
 
 const currentLocale = ref<LocaleMessage>({
   locale: LocaleLanguages.English,
-  messages: {}
+  messages: undefined
 });
 
 export const i18n = createI18n({
@@ -32,22 +33,21 @@ export const setLanguage = (lang: LocaleLanguages): string => {
 };
 
 export const loadLanguageAsync = async (language: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
-  const { locale, messages } = currentLocale.value;
-  if (locale === language) {
-    if ((i18n.global.locale as any) === language) {
-      return;
-    }
-
-    i18n.global.setLocaleMessage(locale, messages);
-    setLanguage(locale);
+  const { messages } = currentLocale.value;
+  if ((i18n.global.locale as any) === language && messages) {
     return;
   }
 
-  return import(/* webpackChunkName: "lang-[request]" */ `@/locales/messages/${language}.json`).then(messages => {
-    i18n.global.setLocaleMessage(language, messages.default);
-    currentLocale.value = { locale: language, messages: messages.default };
-    setLanguage(language);
-  });
+  try {
+    return import(/* webpackChunkName: "lang-[request]" */ `./messages/${language}.json`).then(messages => {
+      i18n.global.setLocaleMessage(language, messages.default);
+      currentLocale.value = { locale: language, messages: messages.default };
+      setLanguage(language);
+    });
+  } catch (err) {
+    Logger.error('Failed to load translations');
+    return Promise.resolve();
+  }
 };
 
 export default i18n;
