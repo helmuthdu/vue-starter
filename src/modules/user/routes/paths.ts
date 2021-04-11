@@ -1,8 +1,7 @@
 export const paths = Object.freeze({
-  name: 'user',
-  path: '/',
+  root: '/:locale',
   signIn: {
-    name: 'sign-in-route',
-    path: '/sign-in'
+    name: 'sign-in',
+    path: 'sign-in'
   }
 });

@@ -62,7 +62,7 @@ export class Http {
       });
   }
 
-  private static setHeaders(headers?: any) {
+  static setHeaders(headers: Record<string, string | number>): void {
     Object.entries(headers).forEach(([key, val]) => {
       axiosInstance.defaults.headers[key] = val;
     });

@@ -1,12 +1,11 @@
 export const paths = Object.freeze({
-  name: 'home',
-  path: '/',
+  root: '/:locale',
   home: {
-    name: 'home-route',
-    path: '/'
+    name: 'home',
+    path: ''
   },
   about: {
-    name: 'about-route',
-    path: '/about'
+    name: 'about',
+    path: 'about'
   }
 });

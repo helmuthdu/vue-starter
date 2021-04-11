@@ -1,11 +1,9 @@
 import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import Logger from '@/utils/logger.util';
 import Http from '@/utils/http.util';
 
 export enum LocaleLanguages {
-  English = 'en',
-  German = 'de'
+  English = 'en-US'
 }
 
 const currentLocale = ref<LocaleLanguages | undefined>(undefined);
@@ -24,21 +22,18 @@ export const setLanguage = (lang: LocaleLanguages): string => {
   return lang;
 };
 
+export const isLanguageSupported = (lang: LocaleLanguages): boolean => Object.values(LocaleLanguages).includes(lang);
+
 export const updateTranslationsAsync = async (locale: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
   if (i18n.global.locale === currentLocale.value) {
     return;
   }
 
-  try {
-    return import(/* webpackChunkName: "lang-[request]" */ `./messages/${locale}.json`).then(messages => {
-      i18n.global.setLocaleMessage(locale, messages.default);
-      currentLocale.value = locale;
-      setLanguage(locale);
-    });
-  } catch (err) {
-    Logger.error('Failed to load translations');
-    return;
-  }
+  return import(/* webpackChunkName: "lang-[request]" */ `./messages/${locale}.json`).then(messages => {
+    i18n.global.setLocaleMessage(locale, messages.default);
+    currentLocale.value = locale;
+    setLanguage(locale);
+  });
 };
 
 export default i18n;

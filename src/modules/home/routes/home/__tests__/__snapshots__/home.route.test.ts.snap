@@ -43,7 +43,7 @@ VueWrapper {
               <li>
                 <code>
                   <router-link
-                    to="/about"
+                    to="[object Object]"
                   >
                     COMMON.ABOUT
                   </router-link>
@@ -365,10 +365,12 @@ VueWrapper {
   "__isFunctionalComponent": false,
   "__setProps": [Function],
   "componentVM": Object {
+    "$i18n": Object {},
     "$t": [Function],
     "__emitted": Object {},
   },
   "rootVM": Object {
+    "$i18n": Object {},
     "$t": [Function],
     "__emitted": Object {},
   },

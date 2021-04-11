@@ -7,7 +7,7 @@ describe('Route -> Home', () => {
   beforeEach(() => {
     wrapper = mount(HomeRoute, {
       global: {
-        mocks: { $t: (t: string) => t }
+        mocks: { $t: (t: string) => t, $i18n: {} }
       }
     });
   });
