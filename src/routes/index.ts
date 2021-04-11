@@ -1,4 +1,4 @@
-import { updateTranslationsAsync, LocaleLanguages, isLanguageSupported } from '@/locales';
+import { loadTranslationsAsync, LocaleLanguages, isLanguageSupported } from '@/locales';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
@@ -18,7 +18,7 @@ export const router: Router = createRouter({
       beforeEnter: (to, from, next) => {
         const locale = to.params.locale as LocaleLanguages;
         if (isLanguageSupported(locale)) {
-          updateTranslationsAsync(locale).then(() => {
+          loadTranslationsAsync(locale).then(() => {
             next();
           });
         } else {

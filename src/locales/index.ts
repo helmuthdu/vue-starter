@@ -24,7 +24,7 @@ export const setLanguage = (lang: LocaleLanguages): string => {
 
 export const isLanguageSupported = (lang: LocaleLanguages): boolean => Object.values(LocaleLanguages).includes(lang);
 
-export const updateTranslationsAsync = async (locale: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
+export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
   if (i18n.global.locale === currentLocale.value) {
     return;
   }
