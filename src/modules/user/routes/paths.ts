@@ -1,5 +1,5 @@
 export const paths = Object.freeze({
-  root: '/:locale',
+  root: '',
   signIn: {
     name: 'sign-in',
     path: 'sign-in'
