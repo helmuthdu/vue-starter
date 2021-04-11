@@ -3,8 +3,7 @@ import Logger from './logger.util';
 const generatePrefix = (): string => {
   const appName = process.env.APP_NAME ?? '_app';
   const environment = process.env.NODE_ENV ?? 'development';
-  const suffix = `-${environment.substr(0, 3)}`;
-  return `${appName}_${suffix}`;
+  return `${appName}_${environment.substr(0, 3)}`;
 };
 
 export const removeStorageItem = (key: string): void => {
