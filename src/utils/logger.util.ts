@@ -100,5 +100,3 @@ export const Logger = {
     console.groupEnd();
   }
 };
-
-export default Logger;

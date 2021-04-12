@@ -1,4 +1,4 @@
-import Logger from './logger.util';
+import { Logger } from './logger.util';
 
 const generatePrefix = (): string => {
   const appName = process.env.APP_NAME ?? '_app';

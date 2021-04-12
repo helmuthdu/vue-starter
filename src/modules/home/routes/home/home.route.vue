@@ -7,7 +7,7 @@
         <ul>
           <li>
             <code>
-              <router-link :to="{ name: 'about', params: { locale: this.$i18n.locale } }">
+              <router-link :to="{ name: 'about' }">
                 {{ $t('COMMON.ABOUT') }}
               </router-link>
             </code>
