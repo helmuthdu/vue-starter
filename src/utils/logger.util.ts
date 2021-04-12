@@ -23,7 +23,7 @@ export enum LogLevel {
 
 type LogLevelKey = keyof typeof LogLevel;
 
-let logLevel = LogLevel.TRACE;
+let logLevel = process.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.TRACE;
 
 let timestamp = false;
 
