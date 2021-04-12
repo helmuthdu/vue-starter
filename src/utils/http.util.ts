@@ -1,4 +1,4 @@
-import Logger from '@/utils/logger.util';
+import { Logger } from '@/utils/logger.util';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const axiosInstance = axios.create({
@@ -25,40 +25,40 @@ const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: any, time:
   Logger.groupEnd();
 };
 
-type HttpResponse<T> = AxiosResponse<T> | undefined;
+type HttpResponse<T> = Promise<T>;
 
 export class Http {
-  static async get<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  static async get<T>(req: AxiosRequestConfig): HttpResponse<T> {
     return await this.fetch<T>({ method: HttpMethod.Get, ...req });
   }
 
-  static async post<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  static async post<T>(req: AxiosRequestConfig): HttpResponse<T> {
     return await this.fetch<T>({ method: HttpMethod.Post, ...req });
   }
 
-  static async put<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  static async put<T>(req: AxiosRequestConfig): HttpResponse<T> {
     return await this.fetch<T>({ method: HttpMethod.Put, ...req });
   }
 
-  static async patch<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  static async patch<T>(req: AxiosRequestConfig): HttpResponse<T> {
     return await this.fetch<T>({ method: HttpMethod.Patch, ...req });
   }
 
-  static async delete<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  static async delete<T>(req: AxiosRequestConfig): HttpResponse<T> {
     return await this.fetch<T>({ method: HttpMethod.Delete, ...req });
   }
 
-  private static async fetch<T>(req: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  private static async fetch<T>(req: AxiosRequestConfig): HttpResponse<T> {
     const time = Date.now();
 
     return axiosInstance({ ...req })
       .then((res: AxiosResponse<T>) => {
         log('success', req, res.data, time);
-        return res;
+        return res.data;
       })
       .catch((error: AxiosError<T>) => {
         log('error', req, error, time);
-        return undefined;
+        throw error;
       });
   }
 
