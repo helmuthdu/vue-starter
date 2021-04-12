@@ -14,4 +14,4 @@ export const initialState = {
 
 export const name = 'user';
 
-export const state = (): State => ({ ...initialState });
+export const state = (): State => JSON.parse(JSON.stringify(initialState));
