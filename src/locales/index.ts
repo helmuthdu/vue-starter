@@ -1,7 +1,6 @@
 import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import Http from '@/utils/http.util';
-import { getStorageItem, setStorageItem } from '@/utils/storage.util';
+import { getStorageItem, Http, setStorageItem } from '@/utils';
 
 export enum LocaleLanguages {
   English = 'en-US'
@@ -32,13 +31,14 @@ export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLang
     return;
   }
 
-  const messages = (await Http.get<Record<string, string>>({ url: `/locales/${locale}.json` }))?.data;
-  if (messages) {
-    i18n.global.setLocaleMessage(locale, messages);
-    setStorageItem(STORAGE_KEY, messages);
-    currentLocale.value = locale;
-    setLanguage(locale);
+  const message = await Http.get<Record<string, string>>({ url: `/locales/${locale}.json` });
+  if (!message) {
+    throw new Error('Empty translation file');
   }
+  i18n.global.setLocaleMessage(locale, message);
+  setStorageItem(STORAGE_KEY, message);
+  currentLocale.value = locale;
+  setLanguage(locale);
 };
 
 export default i18n;

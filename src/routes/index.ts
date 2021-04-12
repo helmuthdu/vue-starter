@@ -18,9 +18,13 @@ export const router: Router = createRouter({
       beforeEnter: (to, from, next) => {
         const locale = to.params.locale as LocaleLanguages;
         if (isLanguageSupported(locale)) {
-          loadTranslationsAsync(locale).then(() => {
-            next();
-          });
+          loadTranslationsAsync(locale)
+            .then(() => {
+              next();
+            })
+            .catch(() => {
+              next('/not-found');
+            });
         } else {
           next('/not-found');
         }
