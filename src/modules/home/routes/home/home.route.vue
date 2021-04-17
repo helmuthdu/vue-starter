@@ -39,6 +39,12 @@
           </footer>
         </blockquote>
       </div>
+      <div class="field">
+        <label class="label">Search</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="search" @input="onInput($event.target.value)" />
+        </div>
+      </div>
       <table class="table is-bordered is-fullwidth">
         <thead>
           <tr>
@@ -47,46 +53,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>Columns</th>
+          <tr v-for="feature in features" :key="feature.type">
+            <th>{{ feature.type }}</th>
             <td>
-              <code><a href="http://bulma.io/documentation/columns/basics">columns</a></code>
-              <code><a href="http://bulma.io/documentation/columns/basics">column</a></code>
-            </td>
-          </tr>
-          <tr>
-            <th>Layout</th>
-            <td>
-              <code><a href="http://bulma.io/documentation/layout/section">section</a></code>
-              <code><a href="http://bulma.io/documentation/layout/container">container</a></code>
-              <code><a href="http://bulma.io/documentation/layout/footer">footer</a></code>
-            </td>
-          </tr>
-          <tr>
-            <th>Elements</th>
-            <td>
-              <code><a href="http://bulma.io/documentation/elements/button">button</a></code>
-              <code><a href="http://bulma.io/documentation/elements/content">content</a></code>
-              <code><a href="http://bulma.io/documentation/elements/title">title</a></code>
-              <code><a href="http://bulma.io/documentation/elements/title">subtitle</a></code>
-            </td>
-          </tr>
-          <tr>
-            <th>Form</th>
-            <td>
-              <code><a href="http://bulma.io/documentation/form/general">field</a></code>
-              <code><a href="http://bulma.io/documentation/form/general">control</a></code>
-            </td>
-          </tr>
-          <tr>
-            <th>Helpers</th>
-            <td>
-              <code><a href="http://bulma.io/documentation/modifiers/typography-helpers/">has-text-centered</a></code>
-              <code
-                ><a href="http://bulma.io/documentation/modifiers/typography-helpers/"
-                  >has-text-weight-semibold</a
-                ></code
-              >
+              <code v-for="css in feature.css" :key="css.name">
+                <a :href="css.url">{{ css.name }}</a>
+              </code>
             </td>
           </tr>
         </tbody>
@@ -112,8 +84,75 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useObservable, useSubject } from '@/hooks/observer.hook';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+
+type Feature = { type: string; css: { name: string; url: string }[] };
 
 export default defineComponent({
-  name: 'HomeRoute'
+  name: 'HomeRoute',
+  setup() {
+    const features = [
+      {
+        type: 'Columns',
+        css: [
+          { name: 'columns', url: 'http://bulma.io/documentation/columns/basics' },
+          { name: 'column', url: 'http://bulma.io/documentation/columns/basics' }
+        ]
+      },
+      {
+        type: 'Layout',
+        css: [
+          { name: 'section', url: 'http://bulma.io/documentation/layout/section' },
+          { name: 'container', url: 'http://bulma.io/documentation/layout/container' },
+          { name: 'footer', url: 'http://bulma.io/documentation/layout/footer' }
+        ]
+      },
+      {
+        type: 'Elements',
+        css: [
+          { name: 'button', url: 'http://bulma.io/documentation/elements/button' },
+          { name: 'content', url: 'http://bulma.io/documentation/elements/content' },
+          { name: 'title', url: 'http://bulma.io/documentation/elements/title' },
+          { name: 'subtitle', url: 'http://bulma.io/documentation/elements/title' }
+        ]
+      },
+      {
+        type: 'Form',
+        css: [
+          { name: 'field', url: 'http://bulma.io/documentation/form/general' },
+          { name: 'control', url: 'http://bulma.io/documentation/form/general' }
+        ]
+      },
+      {
+        type: 'Helpers',
+        css: [
+          { name: 'has-text-centered', url: 'http://bulma.io/documentation/modifiers/typography-helpers/' },
+          { name: 'has-text-weight-semibold', url: 'http://bulma.io/documentation/modifiers/typography-helpers/' }
+        ]
+      }
+    ];
+
+    const { subject: search$, callback: setSearch$ } = useSubject<string>();
+    const featuresFiltered = useObservable<Feature[]>(
+      search$.pipe(
+        debounceTime(300),
+        filter(query => !query || query.length >= 3 || query.length === 0),
+        distinctUntilChanged(),
+        map(query => query.toLowerCase()),
+        map(query =>
+          features.filter((feat: Feature) => {
+            if (!query) return true;
+            return (
+              feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
+            );
+          })
+        )
+      ),
+      features
+    );
+
+    return { features: featuresFiltered, onInput: setSearch$ };
+  }
 });
 </script>
