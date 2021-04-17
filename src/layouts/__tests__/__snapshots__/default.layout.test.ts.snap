@@ -4,7 +4,7 @@ exports[`Layout -> default should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
-      "__emits": Object {},
+      "__emits": null,
       "__props": Array [
         Object {},
         Array [],
@@ -14,7 +14,6 @@ VueWrapper {
     },
     "_container": <div
       data-v-app=""
-      id="app"
     >
       <!---->
     </div>,
@@ -43,7 +42,7 @@ VueWrapper {
           "setup": [Function],
         },
         "RouterView": Object {
-          "__emits": Object {},
+          "__emits": null,
           "__props": Array [
             Object {
               "name": Object {
@@ -74,6 +73,16 @@ VueWrapper {
             "route": [Function],
           },
           "setup": [Function],
+        },
+        "transition": Object {
+          "name": "transition",
+          "props": undefined,
+          "render": [Function],
+        },
+        "transition-group": Object {
+          "name": "transition-group",
+          "props": undefined,
+          "render": [Function],
         },
       },
       "config": Object {
@@ -146,11 +155,6 @@ VueWrapper {
       },
       "directives": Object {},
       "mixins": Array [
-        Object {
-          "__emits": null,
-          "__props": Array [],
-          "beforeCreate": [Function],
-        },
         Object {
           "__emits": null,
           "__props": Array [],
@@ -333,15 +337,13 @@ VueWrapper {
     "provide": [Function],
     "unmount": [Function],
     "use": [Function],
-    "version": "3.0.7",
+    "version": "3.0.11",
   },
-  "__isFunctionalComponent": false,
   "__setProps": [Function],
   "componentVM": Object {
-    "__emitted": Object {},
+    "hasOwnProperty": [Function],
   },
-  "rootVM": Object {
-    "__emitted": Object {},
-  },
+  "rootVM": Object {},
+  "wrapperElement": <!---->,
 }
 `;
