@@ -4,7 +4,7 @@ import { RouteRecordRaw } from 'vue-router';
 export const routes: Array<RouteRecordRaw> = [
   {
     path: paths.root,
-    component: () => import('../layouts/home.layout.vue'),
+    component: () => import('../layouts/main.layout.vue'),
     children: [
       {
         path: paths.about.path,
