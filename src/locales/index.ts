@@ -31,7 +31,7 @@ export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLang
     return;
   }
 
-  const message = await Http.get<Record<string, string>>({ url: `/locales/${locale}.json` });
+  const message = await Http.get<Record<string, string>>(`/locales/${locale}.json`);
   if (!message) {
     throw new Error('Empty translation file');
   }
