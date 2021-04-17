@@ -1,17 +1,17 @@
-import { ref, Ref, UnwrapRef, watch } from 'vue';
+import { ref, Ref, watch } from 'vue';
 import { getStorageItem, setStorageItem } from '@/utils/storage.util';
 
-export const useStorage = <T>(key: string, initialValue?: T, session = false): Ref<UnwrapRef<T> | undefined> => {
+export const useStorage = <T>(key: string, defaultValue?: T, session = false): Ref<T> => {
   const getItem = () => {
     const item = getStorageItem<T>(key);
-    if (!item && initialValue) {
-      setStorageItem(key, initialValue, session);
-      return initialValue;
+    if (!item && defaultValue) {
+      setStorageItem(key, defaultValue, session);
+      return defaultValue;
     }
     return item;
   };
 
-  const storage = ref<T | undefined>(getItem());
+  const storage = ref(getItem()) as Ref<T>;
 
   watch(
     storage,
