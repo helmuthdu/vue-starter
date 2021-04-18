@@ -7,7 +7,7 @@
 import { onBeforeUnmount, Ref, ref } from 'vue';
 import { Observable, Subject, Subscription } from 'rxjs';
 
-const subscribeTo = <T>(
+const useSubscribeTo = <T>(
   observable: Observable<T>,
   next?: (value: T) => void,
   error?: (err: any) => void,
@@ -23,7 +23,7 @@ const subscribeTo = <T>(
 
 export const useObservable = <T>(observable: Observable<T>, defaultValue?: T): [Ref<T>] => {
   const handler = ref(defaultValue) as Ref<T>;
-  subscribeTo(
+  useSubscribeTo(
     observable,
     value => {
       handler.value = value;
@@ -41,7 +41,7 @@ export const useSubscription = <T>(
   next?: (value: T) => void,
   error?: (err: any) => void,
   complete?: () => void
-): Subscription => subscribeTo(observable, next, error, complete);
+): Subscription => useSubscribeTo(observable, next, error, complete);
 
 export const useSubject = <T>(): [Subject<T>, (value: T) => void] => {
   const subject = new Subject<T>();
