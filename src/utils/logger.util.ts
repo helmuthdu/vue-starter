@@ -86,7 +86,7 @@ export const Logger = {
   },
   groupCollapsed(text: string, label = 'GROUP', time: number = Date.now()): void {
     if (logLevel > LogLevel.DEBUG) return;
-    const elapsed = Date.now() - time;
+    const elapsed = Math.floor(Date.now() - time);
     console.groupCollapsed(
       `%c[${label}] %c${timestamp ? `${getTimestamp()} ` : ''}%c${text} %c${elapsed ? `${elapsed}ms` : ''} `,
       `color: ${LogColors.GROUP}; font-weight: lighter;`,
