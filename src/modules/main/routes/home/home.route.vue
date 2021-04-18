@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import { useObservable, useSubject } from '@/hooks/observer.hook';
-import { useWorkerFromScript } from '@/hooks/worker.hook';
+import { useWorkerFromCode } from '@/hooks/worker.hook';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { defineComponent } from 'vue';
 
@@ -157,7 +157,7 @@ export default defineComponent({
       const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
       return fib(val);
     };
-    const [value, calc] = useWorkerFromScript(resolve);
+    const [value, calc] = useWorkerFromCode(resolve);
     calc(43);
 
     return { features: featuresFiltered, onInput: setSearch$, value };

@@ -10,67 +10,60 @@
 import { Logger } from '@/utils';
 import { onBeforeUnmount, Ref, ref } from 'vue';
 
-type UseWorker<T> = [Ref<T>, (data: any) => void, Ref<Error>];
+type UseWorker<T> = [Ref<T>, (data: any) => void];
 
-const useWorker = <T>(opts: { url?: string; worker?: Worker }): UseWorker<T> => {
-  let messageData: any;
-  let workerInstance: Worker | undefined;
-  const message = ref<any>(undefined);
-  const error = ref<any>(undefined);
+const workers: Record<string, { terminate: () => void }> = {};
 
-  const onMessage = ({ data, timeStamp }: MessageEvent) => {
-    Logger.groupCollapsed('postMessage()', 'WORKER', Date.now() - timeStamp);
-    Logger.info('sent:', messageData);
-    Logger.info('received:', data);
-    Logger.groupEnd();
-    message.value = data;
-    error.value = undefined;
+const useWorker = <T>(opts: { id: string; url?: string; worker?: Worker; code?: boolean }): UseWorker<T> => {
+  const worker = ref<Worker>();
+  const message = ref<T>();
+
+  const onMessage = (evt: MessageEvent) => {
+    message.value = evt.data;
   };
 
-  const onError = (err: ErrorEvent) => {
-    Logger.error('[WORKER] Message Failed', err);
-    error.value = err;
+  const onError = (evt: ErrorEvent) => {
+    Logger.error('[WORKER] Message Failed', evt);
   };
 
   const createWorker = () => {
-    const { url, worker } = opts;
-    if (url) {
-      workerInstance = new Worker(url);
-    } else if (worker) {
-      workerInstance = worker;
+    if (opts.url) {
+      worker.value = new Worker(opts.url);
+    } else if (opts.worker) {
+      worker.value = opts.worker;
     }
+    workers[opts.id] = { terminate: terminateWorker };
   };
 
   const setupWorker = () => {
     createWorker();
-    if (workerInstance) {
-      workerInstance.addEventListener('message', onMessage, false);
-      workerInstance.addEventListener('error', onError, false);
+    if (worker.value) {
+      worker.value.onmessage = onMessage;
+      worker.value.onerror = onError;
     } else {
-      error.value = new Error('[WORKER] Missing url or worker instance');
-      Logger.error(error.value);
+      Logger.error('[WORKER] Missing url or worker');
     }
   };
 
   const terminateWorker = () => {
-    if (workerInstance) {
-      workerInstance.removeEventListener('message', onMessage);
-      workerInstance.removeEventListener('error', onError);
+    if (worker.value) {
       if (!opts.worker) {
-        workerInstance.terminate();
+        worker.value.terminate();
       }
-      messageData = undefined;
-      workerInstance = undefined;
+      worker.value = undefined;
     }
+    if (opts.code && opts.url) {
+      window.URL.revokeObjectURL(opts.url);
+    }
+    delete workers[opts.id];
   };
 
   const postMessage = (data: any) => {
-    if (workerInstance) {
-      messageData = data;
-      workerInstance.postMessage(data);
+    Logger.info('[WORKER] Post Message', data);
+    if (worker.value) {
+      worker.value.postMessage(data);
     } else {
-      error.value = new Error('[WORKER] Worker not found');
-      Logger.error(error.value);
+      Logger.error('[WORKER] Worker not found');
     }
   };
 
@@ -79,21 +72,25 @@ const useWorker = <T>(opts: { url?: string; worker?: Worker }): UseWorker<T> => 
     terminateWorker();
   });
 
-  return [message as Ref<T>, postMessage, error as Ref<Error>];
+  return [message as Ref<T>, postMessage];
 };
 
-export const useWorkerFromUrl = <T>(url: string): UseWorker<T> => useWorker({ url });
+const generateId = (url: string) => {
+  const id = window.btoa(url);
+  // Remove old worker
+  workers[id]?.terminate();
+  return id;
+};
 
-export const useWorkerFromScript = <T>(resolve: (data: any) => T): UseWorker<T> => {
-  const url = ref<string>('');
+export const useWorkerFromUrl = <T>(url: string): UseWorker<T> => useWorker({ id: generateId(url), url });
+
+export const useWorkerFromCode = <T>(resolve: (data: any) => T): UseWorker<T> => {
   const resolveString = resolve.toString();
   const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
   const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
-  url.value = window.URL.createObjectURL(blob);
-  onBeforeUnmount(() => {
-    window.URL.revokeObjectURL(url.value);
-  });
-  return useWorker<T>({ url: url.value });
+  const url = window.URL.createObjectURL(blob);
+
+  return useWorker<T>({ id: generateId(resolveString), url, code: true });
 };
 
-export const useWorkerFromWorker = <T>(worker: Worker): UseWorker<T> => useWorker<T>({ worker });
+export const useWorkerFromWorker = <T>(id: string, worker: Worker): UseWorker<T> => useWorker<T>({ id, worker });
