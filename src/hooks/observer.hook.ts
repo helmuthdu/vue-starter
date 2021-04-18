@@ -1,7 +1,7 @@
 /*
  * @example
- * const { subject: search$, callback: setSearch$ } = useSubject<string>();
- * const search = useObservable(search$.pipe(debounceTime(300), filter(query => !query || query.length >= 3 || query.length === 0), distinctUntilChanged(), tap(ev => console.log(ev))), '');
+ * const [search$, setSearch$] = useSubject<string>();
+ * const [search] = useObservable(search$.pipe(debounceTime(300), filter(query => !query || query.length >= 3 || query.length === 0), distinctUntilChanged()), '');
  */
 
 import { onBeforeUnmount, Ref, ref } from 'vue';
@@ -21,7 +21,7 @@ const subscribeTo = <T>(
   return subscription;
 };
 
-export const useObservable = <T>(observable: Observable<T>, defaultValue?: T): Ref<T> => {
+export const useObservable = <T>(observable: Observable<T>, defaultValue?: T): [Ref<T>] => {
   const handler = ref(defaultValue) as Ref<T>;
   subscribeTo(
     observable,
@@ -33,7 +33,7 @@ export const useObservable = <T>(observable: Observable<T>, defaultValue?: T): R
     }
   );
 
-  return handler;
+  return [handler];
 };
 
 export const useSubscription = <T>(
@@ -43,12 +43,12 @@ export const useSubscription = <T>(
   complete?: () => void
 ): Subscription => subscribeTo(observable, next, error, complete);
 
-export const useSubject = <T>(): { subject: Subject<T>; callback: (value: T) => void } => {
+export const useSubject = <T>(): [Subject<T>, (value: T) => void] => {
   const subject = new Subject<T>();
-  return {
+  return [
     subject,
-    callback: (value: T) => {
+    (value: T) => {
       subject.next(value);
     }
-  };
+  ];
 };

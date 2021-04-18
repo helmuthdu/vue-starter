@@ -33,9 +33,9 @@
           </li>
         </ul>
         <blockquote class="blockquote">
-          &#8220;First, solve the problem. Then, write the code.&#8221;
+          &#8220;The fibonacci of 43 is: {{ value }}&#8221;
           <footer>
-            <small> <em>&mdash;John Johnson</em> </small>
+            <small> <em>&mdash;A web worker result</em> </small>
           </footer>
         </blockquote>
       </div>
@@ -83,9 +83,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { useObservable, useSubject } from '@/hooks/observer.hook';
+import { useWorkerFromScript } from '@/hooks/worker.hook';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { defineComponent } from 'vue';
 
 type Feature = { type: string; css: { name: string; url: string }[] };
 
@@ -133,8 +134,8 @@ export default defineComponent({
       }
     ];
 
-    const { subject: search$, callback: setSearch$ } = useSubject<string>();
-    const featuresFiltered = useObservable<Feature[]>(
+    const [search$, setSearch$] = useSubject<string>();
+    const [featuresFiltered] = useObservable<Feature[]>(
       search$.pipe(
         debounceTime(300),
         filter(query => !query || query.length >= 3 || query.length === 0),
@@ -152,7 +153,14 @@ export default defineComponent({
       features
     );
 
-    return { features: featuresFiltered, onInput: setSearch$ };
+    const resolve = (val: number): number => {
+      const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+      return fib(val);
+    };
+    const [value, calc] = useWorkerFromScript(resolve);
+    calc(43);
+
+    return { features: featuresFiltered, onInput: setSearch$, value };
   }
 });
 </script>

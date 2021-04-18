@@ -115,11 +115,11 @@ VueWrapper {
             <blockquote
               class="blockquote"
             >
-               “First, solve the problem. Then, write the code.” 
+               “The fibonacci of 43 is: ” 
               <footer>
                 <small>
                   <em>
-                    —John Johnson
+                    —A web worker result
                   </em>
                 </small>
               </footer>
@@ -482,6 +482,7 @@ VueWrapper {
     ],
     "hasOwnProperty": [Function],
     "onInput": [Function],
+    "value": undefined,
   },
   "rootVM": Object {
     "$i18n": Object {},
@@ -587,11 +588,11 @@ VueWrapper {
         <blockquote
           class="blockquote"
         >
-           “First, solve the problem. Then, write the code.” 
+           “The fibonacci of 43 is: ” 
           <footer>
             <small>
               <em>
-                —John Johnson
+                —A web worker result
               </em>
             </small>
           </footer>
