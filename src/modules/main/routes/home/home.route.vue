@@ -84,8 +84,9 @@
 
 <script lang="ts">
 import { useObservable, useSubject } from '@/hooks/observer.hook';
+import { useStorage } from '@/hooks/storage.hook';
 import { useWorkerFromCode } from '@/hooks/worker.hook';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 import { defineComponent } from 'vue';
 
 type Feature = { type: string; css: { name: string; url: string }[] };
@@ -135,12 +136,15 @@ export default defineComponent({
     ];
 
     const [search$, setSearch$] = useSubject<string>();
-    const [featuresFiltered] = useObservable<Feature[]>(
+    const featuresResult = useObservable<Feature[]>(
       search$.pipe(
         debounceTime(300),
         filter(query => !query || query.length >= 3 || query.length === 0),
         distinctUntilChanged(),
         map(query => query.toLowerCase()),
+        tap(query => {
+          searchStorage.value.query = query;
+        }),
         map(query =>
           features.filter((feat: Feature) => {
             if (!query) return true;
@@ -148,10 +152,15 @@ export default defineComponent({
               feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
             );
           })
-        )
+        ),
+        tap(val => {
+          searchStorage.value.total = val.length;
+        })
       ),
       features
     );
+
+    const searchStorage = useStorage('search', { total: 0, query: '' });
 
     const resolve = (val: number): number => {
       const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
@@ -160,7 +169,7 @@ export default defineComponent({
     const [value, calc] = useWorkerFromCode(resolve);
     calc(43);
 
-    return { features: featuresFiltered, onInput: setSearch$, value };
+    return { features: featuresResult, onInput: setSearch$, value };
   }
 });
 </script>
