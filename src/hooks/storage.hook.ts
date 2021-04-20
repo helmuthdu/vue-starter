@@ -1,7 +1,8 @@
 import { ref, Ref, watch } from 'vue';
 import { getStorageItem, setStorageItem } from '@/utils/storage.util';
+import { Logger } from '@/utils';
 
-export const useStorage = <T>(key: string, defaultValue?: T, session = false): [Ref<T>] => {
+export const useStorage = <T>(key: string, defaultValue?: T, session = false): Ref<T> => {
   const getItem = () => {
     const item = getStorageItem<T>(key);
     if (!item && defaultValue) {
@@ -15,13 +16,12 @@ export const useStorage = <T>(key: string, defaultValue?: T, session = false): [
 
   watch(
     storage,
-    (state: any) => {
+    (state: T) => {
+      Logger.info(`[STORAGE] watch('${key}')`, state);
       setStorageItem(key, state);
     },
     { deep: true }
   );
 
-  return [storage];
+  return storage;
 };
-
-export default useStorage;
