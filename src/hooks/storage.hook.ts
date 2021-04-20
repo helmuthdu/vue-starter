@@ -5,7 +5,7 @@ import { Logger } from '@/utils';
 export const useStorage = <T>(key: string, defaultValue?: T, session = false): Ref<T> => {
   const getItem = () => {
     const item = getStorageItem<T>(key);
-    if (!item && defaultValue) {
+    if (item === undefined && defaultValue) {
       setStorageItem(key, defaultValue, session);
       return defaultValue;
     }
