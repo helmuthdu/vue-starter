@@ -12,11 +12,18 @@ import { onBeforeUnmount, Ref, ref } from 'vue';
 
 type UseWorker<T> = [Ref<T>, (data: any) => void];
 
-const workers: Record<string, { terminate: () => void }> = {};
+const workers: Record<string, { terminate: () => void; worker?: Worker }> = {};
 
-const useWorker = <T>(opts: { id: string; url?: string; worker?: Worker; code?: boolean }): UseWorker<T> => {
+const useWorker = <T>(opts: {
+  code?: boolean;
+  defaultValue?: T;
+  id: string;
+  terminate?: boolean;
+  url?: string;
+  worker?: Worker;
+}): UseWorker<T> => {
   const worker = ref<Worker>();
-  const message = ref<T>();
+  const message = ref<T>(opts.defaultValue as T);
 
   const onMessage = (evt: MessageEvent) => {
     message.value = evt.data;
@@ -27,12 +34,14 @@ const useWorker = <T>(opts: { id: string; url?: string; worker?: Worker; code?: 
   };
 
   const createWorker = () => {
-    if (opts.url) {
-      worker.value = new Worker(opts.url);
+    if (workers[opts.id]?.worker) {
+      worker.value = workers[opts.id].worker;
     } else if (opts.worker) {
       worker.value = opts.worker;
+    } else if (opts.url) {
+      worker.value = new Worker(opts.url);
     }
-    workers[opts.id] = { terminate: terminateWorker };
+    workers[opts.id] = { terminate: terminateWorker, worker: worker.value };
   };
 
   const setupWorker = () => {
@@ -46,6 +55,7 @@ const useWorker = <T>(opts: { id: string; url?: string; worker?: Worker; code?: 
   };
 
   const terminateWorker = () => {
+    Logger.info('[WORKER] Terminate Worker');
     if (worker.value) {
       if (!opts.worker) {
         worker.value.terminate();
@@ -75,22 +85,19 @@ const useWorker = <T>(opts: { id: string; url?: string; worker?: Worker; code?: 
   return [message as Ref<T>, postMessage];
 };
 
-const generateId = (url: string) => {
-  const id = window.btoa(url);
-  // Remove old worker
-  workers[id]?.terminate();
-  return id;
-};
+const generateId = (val: any) => window.btoa(val);
 
-export const useWorkerFromUrl = <T>(url: string): UseWorker<T> => useWorker({ id: generateId(url), url });
+export const useWorkerFromUrl = <T>(url: string, defaultValue?: T): UseWorker<T> =>
+  useWorker({ defaultValue, id: generateId(url), terminate: true, url });
 
-export const useWorkerFromCode = <T>(resolve: (data: any) => T): UseWorker<T> => {
+export const useWorkerFromCode = <T>(resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
   const resolveString = resolve.toString();
   const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
   const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
-  return useWorker<T>({ id: generateId(resolveString), url, code: true });
+  return useWorker<T>({ code: true, defaultValue, id: generateId(resolveString), terminate: true, url });
 };
 
-export const useWorkerFromWorker = <T>(id: string, worker: Worker): UseWorker<T> => useWorker<T>({ id, worker });
+export const useWorkerFromWorker = <T>(worker: Worker, defaultValue?: T, id = 'aGVsbXV0aGR1'): UseWorker<T> =>
+  useWorker<T>({ defaultValue, id, worker });
