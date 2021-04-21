@@ -166,7 +166,7 @@ export default defineComponent({
       const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
       return fib(val);
     };
-    const [value, calc] = useWorkerFromCode(resolve);
+    const [value, calc] = useWorkerFromCode('W1', resolve);
     calc(43);
 
     return { features: featuresResult, onInput: setSearch$, value };

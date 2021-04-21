@@ -4,7 +4,7 @@
  *   const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
  *   return fib(val);
  * };
- * const [value, calc] = useWorkerFromScript(resolve);
+ * const [value, calc] = useWorkerFromScript('W1', resolve, 0);
  */
 
 import { Logger } from '@/utils';
@@ -30,12 +30,11 @@ const useWorker = <T>(opts: {
   };
 
   const onError = (evt: ErrorEvent) => {
-    Logger.error('[WORKER] Message Failed', evt);
+    Logger.error(`[WORKER|${opts.id}] Message Failed`, evt);
   };
 
   const createWorker = () => {
     if (workers.has(opts.id)) {
-      Logger.warning('[WORKER] Worker already registered');
       worker.value = workers.get(opts.id);
     } else if (opts.worker) {
       worker.value = opts.worker;
@@ -48,17 +47,19 @@ const useWorker = <T>(opts: {
   const setupWorker = () => {
     createWorker();
     if (worker.value) {
-      worker.value.onmessage = onMessage;
-      worker.value.onerror = onError;
+      worker.value.addEventListener('message', onMessage, false);
+      worker.value.addEventListener('error', onError, false);
     } else {
-      Logger.error('[WORKER] Missing url or worker');
+      Logger.error(`[WORKER|${opts.id}] Missing id, url or worker`);
     }
   };
 
   const terminateWorker = () => {
-    Logger.info('[WORKER] Terminate Worker');
+    Logger.info(`[WORKER|${opts.id}] Terminate`);
     if (worker.value) {
-      if (!opts.worker) {
+      worker.value.removeEventListener('message', onMessage);
+      worker.value.removeEventListener('error', onError);
+      if (!opts.terminate) {
         worker.value.terminate();
       }
       worker.value = undefined;
@@ -70,11 +71,11 @@ const useWorker = <T>(opts: {
   };
 
   const postMessage = (data: any) => {
-    Logger.info('[WORKER] Post Message', data);
+    Logger.info(`[WORKER|${opts.id}] Post Message`, data);
     if (worker.value) {
       worker.value.postMessage(data);
     } else {
-      Logger.error('[WORKER] Worker not found');
+      Logger.error(`[WORKER|${opts.id}] Not found`);
     }
   };
 
@@ -86,14 +87,10 @@ const useWorker = <T>(opts: {
   return [message as Ref<T>, postMessage];
 };
 
-export const useWorkerFromUrl = <T>(url: string, defaultValue?: T): UseWorker<T> =>
-  useWorker({ defaultValue, id: url, terminate: true, url });
+export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
+  useWorker({ defaultValue, id, terminate: true, url });
 
-export const useWorkerFromCode = <T>(
-  resolve: (data: any) => T,
-  defaultValue?: T,
-  id = 'aGVsbXV0aGR1'
-): UseWorker<T> => {
+export const useWorkerFromCode = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
   const resolveString = resolve.toString();
   const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
   const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
@@ -102,5 +99,5 @@ export const useWorkerFromCode = <T>(
   return useWorker<T>({ code: true, defaultValue, id, terminate: true, url });
 };
 
-export const useWorkerFromWorker = <T>(worker: Worker, defaultValue?: T, id = 'aGVsbXV0aGR1'): UseWorker<T> =>
+export const useWorkerFromWorker = <T>(id: string, worker: Worker, defaultValue?: T): UseWorker<T> =>
   useWorker<T>({ defaultValue, id, worker });
