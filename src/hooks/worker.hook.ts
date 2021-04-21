@@ -4,7 +4,7 @@
  *   const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
  *   return fib(val);
  * };
- * const [value, calc] = useWorkerFromScript('W1', resolve, 0);
+ * const [value, calc] = useWorker('W1', resolve, 0);
  */
 
 import { Logger } from '@/utils';
@@ -14,7 +14,7 @@ type UseWorker<T> = [Ref<T>, (data: any) => void];
 
 const workers = new Map<string | number, Worker>();
 
-const useWorker = <T>(opts: {
+const useWorkerInit = <T>(opts: {
   code?: boolean;
   defaultValue?: T;
   id: string | number;
@@ -87,17 +87,17 @@ const useWorker = <T>(opts: {
   return [message as Ref<T>, postMessage];
 };
 
-export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
-  useWorker({ defaultValue, id, terminate: true, url });
-
-export const useWorkerFromCode = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
+export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
   const resolveString = resolve.toString();
   const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
   const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
-  return useWorker<T>({ code: true, defaultValue, id, terminate: true, url });
+  return useWorkerInit<T>({ code: true, defaultValue, id, terminate: true, url });
 };
 
+export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
+  useWorkerInit({ defaultValue, id, terminate: true, url });
+
 export const useWorkerFromWorker = <T>(id: string, worker: Worker, defaultValue?: T): UseWorker<T> =>
-  useWorker<T>({ defaultValue, id, worker });
+  useWorkerInit<T>({ defaultValue, id, worker });
