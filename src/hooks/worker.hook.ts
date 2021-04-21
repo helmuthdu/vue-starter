@@ -11,17 +11,18 @@ import { Logger } from '@/utils';
 import { onBeforeUnmount, Ref, ref } from 'vue';
 
 type UseWorker<T> = [Ref<T>, (data: any) => void];
-
-const workers = new Map<string | number, Worker>();
-
-const useWorkerInit = <T>(opts: {
-  code?: boolean;
+type UseWorkerCreateOptions<T> = {
   defaultValue?: T;
   id: string | number;
+  function?: boolean;
   terminate?: boolean;
   url?: string;
   worker?: Worker;
-}): UseWorker<T> => {
+};
+
+const workers = new Map<string | number, UseWorkerCreateOptions<any>>();
+
+const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
   const worker = ref<Worker>();
   const message = ref<T>(opts.defaultValue as T);
 
@@ -33,25 +34,15 @@ const useWorkerInit = <T>(opts: {
     Logger.error(`[WORKER|${opts.id}] Message Failed`, evt);
   };
 
-  const createWorker = () => {
-    if (workers.has(opts.id)) {
-      worker.value = workers.get(opts.id);
-    } else if (opts.worker) {
-      worker.value = opts.worker;
-    } else if (opts.url) {
-      worker.value = new Worker(opts.url);
-    }
-    workers.set(opts.id, worker.value as Worker);
-  };
-
   const setupWorker = () => {
-    createWorker();
-    if (worker.value) {
-      worker.value.addEventListener('message', onMessage, false);
-      worker.value.addEventListener('error', onError, false);
-    } else {
-      Logger.error(`[WORKER|${opts.id}] Missing id, url or worker`);
+    if (!opts.worker && !opts.url) {
+      Logger.error(`[WORKER|${opts.id}] Missing url/worker Property`);
+      return;
     }
+    worker.value = opts.worker ?? new Worker(opts.url as string);
+    worker.value.addEventListener('message', onMessage, false);
+    worker.value.addEventListener('error', onError, false);
+    workers.set(opts.id, { ...opts, worker: worker.value });
   };
 
   const terminateWorker = () => {
@@ -62,12 +53,12 @@ const useWorkerInit = <T>(opts: {
       if (!opts.terminate) {
         worker.value.terminate();
       }
+      if (opts.function && opts.url) {
+        window.URL.revokeObjectURL(opts.url);
+      }
+      workers.delete(opts.id);
       worker.value = undefined;
     }
-    if (opts.code && opts.url) {
-      window.URL.revokeObjectURL(opts.url);
-    }
-    workers.delete(opts.id);
   };
 
   const postMessage = (data: any) => {
@@ -88,16 +79,22 @@ const useWorkerInit = <T>(opts: {
 };
 
 export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
-  const resolveString = resolve.toString();
-  const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
-  const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
-  const url = window.URL.createObjectURL(blob);
+  let opts: UseWorkerCreateOptions<T> = { defaultValue, function: true, id, terminate: true };
 
-  return useWorkerInit<T>({ code: true, defaultValue, id, terminate: true, url });
+  if (workers.has(id)) {
+    opts = workers.get(id) as UseWorkerCreateOptions<T>;
+  } else {
+    const resolveString = resolve.toString();
+    const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
+    const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
+    opts.url = window.URL.createObjectURL(blob);
+  }
+
+  return useWorkerCreate<T>(opts);
 };
 
 export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
-  useWorkerInit({ defaultValue, id, terminate: true, url });
+  useWorkerCreate({ defaultValue, id, terminate: true, url });
 
 export const useWorkerFromWorker = <T>(id: string, worker: Worker, defaultValue?: T): UseWorker<T> =>
-  useWorkerInit<T>({ defaultValue, id, worker });
+  useWorkerCreate<T>({ defaultValue, id, worker });
