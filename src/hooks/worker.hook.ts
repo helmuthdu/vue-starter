@@ -35,6 +35,7 @@ const useWorker = <T>(opts: {
 
   const createWorker = () => {
     if (workers.has(opts.id)) {
+      Logger.warning('[WORKER] Worker already registered');
       worker.value = workers.get(opts.id);
     } else if (opts.worker) {
       worker.value = opts.worker;
@@ -85,30 +86,20 @@ const useWorker = <T>(opts: {
   return [message as Ref<T>, postMessage];
 };
 
-// https://stackoverflow.com/a/52171480
-const generateId = (str: string, seed = 0) => {
-  let h1 = 0xdeadbeef ^ seed;
-  let h2 = 0x41c6ce57 ^ seed;
-  for (let i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-};
-
 export const useWorkerFromUrl = <T>(url: string, defaultValue?: T): UseWorker<T> =>
-  useWorker({ defaultValue, id: generateId(url), terminate: true, url });
+  useWorker({ defaultValue, id: url, terminate: true, url });
 
-export const useWorkerFromCode = <T>(resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
+export const useWorkerFromCode = <T>(
+  resolve: (data: any) => T,
+  defaultValue?: T,
+  id = 'aGVsbXV0aGR1'
+): UseWorker<T> => {
   const resolveString = resolve.toString();
   const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
   const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
-  return useWorker<T>({ code: true, defaultValue, id: generateId(resolveString), terminate: true, url });
+  return useWorker<T>({ code: true, defaultValue, id, terminate: true, url });
 };
 
 export const useWorkerFromWorker = <T>(worker: Worker, defaultValue?: T, id = 'aGVsbXV0aGR1'): UseWorker<T> =>
