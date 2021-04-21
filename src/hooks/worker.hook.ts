@@ -34,7 +34,7 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
     Logger.error(`[WORKER|${opts.id}] Message Failed`, evt);
   };
 
-  const setupWorker = () => {
+  const setup = () => {
     if (!opts.worker && !opts.url) {
       Logger.error(`[WORKER|${opts.id}] Missing url/worker Property`);
       return;
@@ -45,7 +45,7 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
     workers.set(opts.id, { ...opts, worker: worker.value });
   };
 
-  const terminateWorker = () => {
+  const terminate = () => {
     Logger.info(`[WORKER|${opts.id}] Terminate`);
     if (worker.value) {
       worker.value.removeEventListener('message', onMessage);
@@ -70,9 +70,9 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
     }
   };
 
-  setupWorker();
+  setup();
   onBeforeUnmount(() => {
-    terminateWorker();
+    terminate();
   });
 
   return [message as Ref<T>, postMessage];
