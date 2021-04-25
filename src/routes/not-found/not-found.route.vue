@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <h1>You are here!</h1>
-    <h2>But nothing found for you #404</h2>
-  </div>
+  <h1>Oops!</h1>
+  <h3>The {{ resource }} you're looking for is not here.</h3>
+  <a href="#" @click="$router.go(-1)">click here</a> to go back.
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'NotFoundRoute'
-});
+<script>
+export default {
+  props: {
+    resource: {
+      type: String,
+      required: true,
+      default: 'page'
+    }
+  }
+};
 </script>

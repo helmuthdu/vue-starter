@@ -23,17 +23,28 @@ export const router: Router = createRouter({
               next();
             })
             .catch(() => {
-              next({ name: 'not-found' });
+              next({ name: '404' });
             });
         } else {
-          next({ name: 'not-found' });
+          next({ name: '404' });
         }
       },
       children: [...routes]
     },
     {
+      path: '/network-error',
+      name: 'NetworkError',
+      component: () => import('./network-error/network-error.route.vue')
+    },
+    {
+      path: '/404/:resource',
+      name: '404Resource',
+      component: () => import('./not-found/not-found.route.vue'),
+      props: true
+    },
+    {
       path: '/:pathMatch(.*)*',
-      name: 'not-found',
+      name: '404',
       component: () => import('./not-found/not-found.route.vue')
     }
   ]
