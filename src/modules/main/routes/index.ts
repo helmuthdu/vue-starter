@@ -12,8 +12,8 @@ export const routes: Array<RouteRecordRaw> = [
         component: () => import('./about/about.route.vue')
       },
       {
-        path: paths.home.path,
-        name: paths.home.name,
+        path: paths.main.path,
+        name: paths.main.name,
         component: () => import('./home/home.route.vue')
       }
     ]

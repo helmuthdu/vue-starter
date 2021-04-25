@@ -3,7 +3,7 @@ import * as userModule from './user';
 
 export type State = userModule.State;
 
-export const paths = { home: mainModule.paths, user: userModule.paths };
+export const paths = { main: mainModule.paths, user: userModule.paths };
 export const routes = [...mainModule.routes, ...userModule.routes];
 export const stores = { ...userModule.stores };
 

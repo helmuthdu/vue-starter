@@ -1,6 +1,6 @@
 export const paths = Object.freeze({
   root: '',
-  home: {
+  main: {
     name: 'home',
     path: ''
   },

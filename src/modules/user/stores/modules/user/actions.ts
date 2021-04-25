@@ -12,7 +12,7 @@ export interface Actions<S, R> extends ActionTree<S, R> {
 export const actions: Actions<State, AppState> = {
   async [UserActionTypes.SIGN_IN]({ commit }, payload: AuthenticatePayload) {
     commit(UserActionTypes.SET_USER, {
-      ...(await userApi.get(payload)).data,
+      ...(await userApi.get(payload)),
       isLoggedIn: true
     });
   },
