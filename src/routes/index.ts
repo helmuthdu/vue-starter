@@ -23,16 +23,16 @@ export const router: Router = createRouter({
               next();
             })
             .catch(() => {
-              next('/not-found');
+              next({ name: 'not-found' });
             });
         } else {
-          next('/not-found');
+          next({ name: 'not-found' });
         }
       },
       children: [...routes]
     },
     {
-      path: '/not-found',
+      path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('./not-found/not-found.route.vue')
     }
