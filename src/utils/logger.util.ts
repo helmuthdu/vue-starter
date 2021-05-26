@@ -31,9 +31,9 @@ const getTimestamp = (): string => new Date().toISOString().split('T')[1].substr
 
 const print = (level: LogLevelKey, color: string, ...args: any[]) => {
   if (logLevel > LogLevel[level]) return;
-  const type = ((['DEBUG', 'SUCCESS'] as LogLevelKey[]).some(t => LogLevel[level] === LogLevel[t])
-    ? 'log'
-    : level.toLowerCase()) as keyof Console;
+  const type = (
+    (['DEBUG', 'SUCCESS'] as LogLevelKey[]).some(t => LogLevel[level] === LogLevel[t]) ? 'log' : level.toLowerCase()
+  ) as keyof Console;
   if (timestamp) {
     console[type](`%c[${level}]%c ${getTimestamp()}%c`, `color: ${color};`, 'color: gray;', 'color: inherit;', ...args);
   } else {

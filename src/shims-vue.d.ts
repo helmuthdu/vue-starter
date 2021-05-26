@@ -1,8 +1,8 @@
 /* eslint-disable */
 declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
-  export default component
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<{}, {}, any>;
+  export default component;
 }
 
 declare module '*.json' {
@@ -24,6 +24,6 @@ type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
     : T[P] extends readonly (infer U)[]
-      ? readonly DeepPartial<U>[]
-      : DeepPartial<T[P]>;
+    ? readonly DeepPartial<U>[]
+    : DeepPartial<T[P]>;
 };

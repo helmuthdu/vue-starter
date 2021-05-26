@@ -35,7 +35,7 @@ export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLang
   if (!message) {
     throw new Error('Empty translation file');
   }
-  i18n.global.setLocaleMessage(locale, message);
+  i18n.global.setLocaleMessage(locale, message.data);
   setStorageItem(STORAGE_KEY, message);
   currentLocale.value = locale;
   setLanguage(locale);
