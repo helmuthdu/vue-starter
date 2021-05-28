@@ -23,24 +23,24 @@ const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: unknown, t
 const activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
 
 export class Http {
-  static async get<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'get', ...config }, lastOnly);
+  static async get<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'get', ...config }, latestOnly);
   }
 
-  static async post<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'post', ...config }, lastOnly);
+  static async post<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'post', ...config }, latestOnly);
   }
 
-  static async put<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'put', ...config }, lastOnly);
+  static async put<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'put', ...config }, latestOnly);
   }
 
-  static async patch<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'patch', ...config }, lastOnly);
+  static async patch<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'patch', ...config }, latestOnly);
   }
 
-  static async delete<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'delete', ...config }, lastOnly);
+  static async delete<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'delete', ...config }, latestOnly);
   }
 
   static setHeaders(headers: Record<string, string | number | undefined>): void {
@@ -53,10 +53,10 @@ export class Http {
     });
   }
 
-  private static async _request<T>(config: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+  private static async _request<T>(config: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
     const { id = this.generateRequestId(config), ...cfg } = config;
 
-    if (activeRequests[id] && lastOnly) {
+    if (activeRequests[id] && latestOnly) {
       activeRequests[id].controller.cancel();
     }
 
