@@ -62,20 +62,16 @@ export class Http {
 
     if (!activeRequests[id]) {
       const controller = axios.CancelToken.source();
-      const request = this._makeRequest(id, cfg, controller.token);
+      const request = this._makeRequest(id, { ...cfg, cancelToken: controller.token });
       activeRequests[id] = { request, controller };
     }
 
     return activeRequests[id].request;
   }
 
-  private static _makeRequest<T>(
-    id: string,
-    config: AxiosRequestConfig,
-    cancelToken: CancelToken
-  ): Promise<AxiosResponse<T>> {
+  private static _makeRequest<T>(id: string, config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const time = Date.now();
-    return axiosInstance({ ...config, cancelToken })
+    return axiosInstance(config)
       .then((res: AxiosResponse<T>) => {
         log('success', config, res.data, time);
         return res;
