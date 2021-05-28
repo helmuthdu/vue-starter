@@ -1,9 +1,8 @@
 import { Logger } from '@/utils/logger.util';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelToken, CancelTokenSource } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
+import qs from 'qs';
 
-type HttpRequestConfig = AxiosRequestConfig & { id?: string };
-
-const axiosInstance = axios.create();
+type HttpRequestConfig = AxiosRequestConfig & { id?: string; latestOnly?: boolean; skipCustomHeaders?: boolean };
 
 const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: unknown, time: number) => {
   const url = req.url?.split('/') as string[];
@@ -22,39 +21,52 @@ const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: unknown, t
 
 const activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
 
+const defaultHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Content-Type': 'application/json'
+};
+
 export class Http {
-  static async get<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'get', ...config }, latestOnly);
+  private static _headers: Record<string, string | number> = {};
+
+  static async get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'get', ...config });
   }
 
-  static async post<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'post', ...config }, latestOnly);
+  static async post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'post', ...config });
   }
 
-  static async put<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'put', ...config }, latestOnly);
+  static async put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'put', ...config });
   }
 
-  static async patch<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'patch', ...config }, latestOnly);
+  static async patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'patch', ...config });
   }
 
-  static async delete<T>(url: string, config?: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'delete', ...config }, latestOnly);
+  static async delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'delete', ...config });
   }
 
   static setHeaders(headers: Record<string, string | number | undefined>): void {
     Object.entries(headers).forEach(([key, val]) => {
       if (val === undefined) {
-        delete axiosInstance.defaults.headers[key];
+        delete this._headers[key];
       } else {
-        axiosInstance.defaults.headers[key] = val;
+        this._headers[key] = val;
       }
     });
   }
 
-  private static async _request<T>(config: HttpRequestConfig, latestOnly?: boolean): Promise<AxiosResponse<T>> {
-    const { id = this.generateRequestId(config), ...cfg } = config;
+  private static async _request<T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    const {
+      id = this.generateRequestId(config),
+      headers = defaultHeaders,
+      latestOnly,
+      skipCustomHeaders,
+      ...cfg
+    } = config;
 
     if (activeRequests[id] && latestOnly) {
       activeRequests[id].controller.cancel();
@@ -62,7 +74,14 @@ export class Http {
 
     if (!activeRequests[id]) {
       const controller = axios.CancelToken.source();
-      const request = this._makeRequest(id, { ...cfg, cancelToken: controller.token });
+      const request = this._makeRequest(
+        id,
+        Object.assign({}, cfg, {
+          cancelToken: controller.token,
+          data: qs.stringify(cfg.data),
+          headers: skipCustomHeaders ? headers : { ...headers, ...this._headers }
+        })
+      );
       activeRequests[id] = { request, controller };
     }
 
@@ -71,7 +90,7 @@ export class Http {
 
   private static _makeRequest<T>(id: string, config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const time = Date.now();
-    return axiosInstance(config)
+    return axios(config)
       .then((res: AxiosResponse<T>) => {
         log('success', config, res.data, time);
         return res;
