@@ -1,5 +1,7 @@
 import { Logger } from '@/utils/logger.util';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelToken, CancelTokenSource } from 'axios';
+
+type HttpRequestConfig = AxiosRequestConfig & { id?: string };
 
 const axiosInstance = axios.create();
 
@@ -18,26 +20,27 @@ const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: unknown, t
   Logger.groupEnd();
 };
 
-const activeRequests = {} as Record<string, Promise<any>>;
+const activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
+
 export class Http {
-  static async get<T>(url: string, req?: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'get', ...req }, duplicated);
+  static async get<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'get', ...config }, lastOnly);
   }
 
-  static async post<T>(url: string, req?: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'post', ...req }, duplicated);
+  static async post<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'post', ...config }, lastOnly);
   }
 
-  static async put<T>(url: string, req?: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'put', ...req }, duplicated);
+  static async put<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'put', ...config }, lastOnly);
   }
 
-  static async patch<T>(url: string, req?: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'patch', ...req }, duplicated);
+  static async patch<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'patch', ...config }, lastOnly);
   }
 
-  static async delete<T>(url: string, req?: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    return this._request<T>({ url, method: 'delete', ...req }, duplicated);
+  static async delete<T>(url: string, config?: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    return this._request<T>({ url, method: 'delete', ...config }, lastOnly);
   }
 
   static setHeaders(headers: Record<string, string | number | undefined>): void {
@@ -50,41 +53,39 @@ export class Http {
     });
   }
 
-  private static async _request<T>(req: AxiosRequestConfig, duplicated?: boolean): Promise<AxiosResponse<T>> {
-    const requestId = this.generateRequestId(req);
+  private static async _request<T>(config: HttpRequestConfig, lastOnly?: boolean): Promise<AxiosResponse<T>> {
+    const { id = this.generateRequestId(config), ...cfg } = config;
 
-    if (duplicated || !activeRequests[requestId]) {
-      const request = this._makeRequest(requestId, req, duplicated);
-
-      if (!duplicated) {
-        activeRequests[requestId] = request;
-      }
-
-      return request as Promise<AxiosResponse<T>>;
+    if (activeRequests[id] && lastOnly) {
+      activeRequests[id].controller.cancel();
     }
 
-    return activeRequests[requestId];
+    if (!activeRequests[id]) {
+      const controller = axios.CancelToken.source();
+      const request = this._makeRequest(id, cfg, controller.token);
+      activeRequests[id] = { request, controller };
+    }
+
+    return activeRequests[id].request;
   }
 
   private static _makeRequest<T>(
-    requestId: string,
-    req: AxiosRequestConfig,
-    duplicated?: boolean
+    id: string,
+    config: AxiosRequestConfig,
+    cancelToken: CancelToken
   ): Promise<AxiosResponse<T>> {
     const time = Date.now();
-    return axiosInstance({ ...req })
+    return axiosInstance({ ...config, cancelToken })
       .then((res: AxiosResponse<T>) => {
-        log('success', req, res.data, time);
+        log('success', config, res.data, time);
         return res;
       })
       .catch((error: AxiosError<T>) => {
-        log('error', req, error, time);
+        log('error', config, error, time);
         throw error;
       })
       .finally(() => {
-        if (!duplicated) {
-          delete activeRequests[requestId];
-        }
+        delete activeRequests[id];
       });
   }
 
