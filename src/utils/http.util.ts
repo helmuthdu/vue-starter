@@ -4,14 +4,16 @@ import qs from 'qs';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean; customHeaders?: boolean };
 
-const log = (type: keyof typeof Logger, req: AxiosRequestConfig, res: unknown, time: number) => {
-  const url = req.url?.split('/') as string[];
+enum TypeSymbol {
+  success = '✓',
+  error = '✕'
+}
+
+const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time: number) => {
+  const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+  url.shift();
   const timestamp = Logger.getTimestamp();
-  Logger.groupCollapsed(
-    `Http.${req.method?.toLowerCase()}('…/${url[url.length - 1]}')`,
-    `HTTP|${type.toUpperCase()}`,
-    time
-  );
+  Logger.groupCollapsed(`${req.method?.toUpperCase()} ${TypeSymbol[type]} (…/${url.join('/')})`, `HTTP`, time);
   Logger.setTimestamp(false);
   Logger.info('req: ', req);
   Logger[type]('res:' as never, res);
