@@ -78,7 +78,7 @@ export const Logger = {
   success(...args: any[]): void {
     print('SUCCESS', LogColors.SUCCESS, ...args);
   },
-  warning(...args: any[]): void {
+  warn(...args: any[]): void {
     print('WARN', LogColors.WARN, ...args);
   },
   error(...args: any[]): void {
