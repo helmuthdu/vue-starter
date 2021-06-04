@@ -13,7 +13,7 @@ export const removeStorageItem = (key: string): void => {
     localStorage.removeItem(getKey(key));
     sessionStorage.removeItem(getKey(key));
   } catch {
-    Logger.error('Failed to remove data from storage');
+    Logger.error(`Failed to remove item "${getKey(key)}" from storage`);
   }
 };
 
@@ -26,16 +26,20 @@ export const setStorageItem = <T>(key: string, value?: T, session = false): void
       storage.setItem(getKey(key), typeof value !== 'string' ? JSON.stringify(value) : value);
     }
   } catch {
-    Logger.error('Failed to save data to storage');
+    Logger.error(`Failed to save item "${getKey(key)}" into storage`);
   }
 };
 
 export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined => {
+  const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
   try {
-    const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
   } catch {
-    Logger.error('Failed to get data from storage');
+    if (item) {
+      return item as unknown as T;
+    }
+
+    Logger.error(`Storage item "${getKey(key)}" not available`);
     return defaultValue;
   }
 };
