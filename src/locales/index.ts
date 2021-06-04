@@ -19,7 +19,7 @@ export const i18n = createI18n({
 
 export const setLanguage = (lang: LocaleLanguages): string => {
   i18n.global.locale = lang;
-  Http.setHeaders({ 'Accept-Language': lang });
+  Http.setCustomHeaders({ 'Accept-Language': lang });
   (document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
   return lang;
 };
