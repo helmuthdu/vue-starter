@@ -35,7 +35,7 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined 
   try {
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
   } catch {
-    if (item) {
+    if (item !== undefined) {
       return item as unknown as T;
     }
 
