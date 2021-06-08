@@ -30,7 +30,7 @@ export const setStorageItem = <T>(key: string, value?: T, session = false): void
   }
 };
 
-export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined => {
+export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
   const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
   try {
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
@@ -40,6 +40,6 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T | undefined 
     }
 
     Logger.error(`Storage item "${getKey(key)}" not available`);
-    return defaultValue;
+    return defaultValue as T;
   }
 };
