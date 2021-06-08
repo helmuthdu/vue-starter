@@ -1,4 +1,6 @@
 /* eslint-disable */
+import { ILogger } from '@/utils';
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<{}, {}, any>;
@@ -9,8 +11,6 @@ declare module '*.json' {
   const json: any;
   export default json;
 }
-
-declare module 'kaop';
 
 type ValueOf<T> = T[keyof T];
 
@@ -27,3 +27,9 @@ type DeepPartial<T> = {
     ? readonly DeepPartial<U>[]
     : DeepPartial<T[P]>;
 };
+
+export declare global {
+  interface Window {
+    logger: ILogger;
+  }
+}
