@@ -13,7 +13,7 @@ const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknow
   const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
   url.shift();
   const timestamp = Logger.getTimestamp();
-  Logger.groupCollapsed(`${req.method?.toUpperCase()} ${TypeSymbol[type]} (…/${url.join('/')})`, `HTTP`, time);
+  Logger.groupCollapsed(`${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]}`, `HTTP`, time);
   Logger.setTimestamp(false);
   Logger.info('req: ', req);
   Logger[type]('res:' as never, res);
