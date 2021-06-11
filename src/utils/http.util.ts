@@ -15,8 +15,12 @@ const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknow
   const timestamp = Logger.getTimestamp();
   Logger.groupCollapsed(`${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]}`, `HTTP`, time);
   Logger.setTimestamp(false);
-  Logger.info('req: ', req);
-  Logger[type]('res:' as never, res);
+  Logger.info('REQUEST', req);
+  if (type === 'error') {
+    Logger.error(`XHR error ${req.method?.toUpperCase()} ${req.url}`, res);
+  } else {
+    Logger.success('RESPONSE', res);
+  }
   Logger.setTimestamp(timestamp);
   Logger.groupEnd();
 };
