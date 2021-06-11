@@ -1,6 +1,4 @@
 /* eslint-disable */
-import { ILogger } from '@/utils';
-
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<{}, {}, any>;
@@ -27,9 +25,3 @@ type DeepPartial<T> = {
     ? readonly DeepPartial<U>[]
     : DeepPartial<T[P]>;
 };
-
-export declare global {
-  interface Window {
-    logger: ILogger;
-  }
-}
