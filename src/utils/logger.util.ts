@@ -88,7 +88,7 @@ const print = (level: LoggerLevelKey, color: keyof typeof COLORS, ...args: unkno
 };
 
 export const Logger = {
-  initialise(options: LoggerOptions) {
+  initialise(options: LoggerOptions): void {
     Object.assign(state, options);
   },
   getLevel(): LogLevel {
