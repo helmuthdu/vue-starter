@@ -94,20 +94,23 @@ export const Logger = {
   getLevel(): LogLevel {
     return state.logLevel;
   },
+  getTimestamp(): boolean {
+    return state.timestamp;
+  },
   setLogLevel(level: LogLevel | keyof typeof LogLevel): void {
     state.logLevel = typeof level === 'string' ? LogLevel[level.toUpperCase() as keyof typeof LogLevel] : level;
+  },
+  setPrefix(prefix: string): void {
+    state.prefix = prefix;
+  },
+  setRemote(remote: LoggerRemoteOptions): void {
+    state.remote = remote;
   },
   setRemoteLogLevel(level: LogLevel | keyof typeof LogLevel): void {
     state.remote.logLevel = typeof level === 'string' ? LogLevel[level.toUpperCase() as keyof typeof LogLevel] : level;
   },
-  getTimestamp(): boolean {
-    return state.timestamp;
-  },
   setTimestamp(enabled: boolean): void {
     state.timestamp = enabled;
-  },
-  setPrefix(prefix: string): void {
-    state.prefix = prefix;
   },
   trace(...args: any[]): void {
     print('TRACE', 'TRACE', ...args);
