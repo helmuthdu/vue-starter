@@ -32,13 +32,36 @@ const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-const _customHeaders: Record<string, string | number> = {};
+const customHeadersProps: Record<string, string | number> = {};
 
-const _generateId = (options: any): string => {
+const generateId = (options: any): string => {
   return `${JSON.stringify(options)}`;
 };
 
-const _request = <T>(id: string, config: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+const createRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> => {
+  const { id = generateId(config), headers = defaultHeaders, cancelable, customHeaders = true, ...cfg } = config;
+
+  if (activeRequests[id] && cancelable) {
+    activeRequests[id].controller.cancel();
+  }
+
+  if (!activeRequests[id]) {
+    const controller = axios.CancelToken.source();
+    const request = fetcher(
+      Object.assign({}, cfg, {
+        cancelToken: controller.token,
+        data: qs.stringify(cfg.data),
+        headers: customHeaders ? { ...headers, ...customHeadersProps } : headers
+      }),
+      id
+    );
+    activeRequests[id] = { request, controller };
+  }
+
+  return activeRequests[id].request;
+};
+
+const fetcher = <T>(config: AxiosRequestConfig, id: string): Promise<AxiosResponse<T>> => {
   const time = Date.now();
   return axios(config)
     .then((res: AxiosResponse<T>) => {
@@ -50,58 +73,35 @@ const _request = <T>(id: string, config: AxiosRequestConfig): Promise<AxiosRespo
       throw error;
     })
     .finally(() => {
-      delete activeRequests[id];
+      if (id) {
+        delete activeRequests[id];
+      }
     });
-};
-
-const _createRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> => {
-  const { id = _generateId(config), headers = defaultHeaders, cancelable, customHeaders = true, ...cfg } = config;
-
-  if (activeRequests[id] && cancelable) {
-    activeRequests[id].controller.cancel();
-  }
-
-  if (!activeRequests[id]) {
-    const controller = axios.CancelToken.source();
-    const request = _request(
-      id,
-      Object.assign({}, cfg, {
-        cancelToken: controller.token,
-        data: qs.stringify(cfg.data),
-        headers: customHeaders ? { ...headers, ..._customHeaders } : headers
-      })
-    );
-    activeRequests[id] = { request, controller };
-  }
-
-  return activeRequests[id].request;
 };
 
 export const Http = {
   get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _createRequest<T>({ url, method: 'get', ...config });
+    return createRequest<T>({ url, method: 'get', ...config });
   },
   post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _createRequest<T>({ url, method: 'post', ...config });
+    return createRequest<T>({ url, method: 'post', ...config });
   },
   put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _createRequest<T>({ url, method: 'put', ...config });
+    return createRequest<T>({ url, method: 'put', ...config });
   },
   patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _createRequest<T>({ url, method: 'patch', ...config });
+    return createRequest<T>({ url, method: 'patch', ...config });
   },
   delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _createRequest<T>({ url, method: 'delete', ...config });
+    return createRequest<T>({ url, method: 'delete', ...config });
   },
   setCustomHeaders(headers: Record<string, string | number | undefined>): void {
     Object.entries(headers).forEach(([key, val]) => {
       if (val === undefined) {
-        delete _customHeaders[key];
+        delete customHeadersProps[key];
       } else {
-        _customHeaders[key] = val;
+        customHeadersProps[key] = val;
       }
     });
   }
 };
-
-export default Http;
