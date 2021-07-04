@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Layout -> Home should renders with props 1`] = `
+exports[`Layout -> Root should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
