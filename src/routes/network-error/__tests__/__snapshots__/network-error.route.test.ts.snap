@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Route -> NotFound should renders with props 1`] = `
+exports[`Route -> Network Error should renders with props 1`] = `
 VueWrapper {
   "__app": Object {
     "_component": Object {
@@ -15,20 +15,22 @@ VueWrapper {
     "_container": <div
       data-v-app=""
     >
-      
-      <h1>
-        Oops!
-      </h1>
-      <h3>
-        The page you're looking for is not here.
-      </h3>
-      <a
-        href="#"
+      <div
+        class="networkError"
       >
-        click here
-      </a>
-       to go back. 
-      
+        <h1>
+          Uh-Oh!
+        </h1>
+        <h3>
+           It looks like you're experiencing some network issues, please take a breath and 
+          <a
+            href="#"
+          >
+            click here
+          </a>
+           to try again. 
+        </h3>
+      </div>
     </div>,
     "_context": Object {
       "app": [Circular],
@@ -87,9 +89,23 @@ VueWrapper {
   "__setProps": [Function],
   "componentVM": Object {
     "hasOwnProperty": [Function],
-    "resource": "page",
   },
   "rootVM": Object {},
-  "wrapperElement": ,
+  "wrapperElement": <div
+    class="networkError"
+  >
+    <h1>
+      Uh-Oh!
+    </h1>
+    <h3>
+       It looks like you're experiencing some network issues, please take a breath and 
+      <a
+        href="#"
+      >
+        click here
+      </a>
+       to try again. 
+    </h3>
+  </div>,
 }
 `;
