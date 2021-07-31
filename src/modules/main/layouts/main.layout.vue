@@ -34,9 +34,7 @@
               <small> Source code licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a> </small>
             </p>
             <p style="margin-top: 1rem">
-              <a href="http://bulma.io">
-                <img src="made-with-bulma.png" alt="Made with Bulma" width="128" height="24" />
-              </a>
+              <a href="http://bulma.io">made with bulma</a>
             </p>
           </div>
         </div>

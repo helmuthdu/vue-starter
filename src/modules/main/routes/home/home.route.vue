@@ -42,7 +42,7 @@
       <div class="field">
         <label class="label">Search</label>
         <div class="control">
-          <input class="input" type="text" placeholder="search" @input="onInput($event.target.value)" />
+          <input class="input" type="text" placeholder="search" @input="onInput($event)" />
         </div>
       </div>
       <table class="table is-bordered is-fullwidth">
@@ -135,15 +135,15 @@
         }
       ];
 
-      const [search$, setSearch$] = useSubject<string>();
+      const [search$, setSearch$] = useSubject<string | null>();
       const featuresResult = useObservable<Feature[]>(
         search$.pipe(
           debounceTime(300),
           filter(query => !query || query.length >= 3 || query.length === 0),
           distinctUntilChanged(),
-          map(query => query.toLowerCase()),
+          map(query => query?.toLowerCase()),
           tap(query => {
-            searchStorage.value.query = query;
+            searchStorage.value.query = query ?? '';
           }),
           map(query =>
             features.filter((feat: Feature) => {
@@ -169,7 +169,13 @@
       const [value, calc] = useWorker('W1', resolve);
       calc(43);
 
-      return { features: featuresResult, onInput: setSearch$, value };
+      return {
+        features: featuresResult,
+        onInput(evt: any) {
+          setSearch$(evt.target.value);
+        },
+        value
+      };
     }
   });
 </script>
