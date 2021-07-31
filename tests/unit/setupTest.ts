@@ -1,28 +1,16 @@
-declare const global: any;
-
-class LocalStorageMock {
-  public store: any;
-
-  constructor() {
+(global as any).localStorage = {
+  store: {},
+  clear() {
     this.store = {};
-  }
-
-  public clear() {
-    this.store = {};
-  }
-
-  public getItem(key: string) {
+  },
+  getItem(key: string) {
     return this.store[key] || undefined;
-  }
-
-  public setItem(key: string, value: string) {
+  },
+  setItem(key: string, value: string) {
     this.store[key] = value.toString();
-  }
-
-  public removeItem(key: string) {
+  },
+  removeItem(key: string) {
     delete this.store[key];
   }
-}
-
-global.localStorage = new LocalStorageMock();
-global.URL.createObjectURL = jest.fn();
+};
+(global as any).URL.createObjectURL = jest.fn();
