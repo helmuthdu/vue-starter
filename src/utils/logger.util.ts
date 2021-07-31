@@ -43,7 +43,7 @@ export enum LogLevel {
 }
 
 const state: Required<LoggerOptions> = Object.seal({
-  logLevel: process.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.DEBUG,
+  logLevel: import.meta.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.DEBUG,
   prefix: '',
   remote: {} as LoggerRemoteOptions,
   timestamp: false

@@ -46,11 +46,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+  import { defineComponent } from 'vue';
 
-export default defineComponent({
-  name: 'RootLayout'
-});
+  export default defineComponent({
+    name: 'RootLayout'
+  });
 </script>
 
 <style lang="scss"></style>
