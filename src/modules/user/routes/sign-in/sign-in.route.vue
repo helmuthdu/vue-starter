@@ -1,8 +1,8 @@
 <template>
   <div>
     <form>
-      <input label="Email" v-model="email" required />
-      <input type="password" label="Password" v-model="password" required />
+      <input v-model="email" label="Email" required />
+      <input v-model="password" type="password" label="Password" required />
       <button color="pink" dark @click="submit">Sign-in</button>
     </form>
   </div>

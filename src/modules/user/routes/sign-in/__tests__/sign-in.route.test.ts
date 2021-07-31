@@ -17,6 +17,6 @@ describe('Auth/Route -> SignIn', () => {
   });
 
   it('should renders with props', () => {
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists()).toBe(true);
   });
 });

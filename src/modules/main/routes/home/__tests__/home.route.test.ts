@@ -2,7 +2,6 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import HomeRoute from '../home.route.vue';
 
 describe('Route -> Home', () => {
-  global.URL.createObjectURL = jest.fn();
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
@@ -14,6 +13,6 @@ describe('Route -> Home', () => {
   });
 
   it('should renders with props', () => {
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists()).toBe(true);
   });
 });
