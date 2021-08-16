@@ -2,8 +2,11 @@ pre-commit:
   parallel: true
   commands:
     js:
-      glob: "*.{js,jsx,vue,ts,tsx}"
+      glob: "*.{js,jsx,ts,tsx,vue}"
       run: npx prettier --write {staged_files} && npx eslint --fix {staged_files} && git add {staged_files}
     css:
       glob: "*.{css,scss,vue}"
       run: npx prettier --write {staged_files} && npx stylelint --fix {staged_files} && git add {staged_files}
+    test:
+      glob: "*.{js,jsx,ts,tsx,vue}"
+      run: npx jest --findRelatedTests {staged_files}
