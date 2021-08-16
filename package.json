@@ -2,6 +2,7 @@
   "name": "vue-starter",
   "version": "1.0.0",
   "scripts": {
+    "pre-commit": "lefthook run pre-commit",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
@@ -23,17 +24,18 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.8",
-    "@babel/preset-env": "^7.14.8",
-    "@babel/preset-typescript": "^7.14.5",
+    "@arkweid/lefthook": "^0.7.6",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-typescript": "^7.15.0",
     "@testing-library/cypress": "^8.0.0",
     "@types/jest": "^26.0.24",
-    "@types/lodash": "^4.14.171",
+    "@types/lodash": "^4.14.172",
     "@types/qs": "^6.9.7",
-    "@typescript-eslint/eslint-plugin": "^4.28.5",
-    "@typescript-eslint/parser": "^4.28.5",
-    "@vitejs/plugin-vue": "^1.3.0",
-    "@vue/compiler-sfc": "^3.1.5",
+    "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "@typescript-eslint/parser": "^4.29.1",
+    "@vitejs/plugin-vue": "^1.4.0",
+    "@vue/compiler-sfc": "^3.2.2",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^2.0.0-0",
@@ -41,30 +43,18 @@
     "babel-jest": "^26.6.3",
     "eslint": "^7.32.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.15.0",
-    "husky": "^7.0.1",
+    "eslint-plugin-vue": "^7.16.0",
     "jest": "^26.6.3",
-    "lint-staged": "^11.1.1",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
-    "sass": "^1.37.0",
+    "sass": "^1.37.5",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-standard": "^22.0.0",
     "ts-jest": "^26.5.6",
     "typescript": "^4.3.5",
-    "vite": "^2.4.4",
+    "vite": "^2.5.0",
     "vue-jest": "^5.0.0-0",
-    "vue-tsc": "^0.2.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,vue,ts,tsx}": "eslint --fix",
-    "*.{css,scss,vue}": "stylelint --fix",
-    "*": "prettier -w -u"
+    "vue-tsc": "^0.2.3"
   }
 }
