@@ -2,7 +2,6 @@
   "name": "vue-starter",
   "version": "1.0.0",
   "scripts": {
-    "pre-commit": "lefthook run pre-commit",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
