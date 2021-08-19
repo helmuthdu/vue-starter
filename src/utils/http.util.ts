@@ -12,23 +12,13 @@ enum TypeSymbol {
 const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time: number) => {
   const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
   url.shift();
-  const timestamp = Logger.getTimestamp();
-  Logger.groupCollapsed(`${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]}`, `HTTP`, time);
-  Logger.setTimestamp(false);
-  Logger.info('REQUEST', req);
-  if (type === 'error') {
-    Logger.error(`XHR error ${req.method?.toUpperCase()} ${req.url}`, res);
-  } else {
-    Logger.success('RESPONSE', res);
-  }
-  Logger.setTimestamp(timestamp);
-  Logger.groupEnd();
+  const elapsed = Math.floor(Date.now() - time);
+  Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
 const activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
 
 const defaultHeaders = {
-  'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json'
 };
 
@@ -51,7 +41,7 @@ const makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =>
       Object.assign({}, cfg, {
         cancelToken: controller.token,
         data: qs.stringify(cfg.data),
-        headers: customHeaders ? { ...headers, ...customHeadersProps } : headers
+        headers: customHeaders ? { ...customHeadersProps, ...headers } : headers
       }),
       id
     );
