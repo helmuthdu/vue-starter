@@ -49,11 +49,13 @@
     "prettier": "^2.3.2",
     "sass": "^1.38.0",
     "stylelint": "^13.13.1",
+    "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-standard": "^22.0.0",
     "ts-jest": "^26.5.6",
     "typescript": "^4.3.5",
     "vite": "^2.5.0",
+    "vue-eslint-parser": "^7.10.0",
     "vue-jest": "^5.0.0-0",
     "vue-tsc": "^0.2.3"
   }
