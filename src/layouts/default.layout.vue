@@ -9,5 +9,3 @@ export default defineComponent({
   name: 'DefaultLayout'
 });
 </script>
-
-<style lang="scss"></style>
