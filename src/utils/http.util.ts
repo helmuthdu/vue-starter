@@ -33,6 +33,7 @@ const makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =>
 
   if (activeRequests[id] && cancelable) {
     activeRequests[id].controller.cancel();
+    delete activeRequests[id];
   }
 
   if (!activeRequests[id]) {
