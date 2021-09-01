@@ -1,10 +1,10 @@
-import { ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 
 export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T = null as any) => {
-  const result = ref<T>(defaultValue);
+  const result = ref(defaultValue) as Ref<T>;
   const loading = ref(false);
   const error = ref<unknown>(null);
-  const run = async (...args) => {
+  const run = async (...args: any) => {
     loading.value = true;
     error.value = null;
     result.value = defaultValue;
