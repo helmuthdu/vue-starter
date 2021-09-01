@@ -8,8 +8,12 @@ import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(to, from, scrollPosition) {
+    if (scrollPosition) {
+      return scrollPosition;
+    } else {
+      return { top: 0 };
+    }
   },
   routes: [
     {
