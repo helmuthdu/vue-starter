@@ -1,4 +1,5 @@
 import { Logger } from './logger.util';
+import { hideProgressBar, showProgressBar } from './progress-bar.util';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import qs from 'qs';
 
@@ -53,6 +54,7 @@ const makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =>
 };
 
 const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
+  showProgressBar();
   const time = Date.now();
   return axios(config)
     .then((res: AxiosResponse<T>) => {
@@ -67,6 +69,7 @@ const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosRespo
       if (id) {
         delete activeRequests[id];
       }
+      hideProgressBar();
     });
 };
 
