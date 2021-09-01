@@ -12,9 +12,9 @@ const start = () => {
   }, delay);
 };
 
-const done = () => {
+const done = (force?: boolean) => {
   clearTimeout(timer);
-  NProgress.done();
+  NProgress.done(force);
 };
 
 export const showProgressBar = () => {
@@ -31,7 +31,7 @@ export const hideProgressBar = (force?: boolean) => {
   if (counter < 0 || force) {
     counter = 0;
   }
-  if (counter === 0 || force) {
-    done();
+  if (counter === 0) {
+    done(force);
   }
 };
