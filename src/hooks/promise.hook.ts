@@ -1,17 +1,15 @@
 import { ref } from '@vue/composition-api';
 
-export const usePromise = fn => {
-  // fn is the actual API call
-  const result = ref(null);
+export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T = null as any) => {
+  const result = ref<T>(defaultValue);
   const loading = ref(false);
-  const error = ref(null);
+  const error = ref<unknown>(null);
   const run = async (...args) => {
-    // Args is where we send in searchInput
     loading.value = true;
     error.value = null;
-    result.value = null;
+    result.value = defaultValue;
     try {
-      result.value = await fn(...args); // Passing through the SearchInput
+      result.value = await fn(...args);
     } catch (err) {
       error.value = err;
     } finally {
