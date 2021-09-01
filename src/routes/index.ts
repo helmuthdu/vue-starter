@@ -1,10 +1,10 @@
 import { isLanguageSupported, loadTranslationsAsync, LocaleLanguages } from '@/locales';
+import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
 import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
-import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
