@@ -79,7 +79,7 @@ const print = (level: LoggerLevelKey, color: keyof typeof COLORS, ...args: any[]
   }
 
   stdout.push('color: inherit;', ...args);
-  console[type].apply(null, stdout as any);
+  (console[type].apply as any)(null, stdout);
 
   if (remote.handler) {
     if (remote.logLevel > LogLevel[level]) return;
