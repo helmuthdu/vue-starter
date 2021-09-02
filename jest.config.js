@@ -9,7 +9,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)?$': 'babel-jest',
+    '^.+\\.[t|j]sx?$': 'babel-jest',
     '^.+\\.vue$': 'vue-jest'
   },
   moduleNameMapper: {
