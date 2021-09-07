@@ -33,7 +33,7 @@
           </li>
         </ul>
         <blockquote class="blockquote">
-          &#8220;The fibonacci of 43 is: {{ value }}&#8221;
+          &#8220;The fibonacci of 43 is: {{ message }}&#8221;
           <footer>
             <small> <em>&mdash;A web worker result</em> </small>
           </footer>
