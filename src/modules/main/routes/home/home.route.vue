@@ -166,15 +166,15 @@
         const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
         return fib(val);
       };
-      const [value, calc] = useWorker('W1', resolve);
-      calc(43);
+      const { message, post } = useWorker('W1', resolve);
+      post(43);
 
       return {
         features: featuresResult,
         onInput(evt: any) {
           setSearch$(evt.target.value);
         },
-        value
+        message
       };
     }
   });
