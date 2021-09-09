@@ -4,13 +4,18 @@
  *   const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
  *   return fib(val);
  * };
- * const [value, calc] = useWorker('W1', resolve, 0);
+ * const { message, post } = useWorker('W1', resolve, 0);
  */
 
 import { Logger } from '@/utils';
 import { onBeforeUnmount, Ref, ref } from 'vue';
 
-type UseWorker<T> = [Ref<T>, (data: any) => void];
+type UseWorker<T> = {
+  message: Ref<T>;
+  post: (data: any) => void;
+  terminate: () => void;
+  worker: Ref<Worker | undefined>;
+};
 type UseWorkerCreateOptions<T> = {
   defaultValue?: T;
   id: string | number;
@@ -23,8 +28,8 @@ type UseWorkerCreateOptions<T> = {
 const workers = new Map<string | number, UseWorkerCreateOptions<any>>();
 
 const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
-  const worker = ref<Worker>();
-  const message = ref<T>(opts.defaultValue as T);
+  const worker = ref<Worker>() as Ref<Worker | undefined>;
+  const message = ref<T>(opts.defaultValue as T) as Ref<T>;
 
   const onMessage = (evt: MessageEvent) => {
     message.value = evt.data;
@@ -61,7 +66,7 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
     }
   };
 
-  const postMessage = (data: any) => {
+  const post = (data: any) => {
     Logger.info(`[WORKER|${opts.id}] Post Message`, data);
     if (worker.value) {
       worker.value.postMessage(data);
@@ -71,11 +76,12 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
   };
 
   setup();
+
   onBeforeUnmount(() => {
     terminate();
   });
 
-  return [message as Ref<T>, postMessage];
+  return { message, post, terminate, worker };
 };
 
 export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
