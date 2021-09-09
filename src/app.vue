@@ -3,5 +3,5 @@
 </template>
 
 <style lang="scss">
-@import '~bulma/bulma';
+  @import '~bulma/bulma';
 </style>
