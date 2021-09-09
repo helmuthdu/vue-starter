@@ -1,4 +1,4 @@
-import { loadTranslationsAsync, LocaleLanguages, isLanguageSupported } from '@/locales';
+import { isLanguageSupported, loadTranslationsAsync, LocaleLanguages } from '@/locales';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
@@ -7,6 +7,13 @@ import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
+  scrollBehavior(to, from, scrollPosition) {
+    if (scrollPosition) {
+      return scrollPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
   routes: [
     {
       path: '/',
