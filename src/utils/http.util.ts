@@ -1,7 +1,6 @@
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import { Logger } from './logger.util';
 import { hideProgressBar, showProgressBar } from './progress-bar.util';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
-import qs from 'qs';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean; customHeaders?: boolean };
 
@@ -42,7 +41,6 @@ const makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =>
     const request = fetcher(
       Object.assign({}, cfg, {
         cancelToken: controller.token,
-        data: qs.stringify(cfg.data),
         headers: customHeaders ? { ...customHeadersProps, ...headers } : headers
       }),
       id
