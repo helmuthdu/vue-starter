@@ -25,7 +25,7 @@
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.6",
     "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.4",
+    "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.15.0",
     "@testing-library/cypress": "^8.0.1",
     "@types/jest": "^27.0.1",
@@ -47,7 +47,7 @@
     "jest": "^26.6.3",
     "postcss": "^8.3.6",
     "prettier": "^2.4.0",
-    "sass": "^1.39.0",
+    "sass": "^1.39.2",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-recommended": "^5.0.0",
