@@ -1,8 +1,8 @@
 <template>
   <div>
     <form>
-      <input v-model="email" label="Email" required />
-      <input v-model="password" type="password" label="Password" required />
+      <input v-model="email" name="email" placeholder="Email" required />
+      <input v-model="password" name="password" type="password" placeholder="Password" required />
       <button color="pink" dark @click="submit">Sign-in</button>
     </form>
   </div>
@@ -17,8 +17,8 @@
     name: 'SignInRoute',
     data() {
       return {
-        email: undefined,
-        password: undefined
+        email: '',
+        password: ''
       };
     },
     methods: {
@@ -31,5 +31,3 @@
     }
   });
 </script>
-
-<style lang="scss" scoped></style>

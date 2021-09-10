@@ -50,5 +50,3 @@
     name: 'MainLayout'
   });
 </script>
-
-<style lang="scss"></style>
