@@ -42,7 +42,7 @@
       <div class="field">
         <label class="label">Search</label>
         <div class="control">
-          <input class="input" type="text" placeholder="search" @input="onInput($event)" />
+          <input class="input" placeholder="search" type="text" @input="onInput($event)" />
         </div>
       </div>
       <table class="table is-bordered is-fullwidth">
@@ -135,7 +135,7 @@
         }
       ];
 
-      const [search$, setSearch$] = useSubject<string | null>();
+      const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
       const featuresResult = useObservable<Feature[]>(
         search$.pipe(
           debounceTime(300),

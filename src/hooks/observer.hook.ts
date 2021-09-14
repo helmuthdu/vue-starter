@@ -1,6 +1,6 @@
 /*
  * @example
- * const [search$, setSearch$] = useSubject<string>();
+ * const { subject: search$, setSubject: setSearch$ } = useSubject<string>();
  * const search = useObservable(search$.pipe(debounceTime(300), filter(query => !query || query.length >= 3 || query.length === 0), distinctUntilChanged()), '');
  */
 
@@ -43,10 +43,10 @@ export const useSubscription = <T>(
   complete?: () => void
 ): Subscription => useSubscribeTo(observable, next, error, complete);
 
-export const useSubject = <T>(): [Subject<T>, (value: T) => void] => {
+export const useSubject = <T>(): { subject: Subject<T>; setSubject: (value: T) => void } => {
   const subject = new Subject<T>();
-  const set = (value: T): void => {
+  const setSubject = (value: T): void => {
     subject.next(value);
   };
-  return [subject, set];
+  return { subject, setSubject };
 };
