@@ -13,7 +13,7 @@ const useSubscribeTo = <T>(
   error?: (err: any) => void,
   complete?: () => void
 ): Subscription => {
-  const subscription = observable.subscribe(next, error, complete);
+  const subscription = observable.subscribe({ next, error, complete });
   onBeforeUnmount(() => {
     subscription.unsubscribe();
   });
