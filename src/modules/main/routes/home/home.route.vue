@@ -135,15 +135,15 @@
         }
       ];
 
-      const [search$, setSearch$] = useSubject<string>();
+      const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
       const featuresResult = useObservable<Feature[]>(
         search$.pipe(
           debounceTime(300),
           filter(query => !query || query.length >= 3 || query.length === 0),
           distinctUntilChanged(),
-          map(query => query.toLowerCase()),
+          map(query => query?.toLowerCase()),
           tap(query => {
-            searchStorage.value.query = query;
+            searchStorage.value.query = query ?? '';
           }),
           map(query =>
             features.filter((feat: Feature) => {
