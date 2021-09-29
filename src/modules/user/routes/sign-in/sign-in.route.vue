@@ -3,7 +3,7 @@
     <form>
       <input v-model="email" name="email" placeholder="Email" required />
       <input v-model="password" name="password" placeholder="Password" required type="password" />
-      <button color="pink"  @click="submit">Sign-in</button>
+      <button color="pink" @click="submit">Sign-in</button>
     </form>
   </div>
 </template>
