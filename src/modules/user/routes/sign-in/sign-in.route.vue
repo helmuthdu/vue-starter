@@ -1,9 +1,9 @@
 <template>
   <div>
     <form>
-      <input v-model="email" placeholder="Email" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <button color="pink" @click="submit">Sign-in</button>
+      <input v-model="email" name="email" placeholder="Email" required />
+      <input v-model="password" name="password" placeholder="Password" required type="password" />
+      <button color="pink"  @click="submit">Sign-in</button>
     </form>
   </div>
 </template>
