@@ -1,3 +1,3 @@
 {
-  "reject": ["babel-jest", "jest", "ts-jest"]
+  "reject": ["@types/jest", "babel-jest", "jest", "ts-jest"]
 }
