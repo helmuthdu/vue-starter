@@ -20,7 +20,7 @@ enum TypeSymbol {
 
 const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
 
-const _updateCustomProps = (values: ContextData, props: ContextData) => {
+const _updateContextData = (values: ContextData, props: ContextData) => {
   Object.entries(values).forEach(([key, val]) => {
     if (val === undefined) {
       delete props[key];
@@ -32,6 +32,13 @@ const _updateCustomProps = (values: ContextData, props: ContextData) => {
 
 const _generateId = (options: any): string => {
   return `${JSON.stringify(options)}`;
+};
+
+const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
+  const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+  url.shift();
+  const elapsed = Math.floor(Date.now() - time);
+  Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
 const _makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> => {
@@ -62,22 +69,15 @@ const _makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =
   return _activeRequests[id].request;
 };
 
-const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
-  const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
-  url.shift();
-  const elapsed = Math.floor(Date.now() - time);
-  Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
-};
-
 export const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   const time = Date.now();
   return axios(config)
     .then((res: AxiosResponse<T>) => {
-      log('success', config, res.data, time);
+      _log('success', config, res.data, time);
       return res;
     })
     .catch((error: AxiosError<T>) => {
-      log('error', config, error, time);
+      _log('error', config, error, time);
       throw error;
     })
     .finally(() => {
@@ -94,7 +94,7 @@ export const Http = {
   }: {
     contexts?: Record<string, ContextProps>;
     defaultContext: string;
-  }) {
+  }): void {
     _contexts = contexts;
     _defaultContext = defaultContext;
   },
@@ -114,10 +114,10 @@ export const Http = {
     return _makeRequest<T>({ url, method: 'delete', ...config });
   },
   setHeaders(headers: ContextData, context = _defaultContext): void {
-    _updateCustomProps(headers, _contexts[context].headers as ContextData);
+    _updateContextData(headers, _contexts[context].headers as ContextData);
   },
   setParams(params: ContextData, context = _defaultContext): void {
-    _updateCustomProps(params, _contexts[context].params as ContextData);
+    _updateContextData(params, _contexts[context].params as ContextData);
   },
   setUrl(url: string, context = _defaultContext): void {
     _contexts[context].url = url;
@@ -125,7 +125,7 @@ export const Http = {
   formatUrl(url: string, context = _defaultContext): string {
     return `${_contexts[context].url}/${url}`;
   },
-  setDefaultContext(name: string) {
+  setDefaultContext(name: string): void {
     _defaultContext = name;
   }
 };
