@@ -10,25 +10,12 @@ type ContextProps = {
   params?: ContextData;
 };
 
-let _contexts: Record<string, ContextProps> = {};
-let _defaultContext = 'api';
-
 enum TypeSymbol {
   success = '✓',
   error = '✕'
 }
 
 const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
-
-const _updateContextData = (values: ContextData, props: ContextData) => {
-  Object.entries(values).forEach(([key, val]) => {
-    if (val === undefined) {
-      delete props[key];
-    } else {
-      props[key] = val;
-    }
-  });
-};
 
 const _generateId = (options: any): string => {
   return `${JSON.stringify(options)}`;
@@ -41,7 +28,7 @@ const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unkno
   Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
-const _makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> => {
+const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
   const { id = _generateId(config), headers, params, cancelable, ...cfg } = config;
 
   if (_activeRequests[id] && cancelable) {
@@ -52,14 +39,13 @@ const _makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> =
   if (!_activeRequests[id]) {
     const controller = axios.CancelToken.source();
 
-    const [ctx] = Object.entries(_contexts).find(([_key, ctx]) => config.url?.includes(ctx.url)) ?? [];
-
     const request = fetcher(
       Object.assign({}, cfg, {
         cancelToken: controller.token,
-        headers: ctx && _contexts[ctx].headers ? { ..._contexts[ctx].headers, ...headers } : headers,
-        params: ctx && _contexts[ctx].params ? { ..._contexts[ctx].params, ...params } : params,
-        paramsSerializer: (parameters: Record<string, string>) => new URLSearchParams(parameters).toString()
+        headers: context?.headers ? { ...context.headers, ...headers } : headers,
+        params: context?.params ? { ...context.params, ...params } : params,
+        paramsSerializer: (parameters: Record<string, string>) => new URLSearchParams(parameters).toString(),
+        url: context?.url ? `${context.url}/${config.url}` : config.url
       }),
       id
     );
@@ -87,45 +73,22 @@ export const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<Axi
     });
 };
 
-export const Http = {
-  initialize({
-    contexts = _contexts,
-    defaultContext = _defaultContext
-  }: {
-    contexts?: Record<string, ContextProps>;
-    defaultContext: string;
-  }): void {
-    _contexts = contexts;
-    _defaultContext = defaultContext;
-  },
+export const createHttpService = (context?: ContextProps) => ({
   get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'get', ...config });
+    return _makeRequest<T>({ url, method: 'get', ...config }, context);
   },
   post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'post', ...config });
+    return _makeRequest<T>({ url, method: 'post', ...config }, context);
   },
   put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'put', ...config });
+    return _makeRequest<T>({ url, method: 'put', ...config }, context);
   },
   patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'patch', ...config });
+    return _makeRequest<T>({ url, method: 'patch', ...config }, context);
   },
   delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'delete', ...config });
-  },
-  setHeaders(headers: ContextData, context = _defaultContext): void {
-    _updateContextData(headers, _contexts[context].headers as ContextData);
-  },
-  setParams(params: ContextData, context = _defaultContext): void {
-    _updateContextData(params, _contexts[context].params as ContextData);
-  },
-  setUrl(url: string, context = _defaultContext): void {
-    _contexts[context].url = url;
-  },
-  formatUrl(url: string, context = _defaultContext): string {
-    return `${_contexts[context].url}/${url}`;
-  },
-  setDefaultContext(name: string): void {
-    _defaultContext = name;
+    return _makeRequest<T>({ url, method: 'delete', ...config }, context);
   }
-};
+});
+
+export const Http = createHttpService();
