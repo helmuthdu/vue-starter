@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
+import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, CancelTokenSource } from 'axios';
 import { Logger } from './logger.util';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
@@ -6,7 +6,7 @@ export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?:
 type ContextData = Record<string, string | number | undefined>;
 type ContextProps = {
   url: string;
-  headers?: ContextData;
+  headers?: AxiosRequestHeaders;
   params?: ContextData;
 };
 
@@ -55,14 +55,14 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
   return _activeRequests[id].request;
 };
 
-export const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
+export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   const time = Date.now();
   return axios(config)
-    .then((res: AxiosResponse<T>) => {
+    .then(res => {
       _log('success', config, res.data, time);
-      return res;
+      return res as AxiosResponse<T>;
     })
-    .catch((error: AxiosError<T>) => {
+    .catch(error => {
       _log('error', config, error, time);
       throw error;
     })
@@ -88,6 +88,17 @@ export const createHttpService = (context?: ContextProps) => ({
   },
   delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
     return _makeRequest<T>({ url, method: 'delete', ...config }, context);
+  },
+  setHeaders(headers: Record<string, string | undefined>): void {
+    Object.entries(headers).forEach(([key, val]) => {
+      if (context?.headers) {
+        if (val === undefined) {
+          delete context.headers[key];
+        } else {
+          context.headers[key] = val;
+        }
+      }
+    });
   }
 });
 
