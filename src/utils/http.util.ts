@@ -1,99 +1,108 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
+import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, CancelTokenSource } from 'axios';
 import { Logger } from './logger.util';
 import { hideProgressBar, showProgressBar } from './progress-bar.util';
 
-export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean; customHeaders?: boolean };
+export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
+
+type ContextData = Record<string, string | number | undefined>;
+type ContextProps = {
+  url: string;
+  headers?: AxiosRequestHeaders;
+  params?: ContextData;
+};
 
 enum TypeSymbol {
   success = '✓',
   error = '✕'
 }
 
-const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time: number) => {
+const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
+
+const _generateId = (options: any): string => {
+  return `${JSON.stringify(options)}`;
+};
+
+const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
   const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
   url.shift();
   const elapsed = Math.floor(Date.now() - time);
   Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
-const activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
+const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
+  const { id = _generateId(config), headers, params, cancelable, ...cfg } = config;
 
-const defaultHeaders = {
-  'Content-Type': 'application/json'
-};
-
-const customHeadersProps: Record<string, string | number> = {};
-
-const generateId = (options: any): string => {
-  return `${JSON.stringify(options)}`;
-};
-
-const makeRequest = <T>(config: HttpRequestConfig): Promise<AxiosResponse<T>> => {
-  const { id = generateId(config), headers = defaultHeaders, cancelable, customHeaders = true, ...cfg } = config;
-
-  if (activeRequests[id] && cancelable) {
-    activeRequests[id].controller.cancel();
-    delete activeRequests[id];
+  if (_activeRequests[id] && cancelable) {
+    _activeRequests[id].controller.cancel();
+    delete _activeRequests[id];
   }
 
-  if (!activeRequests[id]) {
+  if (!_activeRequests[id]) {
     const controller = axios.CancelToken.source();
+
     const request = fetcher(
       Object.assign({}, cfg, {
         cancelToken: controller.token,
-        headers: customHeaders ? { ...customHeadersProps, ...headers } : headers
+        headers: context?.headers ? { ...context.headers, ...headers } : headers,
+        params: context?.params ? { ...context.params, ...params } : params,
+        paramsSerializer: (parameters: Record<string, string>) => new URLSearchParams(parameters).toString(),
+        url: context?.url ? `${context.url}/${config.url}` : config.url
       }),
       id
     );
-    activeRequests[id] = { request, controller };
+    _activeRequests[id] = { request, controller };
   }
 
-  return activeRequests[id].request;
+  return _activeRequests[id].request;
 };
 
-const fetcher = <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
+export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   showProgressBar();
   const time = Date.now();
   return axios(config)
-    .then((res: AxiosResponse<T>) => {
-      log('success', config, res.data, time);
-      return res;
+    .then(res => {
+      _log('success', config, res.data, time);
+      return res as AxiosResponse<T>;
     })
-    .catch((error: AxiosError<T>) => {
-      log('error', config, error, time);
+    .catch(error => {
+      _log('error', config, error, time);
       throw error;
     })
     .finally(() => {
       if (id) {
-        delete activeRequests[id];
+        delete _activeRequests[id];
       }
       hideProgressBar();
     });
 };
 
-export const Http = {
+export const createHttpService = (context?: ContextProps) => ({
   get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return makeRequest<T>({ url, method: 'get', ...config });
+    return _makeRequest<T>({ url, method: 'get', ...config }, context);
   },
   post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return makeRequest<T>({ url, method: 'post', ...config });
+    return _makeRequest<T>({ url, method: 'post', ...config }, context);
   },
   put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return makeRequest<T>({ url, method: 'put', ...config });
+    return _makeRequest<T>({ url, method: 'put', ...config }, context);
   },
   patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return makeRequest<T>({ url, method: 'patch', ...config });
+    return _makeRequest<T>({ url, method: 'patch', ...config }, context);
   },
   delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return makeRequest<T>({ url, method: 'delete', ...config });
+    return _makeRequest<T>({ url, method: 'delete', ...config }, context);
   },
-  setCustomHeaders(headers: Record<string, string | number | undefined>): void {
+  setHeaders(headers: Record<string, string | undefined>): void {
     Object.entries(headers).forEach(([key, val]) => {
-      if (val === undefined) {
-        delete customHeadersProps[key];
-      } else {
-        customHeadersProps[key] = val;
+      if (context?.headers) {
+        if (val === undefined) {
+          delete context.headers[key];
+        } else {
+          context.headers[key] = val;
+        }
       }
     });
   }
-};
+});
+
+export const Http = createHttpService();
