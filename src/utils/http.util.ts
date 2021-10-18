@@ -6,7 +6,7 @@ export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?:
 
 type ContextData = Record<string, string | number | undefined>;
 type ContextProps = {
-  url: string;
+  url?: string;
   headers?: AxiosRequestHeaders;
   params?: ContextData;
 };
@@ -105,4 +105,4 @@ export const createHttpService = (context?: ContextProps) => ({
   }
 });
 
-export const Http = createHttpService();
+export const Http = createHttpService({ headers: {} });
