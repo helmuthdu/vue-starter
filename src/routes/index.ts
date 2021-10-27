@@ -1,4 +1,4 @@
-import { isLanguageSupported, loadTranslationsAsync, LocaleLanguages } from '@/locales';
+import { isLanguageSupported, loadTranslationsAsync, Locale, locales } from '@/locales';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
@@ -17,13 +17,13 @@ export const router: Router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: { path: `/${LocaleLanguages.English}/` }
+      redirect: { path: `/${locales.english}/` }
     },
     {
       path: '/:locale',
       component: DefaultLayout,
       beforeEnter: (to, from, next) => {
-        const locale = to.params.locale as LocaleLanguages;
+        const locale = to.params.locale as Locale;
         if (isLanguageSupported(locale)) {
           loadTranslationsAsync(locale)
             .then(() => {

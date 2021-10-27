@@ -2,31 +2,33 @@ import { createI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { getStorageItem, Http, setStorageItem } from '@/utils';
 
-export enum LocaleLanguages {
-  English = 'en-US'
-}
+export type Locale = typeof locales[keyof typeof locales];
 
-const currentLocale = ref<LocaleLanguages | undefined>(undefined);
+export const locales = {
+  english: 'en-US'
+} as const;
+
+const currentLocale = ref<Locale | undefined>(undefined);
 
 const STORAGE_KEY = 'locale';
 
 export const i18n = createI18n({
   globalInjection: true,
-  locale: LocaleLanguages.English,
-  fallbackLocale: LocaleLanguages.English,
+  locale: locales.english,
+  fallbackLocale: locales.english,
   messages: getStorageItem(STORAGE_KEY, {})
 });
 
-export const setLanguage = (lang: LocaleLanguages): string => {
-  i18n.global.locale = lang;
-  Http.setHeaders({ 'Accept-Language': lang });
-  (document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
-  return lang;
+export const setLanguage = (locale: Locale): string => {
+  i18n.global.locale = locale;
+  Http.setHeaders({ 'Accept-Language': locale });
+  (document.querySelector('html') as HTMLElement).setAttribute('lang', locale);
+  return locale;
 };
 
-export const isLanguageSupported = (lang: LocaleLanguages): boolean => Object.values(LocaleLanguages).includes(lang);
+export const isLanguageSupported = (lang: Locale): boolean => Object.values(locales).includes(lang);
 
-export const loadTranslationsAsync = async (locale: LocaleLanguages = LocaleLanguages.English): Promise<void> => {
+export const loadTranslationsAsync = async (locale: Locale = locales.english): Promise<void> => {
   if (i18n.global.locale === currentLocale.value) {
     return;
   }
