@@ -33,12 +33,12 @@ export const loadTranslationsAsync = async (locale: Locale = locales.english): P
     return;
   }
 
-  const message = await Http.get<Record<string, string>>(`/locales/${locale}.json`);
+  const message = (await Http.get<Record<string, string>>(`/locales/${locale}.json`)).data;
   if (!message) {
     throw new Error('Empty translation file');
   }
-  i18n.global.setLocaleMessage(locale, message.data);
-  setStorageItem(STORAGE_KEY, message);
+  i18n.global.setLocaleMessage(locale, message);
+  setStorageItem(STORAGE_KEY, { ...getStorageItem(STORAGE_KEY, {}), [locale]: message });
   currentLocale.value = locale;
   setLanguage(locale);
 };
