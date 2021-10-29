@@ -30,9 +30,9 @@ export const configureLocale = (locale: Locale): Locale => {
 export const isLanguageSupported = (lang: Locale): boolean => Object.values(locales).includes(lang);
 
 export const loadTranslations = async (locale: Locale = locales.english): Promise<void> => {
-  const storageLocale = getLocaleStorage();
+  const localeStorage = getLocaleStorage();
 
-  if (storageLocale.locale === locale && storageLocale.version === APP_VERSION) {
+  if (localeStorage.locale === locale && localeStorage.version === APP_VERSION) {
     return;
   }
 
@@ -40,20 +40,24 @@ export const loadTranslations = async (locale: Locale = locales.english): Promis
     throw new Error('Locale not supported');
   }
 
-  const messages = (await import(`./messages/${locale}.json`)).default;
-
-  if (!messages) {
-    throw new Error('Empty translations file');
-  }
-
-  setStorageItem(STORAGE_KEY, {
-    version: APP_VERSION,
-    locale,
-    messages: { ...storageLocale?.messages, [locale]: messages }
-  });
-
-  i18n.global.setLocaleMessage(locale, messages);
   configureLocale(locale);
+
+  if (localeStorage.messages[locale] && localeStorage.version === APP_VERSION) {
+    setStorageItem(STORAGE_KEY, { ...localeStorage, locale });
+    i18n.global.setLocaleMessage(locale, localeStorage.messages[locale]);
+  } else {
+    import(`./messages/${locale}.json`).then(({ default: messages }) => {
+      if (!messages) {
+        throw new Error('Empty translations file');
+      }
+      setStorageItem(STORAGE_KEY, {
+        locale,
+        messages: { ...localeStorage.messages, [locale]: messages },
+        version: APP_VERSION
+      });
+      i18n.global.setLocaleMessage(locale, messages);
+    });
+  }
 };
 
 export default i18n;
