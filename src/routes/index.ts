@@ -1,4 +1,4 @@
-import { isLanguageSupported, loadTranslations, Locale, locales } from '@/locales';
+import { loadTranslations, Locale, locales } from '@/locales';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
 import { store } from '@/stores';
@@ -23,18 +23,13 @@ export const router: Router = createRouter({
       path: '/:locale',
       component: DefaultLayout,
       beforeEnter: (to, from, next) => {
-        const locale = to.params.locale as Locale;
-        if (isLanguageSupported(locale)) {
-          loadTranslations(locale)
-            .then(() => {
-              next();
-            })
-            .catch(() => {
-              next({ name: '404' });
-            });
-        } else {
-          next({ name: '404' });
-        }
+        loadTranslations(to.params.locale as Locale)
+          .then(() => {
+            next();
+          })
+          .catch(() => {
+            next({ name: '404' });
+          });
       },
       children: [...routes]
     },
