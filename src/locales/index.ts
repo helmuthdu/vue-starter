@@ -11,7 +11,8 @@ export const locales = {
   english: 'en-US'
 } as const;
 
-const getLocaleStorage = () => getStorageItem<LocaleStorage>(STORAGE_KEY) ?? {};
+const getLocaleStorage = () =>
+  getStorageItem<LocaleStorage>(STORAGE_KEY) ?? { locale: undefined, messages: {}, version: undefined };
 
 export const i18n = createI18n({
   globalInjection: true,
