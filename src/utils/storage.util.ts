@@ -1,7 +1,7 @@
 import { Logger } from './logger.util';
 
 const generatePrefix = (): string => {
-  const appName = process.env.VUE_APP_NAME ?? '_app';
+  const appName = process.env.VUE_APP_NAME ?? 'webapp';
   const environment = process.env.NODE_ENV ?? 'development';
   return `${appName}_${environment.substr(0, 3)}`;
 };
