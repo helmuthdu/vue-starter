@@ -1,4 +1,4 @@
-import { isLanguageSupported, loadTranslationsAsync, LocaleLanguages } from '@/locales';
+import { loadTranslations, Locale, locales } from '@/locales';
 import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 import { paths, routes } from '@/modules';
 import { UserActionTypes } from '@/modules/user/stores/modules/user';
@@ -18,24 +18,19 @@ export const router: Router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: { path: `/${LocaleLanguages.English}/` }
+      redirect: { path: `/${locales.english}/` }
     },
     {
       path: '/:locale',
       component: DefaultLayout,
       beforeEnter: (to, from, next) => {
-        const locale = to.params.locale as LocaleLanguages;
-        if (isLanguageSupported(locale)) {
-          loadTranslationsAsync(locale)
-            .then(() => {
-              next();
-            })
-            .catch(() => {
-              next({ name: '404' });
-            });
-        } else {
-          next({ name: '404' });
-        }
+        loadTranslations(to.params.locale as Locale)
+          .then(() => {
+            next();
+          })
+          .catch(() => {
+            next({ name: '404' });
+          });
       },
       children: [...routes]
     },
