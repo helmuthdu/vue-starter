@@ -1,8 +1,7 @@
 import { loadTranslations, Locale, locales } from '@/locales';
-import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 import { paths, routes } from '@/modules';
-import { UserActionTypes } from '@/modules/user/stores/modules/user';
-import { store } from '@/stores';
+import { useStore } from '@/stores';
+import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
 
@@ -55,9 +54,9 @@ export const router: Router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   showProgressBar();
-  const isLoggedIn = store.getters[UserActionTypes.IS_LOGGED_IN];
+  const store = useStore('user');
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  requiresAuth && !isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
+  requiresAuth && !store.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
 });
 
 router.afterEach(() => {

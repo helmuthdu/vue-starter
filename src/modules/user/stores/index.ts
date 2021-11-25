@@ -1,3 +1,3 @@
-import * as user from './modules/user';
+import * as user from './user.store';
 
 export { user };

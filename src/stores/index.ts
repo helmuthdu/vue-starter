@@ -1,14 +1,12 @@
-import { State, stores } from '@/modules';
-import { createLogger, createStore } from 'vuex';
-import { RootState, rootStore } from './root';
+import * as userModule from '../modules/user/stores';
 
-export type AppState = RootState & State;
+type StoreName = userModule.user.Name;
 
-export const store = createStore<AppState>({
-  plugins: [createLogger()],
-  state: rootStore.state as any,
-  getters: rootStore.getters,
-  mutations: rootStore.mutations,
-  actions: rootStore.actions,
-  modules: stores
-});
+export const useStore = (name: StoreName) => {
+  switch (name) {
+    case 'user':
+      return userModule.user.useStore();
+    default:
+      throw new Error('Store not found');
+  }
+};

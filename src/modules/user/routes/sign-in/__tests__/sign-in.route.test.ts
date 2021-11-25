@@ -1,19 +1,12 @@
 import { mount, VueWrapper } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-import { State, UserActionTypes } from '@/modules/user/stores/modules/user';
+import { createPinia } from 'pinia';
 import SignInRoute from '../sign-in.route.vue';
 
 describe('Auth/Route -> SignIn', () => {
-  let store: Store<State>;
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      actions: {
-        [UserActionTypes.SIGN_IN]: jest.fn()
-      }
-    });
-    wrapper = mount(SignInRoute, { global: { plugins: [store] } });
+    wrapper = mount(SignInRoute, { global: { plugins: [createPinia()] } });
   });
 
   it('should renders with props', () => {
