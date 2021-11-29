@@ -1,5 +1,5 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
-import { User, UserSchema } from '@/modules/user/models/user';
+import { User, UserSchema } from '@/modules/user/entities/user';
 import { defineStore } from 'pinia';
 
 enum RequestErrorType {
