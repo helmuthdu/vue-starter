@@ -28,7 +28,7 @@ export type Name = typeof name;
 
 const name = 'user' as const;
 
-export const useStore = defineStore<Name, State, Getter, Action>(name, {
+export const store = defineStore<Name, State, Getter, Action>(name, {
   state: () => ({
     entity: User.create(),
     status: 'idle',

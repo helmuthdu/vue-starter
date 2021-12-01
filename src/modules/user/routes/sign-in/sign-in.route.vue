@@ -27,7 +27,8 @@
 
       return {
         email,
-        password
+        password,
+        submit
       };
     }
   });
