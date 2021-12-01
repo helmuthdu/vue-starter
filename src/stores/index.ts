@@ -6,7 +6,7 @@ export type AppState = RootState & State;
 
 export const store = createStore<AppState>({
   plugins: [createLogger()],
-  state: rootStore.state as any,
+  state: rootStore.state as AppState,
   getters: rootStore.getters,
   mutations: rootStore.mutations,
   actions: rootStore.actions,

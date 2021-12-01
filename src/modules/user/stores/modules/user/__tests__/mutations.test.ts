@@ -1,27 +1,23 @@
-import { mutations } from '../mutations';
-import { state, State } from '../state';
-import { UserActionTypes } from '../types';
+import { ActionTypes, initialState, State, store } from '../user.store';
 
 describe('user/store -> reducer', () => {
-  let authState: State;
+  let state: State;
 
   beforeEach(() => {
-    authState = { ...state() };
+    state = { ...initialState };
   });
 
   it('should handle the initial state', () => {
-    mutations[UserActionTypes.SET_USER](authState, {});
+    (store.mutations as any)[ActionTypes.SET_STATE](state, {} as State);
 
-    expect(authState).toEqual(state());
+    expect(state).toEqual(initialState);
   });
 
-  it(`should handle ${UserActionTypes.SET_USER}`, () => {
-    mutations[UserActionTypes.SET_USER](authState, {
-      username: 'user_name',
+  it(`should handle ${ActionTypes.SET_ENTITY}`, () => {
+    (store.mutations as any)[ActionTypes.SET_ENTITY](state, {
       email: 'user_email',
-      token: 'user_token',
-      isLoggedIn: true
+      token: 'user_token'
     });
-    expect(authState.isLoggedIn).toEqual(true);
+    expect(state.entity.email).toEqual('user_email');
   });
 });

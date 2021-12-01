@@ -1,28 +1,26 @@
-import { UserActionTypes } from '../types';
-import { actions } from '../actions';
-import { mutations } from '../mutations';
-import { state, State } from '../state';
+import { ActionTypes, initialState, State, store } from '../user.store';
 
 describe('user/store -> actions', () => {
-  const authState: State = state();
+  const state: State = initialState;
 
-  const commit = (type: string, payload: any) => {
-    const mutation = mutations[type];
+  const commit = (type: ActionTypes, payload: any) => {
+    const mutation = (store.mutations as any)[type];
     expect(mutation).toBeDefined();
-    mutation(authState, { ...payload });
+    mutation(state, { ...payload });
   };
 
-  it(`should handle ${UserActionTypes.SIGN_IN}`, async () => {
+  it(`should handle sign-in`, async () => {
     // apply mutation
-    await actions[UserActionTypes.SIGN_IN]({ commit } as any, { username: 'helmuthdu', email: 'helmuthdu@gmail.com' });
+    await (store.actions as any).signIn({ commit } as any, { email: 'helmuthdu@gmail.com', password: 'secret' });
     // assert result
-    expect(authState.isLoggedIn).toBe(true);
+    console.log('state', state);
+    expect(!!state.entity.token).toBe(true);
   });
 
-  it(`should handle ${UserActionTypes.SIGN_OUT}`, () => {
+  it(`should handle sign-out`, () => {
     // apply mutation
-    actions[UserActionTypes.SIGN_OUT]({ commit } as any);
+    (store.actions as any).signOut({ commit } as any);
     // assert result
-    expect(authState.isLoggedIn).toBe(false);
+    expect(!!state.entity.token).toBe(false);
   });
 });

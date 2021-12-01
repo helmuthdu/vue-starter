@@ -1,9 +1,13 @@
 import { routes } from './routes';
 import { paths } from './routes/paths';
-import * as stores from './stores';
+import * as store from './stores';
 
 export type State = Readonly<{
-  user: stores.user.State;
+  user: store.user.State;
 }>;
+
+const stores = {
+  user: store.user.store
+};
 
 export { paths, routes, stores };
