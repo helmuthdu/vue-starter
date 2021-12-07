@@ -1,6 +1,7 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
-import { defineStore } from 'pinia';
+import { action, computed, map } from 'nanostores';
+import { useStore } from '@nanostores/vue/use-store';
 
 enum RequestErrorType {
   UserAlreadyExists = 'USER_ALREADY_EXISTS',
@@ -10,67 +11,67 @@ enum RequestErrorType {
 
 export type State = {
   entity: UserSchema;
-  status: 'idle' | 'pending' | 'completed';
+  status: 'idle' | 'pending';
   error?: RequestErrorType;
 };
 
-export type Getter = {
-  isLoggedIn(state: State): boolean;
-};
+export const state = map<State>({
+  entity: {} as UserSchema,
+  status: 'idle',
+  error: undefined
+});
 
-export type Action = {
-  signIn(payload: UserRequest): Promise<void>;
-  signUp(payload: UserRequest): Promise<void>;
-  signOut(): void;
-};
-
-export type Name = typeof name;
-
-const name = 'user' as const;
-
-export const store = defineStore<Name, State, Getter, Action>(name, {
-  state: () => ({
-    entity: User.create(),
-    status: 'idle',
-    error: undefined
-  }),
-  getters: {
-    isLoggedIn: state => !!state.entity.token
-  },
-  actions: {
-    async signUp(payload: UserRequest) {
-      this.status = 'pending';
-      try {
-        this.entity = User.create((await userApi.signUp(payload)).data);
-        this.error = undefined;
-        this.status = 'completed';
-      } catch (err) {
-        this.entity = User.create();
-        this.status = 'idle';
-        this.error = RequestErrorType.UserAlreadyExists;
-      }
-    },
-    async signIn(payload: UserRequest) {
-      this.status = 'pending';
-      try {
-        this.entity = User.create((await userApi.signIn(payload)).data);
-        this.error = undefined;
-        this.status = 'completed';
-      } catch (err: any) {
-        this.entity = User.create();
-        this.status = 'idle';
-        switch (err.status) {
-          case 409:
-            this.error = RequestErrorType.UserNotFound;
-            break;
-          default:
-            this.error = RequestErrorType.UserInvalid;
-            break;
-        }
-      }
-    },
-    signOut() {
-      this.$reset();
+export const actions = {
+  signUp: action(state, 'signUp', async (store, payload: UserRequest) => {
+    store.setKey('status', 'pending');
+    try {
+      store.set({
+        entity: User.create((await userApi.signUp(payload)).data),
+        status: 'idle',
+        error: undefined
+      });
+    } catch (err) {
+      store.set({
+        entity: {} as UserSchema,
+        status: 'idle',
+        error: RequestErrorType.UserAlreadyExists
+      });
     }
-  }
+    return store.get();
+  }),
+  signIn: action(state, 'signIn', async (store, payload: UserRequest) => {
+    store.setKey('status', 'pending');
+    try {
+      store.set({
+        entity: User.create((await userApi.signIn(payload)).data),
+        status: 'idle',
+        error: undefined
+      });
+    } catch (err: any) {
+      store.set({
+        entity: {} as UserSchema,
+        status: 'idle',
+        error: err.status === 409 ? RequestErrorType.UserNotFound : RequestErrorType.UserInvalid
+      });
+    }
+    return store.get();
+  }),
+  signOut: action(state, 'signOut', store => {
+    store.set({
+      entity: {} as UserSchema,
+      status: 'idle',
+      error: undefined
+    });
+    return store.get();
+  })
+};
+
+export const getters = {
+  isLoggedIn: computed(state, _state => !!_state.entity.token)
+};
+
+export const getStore = () => ({
+  state: useStore(state),
+  ...actions,
+  ...getters
 });

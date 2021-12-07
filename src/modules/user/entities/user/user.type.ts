@@ -1,4 +1,4 @@
-export interface UserSchema {
+export type UserSchema = {
   email: string;
   emailVerified?: boolean;
   id?: number;
@@ -10,4 +10,4 @@ export interface UserSchema {
   userName?: string;
   googleId?: string;
   facebookId?: string;
-}
+};
