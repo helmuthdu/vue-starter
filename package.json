@@ -12,6 +12,7 @@
     "lint:style": "stylelint src/**/*.{css,scss,vue}"
   },
   "dependencies": {
+    "@nanostores/persistent": "^0.5.0",
     "@nanostores/vue": "^0.5.0",
     "axios": "^0.24.0",
     "bulma": "^0.9.3",

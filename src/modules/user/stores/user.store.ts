@@ -1,7 +1,8 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { action, computed, map } from 'nanostores';
-import { useStore } from '@nanostores/vue/use-store';
+import { useStore as _useStore } from '@nanostores/vue/use-store';
+import { Getters } from '@/shims-vue';
 
 enum RequestErrorType {
   UserAlreadyExists = 'USER_ALREADY_EXISTS',
@@ -15,14 +16,14 @@ export type State = {
   error?: RequestErrorType;
 };
 
-export const state = map<State>({
+const _state = map<State>({
   entity: {} as UserSchema,
   status: 'idle',
   error: undefined
 });
 
 export const actions = {
-  signUp: action(state, 'signUp', async (store, payload: UserRequest) => {
+  signUp: action(_state, 'signUp', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
     try {
       store.set({
@@ -39,7 +40,7 @@ export const actions = {
     }
     return store.get();
   }),
-  signIn: action(state, 'signIn', async (store, payload: UserRequest) => {
+  signIn: action(_state, 'signIn', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
     try {
       store.set({
@@ -56,7 +57,7 @@ export const actions = {
     }
     return store.get();
   }),
-  signOut: action(state, 'signOut', store => {
+  signOut: action(_state, 'signOut', store => {
     store.set({
       entity: {} as UserSchema,
       status: 'idle',
@@ -67,11 +68,15 @@ export const actions = {
 };
 
 export const getters = {
-  isLoggedIn: computed(state, _state => !!_state.entity.token)
+  isLoggedIn: computed(_state, state => !!state.entity.token),
+  getEmail: computed(_state, state => state.entity.email)
 };
 
-export const getStore = () => ({
-  state: useStore(state),
-  ...actions,
-  ...getters
+export const useStore = () => ({
+  state: _useStore(_state),
+  ...Object.entries(getters).reduce(
+    (acc, [key, val]) => ({ ...acc, [key]: _useStore(val) }),
+    {} as Getters<typeof getters>
+  ),
+  ...actions
 });
