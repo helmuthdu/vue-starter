@@ -1,8 +1,8 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { action, computed, map } from 'nanostores';
-import { useStore as _useStore } from '@nanostores/vue/use-store';
-import { Getters } from '@/shims-vue';
+import { useStore as _useStore } from '@nanostores/vue';
+import { GettersRef } from '@/shims-vue';
 
 enum RequestErrorType {
   UserAlreadyExists = 'USER_ALREADY_EXISTS',
@@ -68,15 +68,14 @@ export const actions = {
 };
 
 export const getters = {
-  isLoggedIn: computed(_state, state => !!state.entity.token),
-  getEmail: computed(_state, state => state.entity.email)
+  isLoggedIn: computed(_state, state => !!state.entity.token)
 };
 
 export const useStore = () => ({
   state: _useStore(_state),
   ...Object.entries(getters).reduce(
     (acc, [key, val]) => ({ ...acc, [key]: _useStore(val) }),
-    {} as Getters<typeof getters>
+    {} as GettersRef<typeof getters>
   ),
   ...actions
 });

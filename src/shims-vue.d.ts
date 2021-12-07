@@ -28,7 +28,7 @@ type DeepPartial<T> = {
     : DeepPartial<T[P]>;
 };
 
-type Getters<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
+type GettersRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
 
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
