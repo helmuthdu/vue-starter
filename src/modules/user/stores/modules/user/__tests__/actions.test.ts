@@ -1,7 +1,7 @@
 import { ActionTypes, initialState, State, store } from '../user.store';
 
 describe('user/store -> actions', () => {
-  const state: State = initialState;
+  const state: State = { ...initialState };
 
   const commit = (type: ActionTypes, payload: any) => {
     const mutation = (store.mutations as any)[type];
@@ -13,7 +13,6 @@ describe('user/store -> actions', () => {
     // apply mutation
     await (store.actions as any).signIn({ commit } as any, { email: 'helmuthdu@gmail.com', password: 'secret' });
     // assert result
-    console.log('state', state);
     expect(!!state.entity.token).toBe(true);
   });
 

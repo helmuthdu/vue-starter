@@ -25,3 +25,7 @@ type DeepPartial<T> = {
     ? readonly DeepPartial<U>[]
     : DeepPartial<T[P]>;
 };
+
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];

@@ -9,14 +9,13 @@
 </template>
 
 <script lang="ts">
-  import { AppState } from '@/stores';
+  import { useStore } from '@/stores';
   import { defineComponent, ref } from 'vue';
-  import { useStore } from 'vuex';
 
   export default defineComponent({
     name: 'SignInRoute',
     setup() {
-      const store = useStore<AppState>();
+      const store = useStore();
       const email = ref('');
       const password = ref('');
 

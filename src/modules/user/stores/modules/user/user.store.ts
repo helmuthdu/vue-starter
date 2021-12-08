@@ -11,9 +11,9 @@ export enum ActionTypes {
 }
 
 enum RequestErrorType {
-  UserAlreadyExists = 'USER_ALREADY_EXISTS',
-  UserNotFound = 'USER_NOT_FOUND',
-  UserInvalid = 'USER_INVALID'
+  AlreadyExists = 'ALREADY_EXISTS',
+  NotFound = 'NOT_FOUND',
+  Invalid = 'INVALID'
 }
 
 type Status = 'idle' | 'pending' | 'completed';
@@ -47,7 +47,7 @@ export const store: Module<State, AppState> = {
       } catch (err) {
         commit(ActionTypes.SET_STATE, {
           entity: User.create(),
-          error: RequestErrorType.UserAlreadyExists,
+          error: RequestErrorType.AlreadyExists,
           status: 'idle'
         } as State);
       }
@@ -63,17 +63,13 @@ export const store: Module<State, AppState> = {
       } catch (err: any) {
         commit(ActionTypes.SET_STATE, {
           entity: User.create(),
-          error: err.status === 409 ? RequestErrorType.UserNotFound : RequestErrorType.UserInvalid,
+          error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
           status: 'idle'
         } as State);
       }
     },
     signOut({ commit }) {
-      commit(ActionTypes.SET_STATE, {
-        entity: User.create(),
-        status: 'idle',
-        error: undefined
-      } as State);
+      commit(ActionTypes.SET_STATE, initialState);
     }
   },
   mutations: {
