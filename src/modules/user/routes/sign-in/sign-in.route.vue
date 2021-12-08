@@ -5,6 +5,7 @@
       <input v-model="password" name="password" placeholder="Password" required type="password" />
       <button @click.prevent="submit">Sign-in</button>
     </form>
+    <template v-if="isLoggedIn"> User: {{ user.email }} </template>
   </div>
 </template>
 
@@ -15,12 +16,12 @@
   export default defineComponent({
     name: 'SignInRoute',
     setup() {
-      const store = useStore('user');
+      const store = useStore();
       const email = ref('');
       const password = ref('');
 
       const submit = () =>
-        store.signIn({
+        store.user.signIn({
           email: email.value,
           password: password.value
         });
@@ -28,7 +29,9 @@
       return {
         email,
         password,
-        submit
+        submit,
+        isLoggedIn: store.user.isLoggedIn,
+        user: store.user.entity
       };
     }
   });

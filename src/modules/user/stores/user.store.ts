@@ -3,9 +3,9 @@ import { User, UserSchema } from '@/modules/user/entities/user';
 import { defineStore } from 'pinia';
 
 enum RequestErrorType {
-  UserAlreadyExists = 'USER_ALREADY_EXISTS',
-  UserNotFound = 'USER_NOT_FOUND',
-  UserInvalid = 'USER_INVALID'
+  AlreadyExists = 'ALREADY_EXISTS',
+  NotFound = 'NOT_FOUND',
+  Invalid = 'INVALID'
 }
 
 export type State = {
@@ -28,49 +28,50 @@ export type Name = typeof name;
 
 const name = 'user' as const;
 
-export const store = defineStore<Name, State, Getter, Action>(name, {
+export const useStore = defineStore<Name, State, Getter, Action>(name, {
   state: () => ({
     entity: User.create(),
     status: 'idle',
     error: undefined
   }),
-  getters: {
-    isLoggedIn: state => !!state.entity.token
-  },
   actions: {
     async signUp(payload: UserRequest) {
-      this.status = 'pending';
+      this.$patch({ status: 'pending' });
       try {
-        this.entity = User.create((await userApi.signUp(payload)).data);
-        this.error = undefined;
-        this.status = 'completed';
-      } catch (err) {
-        this.entity = User.create();
-        this.status = 'idle';
-        this.error = RequestErrorType.UserAlreadyExists;
+        this.$patch({
+          entity: User.create((await userApi.signUp(payload)).data),
+          status: 'completed',
+          error: undefined
+        });
+      } catch (err: any) {
+        this.$patch({
+          entity: User.create(),
+          status: 'idle',
+          error: RequestErrorType.AlreadyExists
+        });
       }
     },
     async signIn(payload: UserRequest) {
-      this.status = 'pending';
+      this.$patch({ status: 'pending' });
       try {
-        this.entity = User.create((await userApi.signIn(payload)).data);
-        this.error = undefined;
-        this.status = 'completed';
+        this.$patch({
+          entity: User.create((await userApi.signIn(payload)).data),
+          status: 'completed',
+          error: undefined
+        });
       } catch (err: any) {
-        this.entity = User.create();
-        this.status = 'idle';
-        switch (err.status) {
-          case 409:
-            this.error = RequestErrorType.UserNotFound;
-            break;
-          default:
-            this.error = RequestErrorType.UserInvalid;
-            break;
-        }
+        this.$patch({
+          entity: User.create(),
+          status: 'idle',
+          error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid
+        });
       }
     },
     signOut() {
       this.$reset();
     }
+  },
+  getters: {
+    isLoggedIn: state => !!state.entity.token
   }
 });
