@@ -1,9 +1,10 @@
-import { loadTranslations, Locale, locales } from '@/locales';
+import { Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
 import { store } from '@/modules/user/stores/user.store';
 import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
 import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
+import { Logger } from '@/utils';
 
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,13 +24,13 @@ export const router: Router = createRouter({
       path: '/:locale',
       component: DefaultLayout,
       beforeEnter: (to, from, next) => {
-        loadTranslations(to.params.locale as Locale)
-          .then(() => {
-            next();
-          })
-          .catch(() => {
-            next({ name: '404' });
-          });
+        try {
+          setCurrentLocale(to.params.locale as Locale);
+          next();
+        } catch (err) {
+          Logger.error(err);
+          next({ name: '404' });
+        }
       },
       children: [...routes]
     },

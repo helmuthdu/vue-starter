@@ -8,7 +8,7 @@
           <li>
             <code>
               <router-link :to="{ name: 'about' }">
-                {{ $t('COMMON.ABOUT') }}
+                {{ t.about }}
               </router-link>
             </code>
           </li>
@@ -88,6 +88,7 @@
   import { useWorker } from '@/hooks/worker.hook';
   import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
   import { defineComponent } from 'vue';
+  import { useTranslations } from '@/locales';
 
   type Feature = { type: string; css: { name: string; url: string }[] };
 
@@ -169,12 +170,15 @@
       const { message, post } = useWorker('W1', resolve);
       post(43);
 
+      const t = useTranslations('home');
+
       return {
         features: featuresResult,
         onInput(evt: any) {
           setSearch$(evt.target.value);
         },
-        message
+        message,
+        t
       };
     }
   });

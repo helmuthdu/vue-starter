@@ -1,4 +1,4 @@
-const esModules = ['nanostores', '@nanostores/vue'].join('|');
+const esModules = ['nanostores', '@nanostores/i18n', '@nanostores/vue'].join('|');
 
 module.exports = {
   globals: {
