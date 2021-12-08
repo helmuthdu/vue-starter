@@ -2,64 +2,68 @@ import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { action, computed, map } from 'nanostores';
 import { useStore as _useStore } from '@nanostores/vue';
-import { GettersRef } from '@/shims-vue';
+import { ReadonlyObjectRef } from '@/env';
 
 enum RequestErrorType {
-  UserAlreadyExists = 'USER_ALREADY_EXISTS',
-  UserNotFound = 'USER_NOT_FOUND',
-  UserInvalid = 'USER_INVALID'
+  AlreadyExists = 'ALREADY_EXISTS',
+  NotFound = 'NOT_FOUND',
+  Invalid = 'INVALID'
 }
 
 export type State = {
   entity: UserSchema;
-  status: 'idle' | 'pending';
+  status: 'idle' | 'pending' | 'completed';
   error?: RequestErrorType;
 };
 
-const _state = map<State>({
-  entity: {} as UserSchema,
+export const state = map<State>({
+  entity: User.create(),
   status: 'idle',
   error: undefined
 });
 
+export const getters = {
+  isLoggedIn: computed(state, s => !!s.entity.token)
+};
+
 export const actions = {
-  signUp: action(_state, 'signUp', async (store, payload: UserRequest) => {
+  signUp: action(state, 'signUp', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
     try {
       store.set({
         entity: User.create((await userApi.signUp(payload)).data),
-        status: 'idle',
+        status: 'completed',
         error: undefined
       });
     } catch (err) {
       store.set({
-        entity: {} as UserSchema,
+        entity: User.create(),
         status: 'idle',
-        error: RequestErrorType.UserAlreadyExists
+        error: RequestErrorType.AlreadyExists
       });
     }
     return store.get();
   }),
-  signIn: action(_state, 'signIn', async (store, payload: UserRequest) => {
+  signIn: action(state, 'signIn', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
     try {
       store.set({
         entity: User.create((await userApi.signIn(payload)).data),
-        status: 'idle',
+        status: 'completed',
         error: undefined
       });
     } catch (err: any) {
       store.set({
-        entity: {} as UserSchema,
+        entity: User.create(),
         status: 'idle',
-        error: err.status === 409 ? RequestErrorType.UserNotFound : RequestErrorType.UserInvalid
+        error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid
       });
     }
     return store.get();
   }),
-  signOut: action(_state, 'signOut', store => {
+  signOut: action(state, 'signOut', store => {
     store.set({
-      entity: {} as UserSchema,
+      entity: User.create(),
       status: 'idle',
       error: undefined
     });
@@ -67,15 +71,17 @@ export const actions = {
   })
 };
 
-export const getters = {
-  isLoggedIn: computed(_state, state => !!state.entity.token)
+export const store = {
+  state,
+  ...getters,
+  ...actions
 };
 
 export const useStore = () => ({
-  state: _useStore(_state),
+  state: _useStore(state),
   ...Object.entries(getters).reduce(
     (acc, [key, val]) => ({ ...acc, [key]: _useStore(val) }),
-    {} as GettersRef<typeof getters>
+    {} as ReadonlyObjectRef<typeof getters>
   ),
   ...actions
 });

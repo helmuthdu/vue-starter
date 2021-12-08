@@ -13,12 +13,13 @@
     "strictPropertyInitialization": false,
     "allowJs": true,
     "sourceMap": true,
+    "useDefineForClassFields": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
     "resolveJsonModule": true,
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": ["esnext", "dom"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

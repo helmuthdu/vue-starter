@@ -1,8 +1,9 @@
-/* eslint-disable */
-import { DeepReadonly, Ref } from 'vue';
+/// <reference types="vite/client" />
+import type { DeepReadonly, Ref } from 'vue';
 
 declare module '*.vue' {
-  import type { DefineComponent } from 'vue';
+  import { DefineComponent } from 'vue';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
@@ -28,8 +29,8 @@ type DeepPartial<T> = {
     : DeepPartial<T[P]>;
 };
 
-type GettersRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
-
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
+
+type ReadonlyObjectRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
