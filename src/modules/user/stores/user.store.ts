@@ -73,15 +73,15 @@ export const actions = {
 
 export const store = {
   state,
-  ...getters,
-  ...actions
+  getters,
+  actions
 };
 
 export const useStore = () => ({
   state: _useStore(state),
-  ...Object.entries(getters).reduce(
+  getters: Object.entries(getters).reduce(
     (acc, [key, val]) => ({ ...acc, [key]: _useStore(val) }),
     {} as ReadonlyObjectRef<typeof getters>
   ),
-  ...actions
+  actions
 });

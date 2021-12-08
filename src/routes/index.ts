@@ -55,7 +55,7 @@ export const router: Router = createRouter({
 router.beforeEach(async (to, from, next) => {
   showProgressBar();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  requiresAuth && !store.isLoggedIn.get() ? next({ name: paths.user.signIn.path }) : next();
+  requiresAuth && !store.getters.isLoggedIn.get() ? next({ name: paths.user.signIn.path }) : next();
 });
 
 router.afterEach(() => {

@@ -21,7 +21,7 @@
       const password = ref('');
 
       const submit = () =>
-        store.user.signIn({
+        store.user.actions.signIn({
           email: email.value,
           password: password.value
         });
@@ -30,7 +30,7 @@
         email,
         password,
         submit,
-        isLoggedIn: store.user.isLoggedIn,
+        isLoggedIn: store.user.getters.isLoggedIn,
         user: store.user.state
       };
     }
