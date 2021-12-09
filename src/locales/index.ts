@@ -1,4 +1,4 @@
-import { browser, createI18n, formatter, localeFrom, Translations } from '@nanostores/i18n';
+import { browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/vue';
 import { getStorageItem, Http, setStorageItem } from '@/utils';
@@ -24,9 +24,13 @@ export const setCurrentLocale = (loc: Locale) => {
   if (!isLanguageSupported(loc)) {
     throw new Error('Locale not supported');
   }
+
   Http.setHeaders({ 'Accept-Language': loc });
   (document.querySelector('html') as HTMLElement).setAttribute('lang', loc.split('-')[0]);
-  currentLocale.set(loc);
+
+  if (currentLocale.get() !== loc) {
+    currentLocale.set(loc);
+  }
 };
 
 export const locale = localeFrom(
@@ -60,4 +64,8 @@ export const i18n = createI18n(locale, {
   }
 });
 
-export const useTranslations = (name: string, translations: Translations = {}) => useStore(i18n(name, translations));
+const messages: Record<string, any> = {};
+export const useI18n = (name: string, translations: Record<string, any> = {}) => {
+  messages[name] ||= i18n(name, translations);
+  return useStore(messages[name]);
+};

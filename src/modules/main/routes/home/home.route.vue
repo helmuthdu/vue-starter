@@ -88,7 +88,7 @@
   import { useWorker } from '@/hooks/worker.hook';
   import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
   import { defineComponent } from 'vue';
-  import { useTranslations } from '@/locales';
+  import { useI18n } from '@/locales';
 
   type Feature = { type: string; css: { name: string; url: string }[] };
 
@@ -170,7 +170,7 @@
       const { message, post } = useWorker('W1', resolve);
       post(43);
 
-      const t = useTranslations('home');
+      const t = useI18n('home');
 
       return {
         features: featuresResult,
