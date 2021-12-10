@@ -11,7 +11,7 @@
 
 <script lang="ts">
   import { useStore } from '@/stores';
-  import { defineComponent, ref } from 'vue';
+  import { computed, defineComponent, ref } from 'vue';
 
   export default defineComponent({
     name: 'SignInRoute',
@@ -19,6 +19,8 @@
       const store = useStore();
       const email = ref('');
       const password = ref('');
+      const isLoggedIn = computed(() => store.user.isLoggedIn);
+      const user = computed(() => store.user.entity);
 
       const submit = () =>
         store.user.signIn({
@@ -30,8 +32,8 @@
         email,
         password,
         submit,
-        isLoggedIn: store.user.isLoggedIn,
-        user: store.user.entity
+        isLoggedIn,
+        user
       };
     }
   });

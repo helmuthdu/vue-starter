@@ -87,78 +87,43 @@
   import { useStorage } from '@/hooks/storage.hook';
   import { useWorker } from '@/hooks/worker.hook';
   import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-  import { defineComponent } from 'vue';
-
-  type Feature = { type: string; css: { name: string; url: string }[] };
+  import { defineComponent, ref } from 'vue';
+  import { featuresApi } from '@/modules/main/api/features.api';
 
   export default defineComponent({
     name: 'HomeRoute',
     setup() {
-      const features = [
-        {
-          type: 'Columns',
-          css: [
-            { name: 'columns', url: 'https://bulma.io/documentation/columns/basics' },
-            { name: 'column', url: 'https://bulma.io/documentation/columns/basics' }
-          ]
-        },
-        {
-          type: 'Layout',
-          css: [
-            { name: 'section', url: 'https://bulma.io/documentation/layout/section' },
-            { name: 'container', url: 'https://bulma.io/documentation/layout/container' },
-            { name: 'footer', url: 'https://bulma.io/documentation/layout/footer' }
-          ]
-        },
-        {
-          type: 'Elements',
-          css: [
-            { name: 'button', url: 'https://bulma.io/documentation/elements/button' },
-            { name: 'content', url: 'https://bulma.io/documentation/elements/content' },
-            { name: 'title', url: 'https://bulma.io/documentation/elements/title' },
-            { name: 'subtitle', url: 'https://bulma.io/documentation/elements/title' }
-          ]
-        },
-        {
-          type: 'Form',
-          css: [
-            { name: 'field', url: 'https://bulma.io/documentation/form/general' },
-            { name: 'control', url: 'https://bulma.io/documentation/form/general' }
-          ]
-        },
-        {
-          type: 'Helpers',
-          css: [
-            { name: 'has-text-centered', url: 'https://bulma.io/documentation/modifiers/typography-helpers/' },
-            { name: 'has-text-weight-semibold', url: 'https://bulma.io/documentation/modifiers/typography-helpers/' }
-          ]
-        }
-      ];
+      const features = ref();
 
       const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
-      const featuresResult = useObservable<Feature[]>(
-        search$.pipe(
-          debounceTime(300),
-          filter(query => !query || query.length >= 3 || query.length === 0),
-          distinctUntilChanged(),
-          map(query => query?.toLowerCase()),
-          tap(query => {
-            searchStorage.value.query = query ?? '';
-          }),
-          map(query =>
-            features.filter((feat: Feature) => {
-              if (!query) return true;
-              return (
-                feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
-              );
+
+      featuresApi.get().then(res => {
+        useObservable(
+          search$.pipe(
+            debounceTime(300),
+            filter(query => !query || query.length >= 3 || query.length === 0),
+            distinctUntilChanged(),
+            map(query => query?.toLowerCase()),
+            tap(query => {
+              searchStorage.value.query = query ?? '';
+            }),
+            map(query =>
+              res.filter(feat => {
+                if (!query) return true;
+                return (
+                  feat.type.toLowerCase().includes(query) ||
+                  feat.css.some(css => css.name.toLowerCase().includes(query))
+                );
+              })
+            ),
+            tap(val => {
+              searchStorage.value.total = val.length;
             })
           ),
-          tap(val => {
-            searchStorage.value.total = val.length;
-          })
-        ),
-        features
-      );
+          res,
+          features
+        );
+      });
 
       const searchStorage = useStorage('search', { total: 0, query: '' });
 
@@ -170,7 +135,7 @@
       post(43);
 
       return {
-        features: featuresResult,
+        features,
         onInput(evt: any) {
           setSearch$(evt.target.value);
         },
