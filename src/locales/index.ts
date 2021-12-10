@@ -1,7 +1,8 @@
-import { browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
+import { browser, createI18n, formatter, localeFrom, Translations } from '@nanostores/i18n';
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/vue';
 import { getStorageItem, Http, setStorageItem } from '@/utils';
+import { Messages } from '@nanostores/i18n/create-i18n';
 
 const STORAGE_KEY = 'locale';
 const APP_VERSION = import.meta.env.VITE_VERSION;
@@ -64,8 +65,8 @@ export const i18n = createI18n(locale, {
   }
 });
 
-const messages: Record<string, any> = {};
-export const useI18n = (name: string, translations: Record<string, any> = {}) => {
-  messages[name] ||= i18n(name, translations);
-  return useStore(messages[name]);
+export const getTranslations = (name: string, translations: Translations = {}) => i18n(name, translations);
+
+export const useI18n = (messages: Messages) => {
+  return useStore(messages);
 };

@@ -21,8 +21,13 @@ const useSubscribeTo = <T>(
   return subscription;
 };
 
-export const useObservable = <T>(observable: Observable<T>, defaultValue?: T): Ref<T> => {
-  const handler = ref(defaultValue) as Ref<T>;
+export const useObservable = <T>(observable: Observable<T>, defaultValue?: T, outRef?: Ref<T>): Ref<T> => {
+  if (outRef && defaultValue && !outRef.value) {
+    outRef.value = defaultValue;
+  }
+
+  const handler = outRef ?? (ref(defaultValue) as Ref<T>);
+
   useSubscribeTo(
     observable,
     value => {
