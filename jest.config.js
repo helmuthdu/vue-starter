@@ -1,6 +1,6 @@
 module.exports = {
   globals: {
-    'vue-jest': {
+    '@vue/vue3-jest': {
       babelConfig: true
     }
   },
@@ -10,7 +10,7 @@ module.exports = {
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
   transform: {
     '^.+\\.[t|j]sx?$': 'babel-jest',
-    '^.+\\.vue$': 'vue-jest'
+    '^.+\\.vue$': '@vue/vue3-jest'
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

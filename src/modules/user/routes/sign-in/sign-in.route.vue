@@ -10,31 +10,30 @@
 </template>
 
 <script lang="ts">
-  import { useStore } from '@/stores';
-  import { computed, defineComponent, ref } from 'vue';
+import { useStore } from '@/stores';
+import { computed, defineComponent, ref } from 'vue';
+export default defineComponent({
+  name: 'SignInRoute',
+  setup() {
+    const store = useStore();
+    const email = ref('');
+    const password = ref('');
+    const isLoggedIn = computed(() => store.user.isLoggedIn);
+    const user = computed(() => store.user.entity);
 
-  export default defineComponent({
-    name: 'SignInRoute',
-    setup() {
-      const store = useStore();
-      const email = ref('');
-      const password = ref('');
-      const isLoggedIn = computed(() => store.user.isLoggedIn);
-      const user = computed(() => store.user.entity);
+    const submit = () =>
+      store.user.signIn({
+        email: email.value,
+        password: password.value
+      });
 
-      const submit = () =>
-        store.user.signIn({
-          email: email.value,
-          password: password.value
-        });
-
-      return {
-        email,
-        password,
-        submit,
-        isLoggedIn,
-        user
-      };
-    }
-  });
+    return {
+      email,
+      password,
+      submit,
+      isLoggedIn,
+      user
+    };
+  }
+});
 </script>

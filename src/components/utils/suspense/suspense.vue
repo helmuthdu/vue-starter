@@ -6,18 +6,18 @@
   </Suspense>
 </template>
 <script>
-  // import Event from '@/components/Event.vue';
-  import { onErrorCaptured, ref } from 'vue';
+// import Event from '@/components/Event.vue';
+import { onErrorCaptured, ref } from 'vue';
 
-  export default {
-    // components: { Event },
-    setup() {
-      const error = ref(null);
-      onErrorCaptured(e => {
-        error.value = e;
-        return true;
-      });
-      return { error };
-    }
-  };
+export default {
+  // components: { Event },
+  setup() {
+    const error = ref(null);
+    onErrorCaptured(e => {
+      error.value = e;
+      return true;
+    });
+    return { error };
+  }
+};
 </script>
