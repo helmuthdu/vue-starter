@@ -1,6 +1,6 @@
-import NProgress from 'nprogress';
+// import NProgress from 'nprogress';
 
-NProgress.configure({ showSpinner: false });
+// NProgress.configure({ showSpinner: false });
 
 const delay = 500; // in milliseconds
 let timer: any;
@@ -8,20 +8,20 @@ let counter = 0;
 
 const start = () => {
   timer = setTimeout(() => {
-    NProgress.start();
+    // NProgress.start();
   }, delay);
 };
 
 const done = (force?: boolean) => {
   clearTimeout(timer);
-  NProgress.done(force);
+  // NProgress.done(force);
 };
 
 export const showProgressBar = () => {
   if (counter === 0) {
     start();
-  } else if (NProgress.isStarted()) {
-    NProgress.inc();
+    // } else if (NProgress.isStarted()) {
+    //   NProgress.inc();
   }
   counter++;
 };

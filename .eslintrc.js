@@ -8,15 +8,18 @@ module.exports = {
   parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
-    ecmaVersion: 2021
+    extraFileExtensions: ['.vue'],
+    ecmaVersion: 2021,
+    ecmaFeatures: {
+      jsx: true
+    }
   },
   plugins: ['@typescript-eslint'],
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
-    '@vue/typescript/recommended',
-    '@vue/prettier',
-    '@vue/prettier/@typescript-eslint'
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -29,6 +32,14 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_' }]
   },
   overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        // The core 'no-unused-vars' rules (in the eslint:recommeded ruleset)
+        // does not work with type definitions
+        'no-unused-vars': 'off'
+      }
+    },
     {
       files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
