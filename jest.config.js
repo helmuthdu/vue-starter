@@ -7,7 +7,7 @@ module.exports = {
     }
   },
   testEnvironment: 'jest-environment-jsdom',
-  setupFiles: ['./tests/unit/setupTest.ts'],
+  setupFiles: ['./tests/unit/setupTest.js'],
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
   transform: {

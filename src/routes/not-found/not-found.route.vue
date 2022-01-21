@@ -4,13 +4,13 @@
   <a href="#" @click="$router.go(-1)">click here</a> to go back.
 </template>
 <script>
-  export default {
-    props: {
-      resource: {
-        type: String,
-        required: true,
-        default: 'page'
-      }
+export default {
+  props: {
+    resource: {
+      type: String,
+      required: true,
+      default: 'page'
     }
-  };
+  }
+};
 </script>

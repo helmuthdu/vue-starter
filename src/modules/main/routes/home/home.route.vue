@@ -83,70 +83,69 @@
 </template>
 
 <script lang="ts">
-  import { useObservable, useSubject } from '@/hooks/observer.hook';
-  import { useStorage } from '@/hooks/storage.hook';
-  import { useWorker } from '@/hooks/worker.hook';
-  import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-  import { defineComponent, ref } from 'vue';
-  import { getTranslations, useI18n } from '@/locales';
-  import { featuresApi } from '@/modules/main/api/features.api';
+import { useObservable, useSubject } from '@/hooks/observer.hook';
+import { useStorage } from '@/hooks/storage.hook';
+import { useWorker } from '@/hooks/worker.hook';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
+import { getTranslations, useI18n } from '@/locales';
+import { featuresApi } from '@/modules/main/api/features.api';
 
-  const translations = getTranslations('home');
+const translations = getTranslations('home');
 
-  export default defineComponent({
-    name: 'HomeRoute',
-    setup() {
-      const features = ref();
+export default defineComponent({
+  name: 'HomeRoute',
+  setup() {
+    const features = ref();
 
-      const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
+    const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
 
-      featuresApi.get().then(res => {
-        useObservable(
-          search$.pipe(
-            debounceTime(300),
-            filter(query => !query || query.length >= 3 || query.length === 0),
-            distinctUntilChanged(),
-            map(query => query?.toLowerCase()),
-            tap(query => {
-              searchStorage.value.query = query ?? '';
-            }),
-            map(query =>
-              res.filter(feat => {
-                if (!query) return true;
-                return (
-                  feat.type.toLowerCase().includes(query) ||
-                  feat.css.some(css => css.name.toLowerCase().includes(query))
-                );
-              })
-            ),
-            tap(val => {
-              searchStorage.value.total = val.length;
+    featuresApi.get().then(res => {
+      useObservable(
+        search$.pipe(
+          debounceTime(300),
+          filter(query => !query || query.length >= 3 || query.length === 0),
+          distinctUntilChanged(),
+          map(query => query?.toLowerCase()),
+          tap(query => {
+            searchStorage.value.query = query ?? '';
+          }),
+          map(query =>
+            res.filter(feat => {
+              if (!query) return true;
+              return (
+                feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
+              );
             })
           ),
-          res,
-          features
-        );
-      });
+          tap(val => {
+            searchStorage.value.total = val.length;
+          })
+        ),
+        res,
+        features
+      );
+    });
 
-      const searchStorage = useStorage('search', { total: 0, query: '' });
+    const searchStorage = useStorage('search', { total: 0, query: '' });
 
-      const resolve = (val: number): number => {
-        const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
-        return fib(val);
-      };
-      const { message, post } = useWorker('W1', resolve);
-      post(43);
+    const resolve = (val: number): number => {
+      const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+      return fib(val);
+    };
+    const { message, post } = useWorker('W1', resolve);
+    post(43);
 
-      const t = useI18n(translations);
+    const t = useI18n(translations);
 
-      return {
-        features,
-        onInput(evt: any) {
-          setSearch$(evt.target.value);
-        },
-        message,
-        t
-      };
-    }
-  });
+    return {
+      features,
+      onInput(evt: any) {
+        setSearch$(evt.target.value);
+      },
+      message,
+      t
+    };
+  }
+});
 </script>

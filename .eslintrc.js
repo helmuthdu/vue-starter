@@ -14,13 +14,8 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: ['@typescript-eslint'],
-  extends: [
-    'plugin:vue/vue3-essential',
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-  ],
+  plugins: ['@typescript-eslint', 'prettier'],
+  extends: ['plugin:vue/vue3-essential', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -29,7 +24,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_' }]
+    '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
+    'prettier/prettier': 'error'
   },
   overrides: [
     {
