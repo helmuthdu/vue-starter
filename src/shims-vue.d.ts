@@ -1,4 +1,6 @@
 /* eslint-disable */
+import type { DeepReadonly, Ref } from 'vue';
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<{}, {}, any>;
@@ -29,3 +31,9 @@ type DeepPartial<T> = {
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
+
+type ReadonlyObjectRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
+
+type MapObject<T> = {
+  [K in keyof T]: T[K];
+};

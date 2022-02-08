@@ -83,60 +83,22 @@
 </template>
 
 <script lang="ts">
-  import { useObservable, useSubject } from '@/hooks/observer.hook';
-  import { useStorage } from '@/hooks/storage.hook';
-  import { useWorker } from '@/hooks/worker.hook';
-  import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-  import { defineComponent } from 'vue';
+import { useObservable, useSubject } from '@/hooks/observer.hook';
+import { useStorage } from '@/hooks/storage.hook';
+import { useWorker } from '@/hooks/worker.hook';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
+import { featuresApi } from '@/modules/main/api/features.api';
 
-  type Feature = { type: string; css: { name: string; url: string }[] };
+export default defineComponent({
+  name: 'HomeRoute',
+  setup() {
+    const features = ref();
 
-  export default defineComponent({
-    name: 'HomeRoute',
-    setup() {
-      const features = [
-        {
-          type: 'Columns',
-          css: [
-            { name: 'columns', url: 'https://bulma.io/documentation/columns/basics' },
-            { name: 'column', url: 'https://bulma.io/documentation/columns/basics' }
-          ]
-        },
-        {
-          type: 'Layout',
-          css: [
-            { name: 'section', url: 'https://bulma.io/documentation/layout/section' },
-            { name: 'container', url: 'https://bulma.io/documentation/layout/container' },
-            { name: 'footer', url: 'https://bulma.io/documentation/layout/footer' }
-          ]
-        },
-        {
-          type: 'Elements',
-          css: [
-            { name: 'button', url: 'https://bulma.io/documentation/elements/button' },
-            { name: 'content', url: 'https://bulma.io/documentation/elements/content' },
-            { name: 'title', url: 'https://bulma.io/documentation/elements/title' },
-            { name: 'subtitle', url: 'https://bulma.io/documentation/elements/title' }
-          ]
-        },
-        {
-          type: 'Form',
-          css: [
-            { name: 'field', url: 'https://bulma.io/documentation/form/general' },
-            { name: 'control', url: 'https://bulma.io/documentation/form/general' }
-          ]
-        },
-        {
-          type: 'Helpers',
-          css: [
-            { name: 'has-text-centered', url: 'https://bulma.io/documentation/modifiers/typography-helpers/' },
-            { name: 'has-text-weight-semibold', url: 'https://bulma.io/documentation/modifiers/typography-helpers/' }
-          ]
-        }
-      ];
+    const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
 
-      const { subject: search$, setSubject: setSearch$ } = useSubject<string | null>();
-      const featuresResult = useObservable<Feature[]>(
+    featuresApi.get().then(res => {
+      useObservable(
         search$.pipe(
           debounceTime(300),
           filter(query => !query || query.length >= 3 || query.length === 0),
@@ -146,7 +108,7 @@
             searchStorage.value.query = query ?? '';
           }),
           map(query =>
-            features.filter((feat: Feature) => {
+            res.filter(feat => {
               if (!query) return true;
               return (
                 feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
@@ -157,25 +119,27 @@
             searchStorage.value.total = val.length;
           })
         ),
+        res,
         features
       );
+    });
 
-      const searchStorage = useStorage('search', { total: 0, query: '' });
+    const searchStorage = useStorage('search', { total: 0, query: '' });
 
-      const resolve = (val: number): number => {
-        const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
-        return fib(val);
-      };
-      const { message, post } = useWorker('W1', resolve);
-      post(43);
+    const resolve = (val: number): number => {
+      const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+      return fib(val);
+    };
+    const { message, post } = useWorker('W1', resolve);
+    post(43);
 
-      return {
-        features: featuresResult,
-        onInput(evt: any) {
-          setSearch$(evt.target.value);
-        },
-        message
-      };
-    }
-  });
+    return {
+      features,
+      onInput(evt: any) {
+        setSearch$(evt.target.value);
+      },
+      message
+    };
+  }
+});
 </script>
