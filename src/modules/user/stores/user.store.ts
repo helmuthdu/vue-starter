@@ -1,7 +1,7 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { action, computed, map } from 'nanostores';
-import { useStore as _useStore } from '@nanostores/vue';
+import { useStore as toRef } from '@nanostores/vue';
 import { ReadonlyObjectRef } from '@/env';
 
 enum RequestErrorType {
@@ -71,17 +71,17 @@ export const actions = {
   })
 };
 
-export const store = {
-  state,
-  getters,
-  actions
-};
-
 export const useStore = () => ({
-  state: _useStore(state),
-  getters: Object.entries(getters).reduce(
-    (acc, [key, val]) => ({ ...acc, [key]: _useStore(val) }),
+  state: toRef(state),
+  ...Object.entries(getters).reduce(
+    (acc, [key, val]) => ({ ...acc, [key]: toRef(val) }),
     {} as ReadonlyObjectRef<typeof getters>
   ),
-  actions
+  ...actions
 });
+
+export const store = {
+  ...state,
+  ...getters,
+  ...actions
+};

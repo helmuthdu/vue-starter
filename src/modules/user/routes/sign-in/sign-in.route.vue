@@ -21,7 +21,7 @@ export default defineComponent({
     const password = ref('');
 
     const submit = () =>
-      store.user.actions.signIn({
+      store.user.signIn({
         email: email.value,
         password: password.value
       });
@@ -30,7 +30,7 @@ export default defineComponent({
       email,
       password,
       submit,
-      isLoggedIn: store.user.getters.isLoggedIn,
+      isLoggedIn: store.user.isLoggedIn,
       user: store.user.state
     };
   }
