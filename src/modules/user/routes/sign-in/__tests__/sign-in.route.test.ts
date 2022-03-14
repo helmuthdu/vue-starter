@@ -1,17 +1,18 @@
 import { mount, VueWrapper } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-import { State } from '@/modules/user/stores/modules/user/user.store';
+import { createStore, Store } from 'vuex';
+import { initialState } from '@/modules/user/stores/modules/user/user.store';
 import SignInRoute from '../sign-in.route.vue';
+import { AppState } from '@/stores';
 
 describe('Auth/Route -> SignIn', () => {
-  let store: Store<State>;
+  let store: Store<AppState>;
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      actions: {
-        signIn: jest.fn()
-      }
+    store = createStore({
+      state: () => ({ user: initialState } as AppState),
+      getters: { isLoggedIn: () => true },
+      actions: { signIn: jest.fn() }
     });
     wrapper = mount(SignInRoute, { global: { plugins: [store] } });
   });
