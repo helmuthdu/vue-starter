@@ -2,7 +2,7 @@ const esModules = ['nanostores', '@nanostores/i18n', '@nanostores/vue'].join('|'
 
 module.exports = {
   globals: {
-    'vue-jest': {
+    '@vue/vue3-jest': {
       babelConfig: true
     }
   },
@@ -12,9 +12,9 @@ module.exports = {
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
   transform: {
     '^.+\\.[t|j]sx?$': 'babel-jest',
-    '^.+\\.vue$': 'vue-jest'
+    '^.+\\.vue$': '@vue/vue3-jest'
   },
-  transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
+  transformIgnorePatterns: [`/node_modules/(?!(${esModules})/)`],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^.+\\.(css|less|s(c|a)ss)$': 'identity-obj-proxy'
