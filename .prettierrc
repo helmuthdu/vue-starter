@@ -10,6 +10,5 @@
   "tabWidth": 2,
   "trailingComma": "none",
   "useTabs": false,
-  "vueIndentScriptAndStyle": false,
-  "htmlVoidTags": true
+  "vueIndentScriptAndStyle": false
 }

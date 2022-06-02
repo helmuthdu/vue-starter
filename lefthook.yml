@@ -1,15 +1,20 @@
 pre-commit:
   parallel: true
   commands:
-    eslint:
-      glob: '*.{js,ts,vue}'
-      run: npx eslint --fix {staged_files}
-    stylelint:
-      glob: '*.{css,scss,vue}'
-      run: npx stylelint --fix {staged_files}
     prettier:
+      files: git diff --name-only @{push}
       glob: '*.{js,ts,vue,css,json,yml}'
-      run: npx prettier --write {staged_files}
+      run: npx prettier --write {files}
+    eslint:
+      files: git diff --name-only @{push}
+      glob: '*.{js,ts,vue}'
+      run: npx eslint --fix {files}
+    stylelint:
+      files: git diff --name-only @{push}
+      glob: '*.{css,scss,vue}'
+      run: npx stylelint --fix {files}
     test:
+      root: 'src/'
+      files: git diff --name-only @{push}
       glob: '*.{js,jsx,ts,tsx,vue}'
-      run: npx jest --findRelatedTests {staged_files}
+      run: npx jest --findRelatedTests {files}
