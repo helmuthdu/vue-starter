@@ -6,7 +6,10 @@ module.exports = {
       babelConfig: true
     }
   },
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons']
+  },
   setupFiles: ['./tests/unit/setupTest.js'],
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
