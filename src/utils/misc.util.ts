@@ -13,7 +13,7 @@ export const type = (val: any) => {
   return type === 'AsyncFunction' ? 'Promise' : type;
 };
 
-export const isArray = (val: any) => type(val) === 'Array';
+export const isArray = Array.isArray;
 export const isFunction = (val: any) => type(val) === 'Function';
 export const isNil = (val: any) => val === undefined || val === null;
 export const isNumber = (val: any) => type(val) === 'Number';
@@ -26,7 +26,7 @@ export const isEquals = (a: any, b: any): boolean => {
 
   if (type(a) !== type(b)) return false;
 
-  if (Array.isArray(a)) {
+  if (isArray(a)) {
     if (a.toString() !== b.toString()) return false;
     return !a.some((val, idx) => val !== b[idx] && !isEquals(val, b[idx]));
   }
@@ -69,7 +69,7 @@ export const keyBy = <T>(list: T | T[] | ReadonlyArray<T>, key: keyof T): Dictio
   );
 
 export const uniq = (arr: number[]) => [...new Set(arr)];
-export const flatten = <T>(list: T | T[]) => (Array.isArray(list) ? list.flat(Infinity) : list);
+export const flatten = <T>(list: T | T[]) => (isArray(list) ? list.flat(Infinity) : list);
 
 export const keys = <T, K extends keyof T>(obj: T) => Object.keys(obj) as K[];
 export const values = <T, K extends keyof T>(obj: T) => Object.values(obj) as T[K][];
@@ -87,11 +87,10 @@ export const pipe =
       value => value
     )(fn(...args));
 
-export const merge = <T extends Record<string, any>>(
-  target: T,
-  ...sources: T[]
-): Required<{ [K in keyof T]: T[K] }> => {
-  const source = sources.shift();
+export const merge = <T extends Record<string, any>[]>(...obj: [...T]): Spread<T> => {
+  const target = obj.shift();
+  if (!target) return {} as any;
+  const source = obj.shift();
   if (!source) return target as any;
   entries(source).forEach(([key, val]) => {
     if (isObject(val)) {
@@ -101,7 +100,7 @@ export const merge = <T extends Record<string, any>>(
       Object.assign(target, { [key]: val });
     }
   });
-  return merge(target, ...sources);
+  return merge(target, ...obj) as unknown as Spread<T>;
 };
 
 export const toSnakeCase = (str: string) =>
