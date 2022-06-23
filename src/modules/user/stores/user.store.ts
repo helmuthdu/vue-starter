@@ -1,8 +1,7 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
-import { action, computed, map } from 'nanostores';
 import { useStore as toRef } from '@nanostores/vue';
-import { ReadonlyObjectRef } from '@/env';
+import { action, computed, map } from 'nanostores';
 
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',

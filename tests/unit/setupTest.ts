@@ -1,16 +1,16 @@
-global.localStorage = {
+(global as any).localStorage = {
   store: {},
   clear() {
     this.store = {};
   },
-  getItem(key) {
+  getItem(key: string) {
     return this.store[key] || undefined;
   },
-  setItem(key, value) {
+  setItem(key: string, value: string) {
     this.store[key] = value.toString();
   },
-  removeItem(key) {
+  removeItem(key: string) {
     delete this.store[key];
   }
 };
-global.URL.createObjectURL = jest.fn();
+(global as any).URL.createObjectURL = jest.fn();

@@ -8,9 +8,13 @@ pre-commit:
     eslint:
       files: git diff --name-only @{push}
       glob: '*.{js,ts,vue}'
-      run: npx eslint --fix {staged_files}
+      run: npx eslint --fix {files}
+    stylelint:
+      files: git diff --name-only @{push}
+      glob: '*.{css,scss,vue}'
+      run: npx stylelint --fix {files}
     test:
       root: 'src/'
       files: git diff --name-only @{push}
       glob: '*.{js,jsx,ts,tsx,vue}'
-      run: npx jest --findRelatedTests {files}
+      run: npx jest --findRelatedTests --passWithNoTests {files}

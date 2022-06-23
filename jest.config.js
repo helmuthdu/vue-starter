@@ -10,7 +10,7 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons']
   },
-  setupFiles: ['./tests/unit/setupTest.js'],
+  setupFiles: ['./tests/unit/setupTest.ts'],
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   testMatch: ['<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}', '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
   transform: {

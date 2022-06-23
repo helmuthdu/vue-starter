@@ -24,10 +24,6 @@ const appendStyle = (url: string, attributes?: Record<string, any>): Promise<boo
     element.onload = () => resolve(true);
     element.onerror = () => reject(new Error('Failed to load injected style element'));
     document.head.insertBefore(element, document.head.firstChild);
-    // IE quirk: dynamically injected link element does not trigger
-    // href if already set in injected element.
-    // Setting the href attribute after append, triggers properly.
-    // -> https://stackoverflow.com/questions/1184950/dynamically-loading-css-stylesheet-doesnt-work-on-ie#answer-5541628
     element.setAttribute('href', url);
   });
 };
