@@ -1,5 +1,5 @@
-import { createI18n } from 'vue-i18n';
 import { getStorageItem, Http, setStorageItem } from '@/utils';
+import { createI18n } from 'vue-i18n';
 
 const STORAGE_KEY = 'locale';
 const APP_VERSION = import.meta.env.VITE_VERSION;
