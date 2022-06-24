@@ -4,5 +4,5 @@
 
 <style lang="scss">
 @import 'bulma/bulma';
-@import 'nprogress/css/nprogress';
+@import 'nprogress/nprogress.css';
 </style>
