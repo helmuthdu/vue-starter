@@ -65,10 +65,15 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts,vue}": [
+    "**/*.{js,ts,vue}": [
+      "prettier --write",
       "eslint --fix",
-      "prettier --write"
+      "jest --bail --findRelatedTests",
+      "git add"
     ],
-    "*.{css,scss,html,json,md,yml}": "prettier --write"
+    "**/*.{css,scss,html,json,md,yml}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
