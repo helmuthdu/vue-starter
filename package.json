@@ -16,6 +16,7 @@
     "axios": "^0.27.2",
     "lodash": "^4.17.21",
     "nanostores": "^0.5.12",
+    "nprogress": "^0.2.0",
     "rxjs": "^7.5.5",
     "vee-validate": "^4.5.11",
     "vue": "^3.2.37",
@@ -47,7 +48,6 @@
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
     "lint-staged": "^13.0.3",
-    "nprogress": "^0.2.0",
     "postcss": "^8.4.14",
     "postcss-html": "^1.4.1",
     "prettier": "^2.7.1",
@@ -69,6 +69,6 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{css,scss,json,yml,md}": "prettier --write"
+    "*.{css,scss,html,json,md,yml}": "prettier --write"
   }
 }
