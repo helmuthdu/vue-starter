@@ -69,13 +69,20 @@
     }
   },
   "lint-staged": {
-    "**/*.{js,ts,vue}": [
+    "**/*.{js,ts}": [
       "prettier --write",
       "eslint --fix",
       "jest --bail --findRelatedTests",
       "git add"
     ],
-    "**/*.{css,scss,vue}": [
+    "**/*.{vue}": [
+      "prettier --write",
+      "stylelint --fix",
+      "eslint --fix",
+      "jest --bail --findRelatedTests",
+      "git add"
+    ],
+    "**/*.{css,scss}": [
       "prettier --write",
       "stylelint --fix",
       "git add"
