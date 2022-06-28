@@ -6,4 +6,3 @@ storybook-static
 .cache
 .vscode
 .idea
-package.json

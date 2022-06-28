@@ -6,4 +6,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'nprogress/nprogress.css';
 </style>
