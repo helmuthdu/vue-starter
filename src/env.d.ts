@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
+/* eslint-disable */
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
@@ -25,7 +25,6 @@ type DeepPartial<T> = {
     : DeepPartial<T[P]>;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalPropertyNames<T> = { [K in keyof T]-?: {} extends { [P in K]: T[K] } ? K : never }[keyof T];
 
 type OptionalObject<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
