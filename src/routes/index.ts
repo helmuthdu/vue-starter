@@ -1,7 +1,8 @@
 import { loadTranslations, Locale, locales } from '@/locales';
 import { paths, routes } from '@/modules';
 import { useStore } from '@/stores';
-import { hideProgressBar, showProgressBar } from '@/utils/progress-bar.util';
+import { startPageProgressBar, stopPageProgressBar } from '@/utils/progress-bar.util';
+import { defineAsyncComponent } from 'vue';
 import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
 
@@ -36,29 +37,29 @@ export const router: Router = createRouter({
     {
       path: '/network-error',
       name: 'NetworkError',
-      component: () => import('./network-error/network-error.route.vue')
+      component: defineAsyncComponent(() => import('./network-error/network-error.route.vue'))
     },
     {
       path: '/404/:resource',
       name: '404Resource',
-      component: () => import('./not-found/not-found.route.vue'),
+      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue')),
       props: true
     },
     {
       path: '/:pathMatch(.*)*',
       name: '404',
-      component: () => import('./not-found/not-found.route.vue')
+      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue'))
     }
   ]
 });
 
 router.beforeEach(async (to, from, next) => {
-  showProgressBar();
+  startPageProgressBar();
   const store = useStore();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   requiresAuth && !store.user.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
 });
 
 router.afterEach(() => {
-  hideProgressBar();
+  stopPageProgressBar();
 });

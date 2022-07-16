@@ -1,5 +1,5 @@
-/* eslint-disable */
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
+import { Logger } from '@/utils/logger.util';
 
 export const type = (val: any) => {
   if (val === null) {
@@ -14,13 +14,13 @@ export const type = (val: any) => {
 };
 
 export const isArray = Array.isArray;
+export const isEmpty = (val: any) => (isArray(val) || isObject(val)) && !Object.entries(val || {}).length;
 export const isFunction = (val: any) => type(val) === 'Function';
 export const isNil = (val: any) => val === undefined || val === null;
 export const isNumber = (val: any) => type(val) === 'Number';
 export const isObject = (val: any) => type(val) === 'Object';
 export const isPromise = (val: any) => ['Async', 'Promise'].includes(type(val));
 export const isString = (val: any) => type(val) === 'String';
-export const isEmpty = (val: any) => (isArray(val) || isObject(val)) && !Object.entries(val || {}).length;
 export const isEquals = (a: any, b: any): boolean => {
   if (a === b) return true;
 
@@ -117,3 +117,13 @@ export const toKebabCase = (str: string) =>
     .toLowerCase();
 
 export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+
+export const jsonParse = <T, K>(data: K, property?: keyof K): T | undefined => {
+  try {
+    const value = property ? data[property] : data;
+    return typeof value === 'string' ? JSON.parse(value) : value;
+  } catch (err) {
+    Logger.error('jsonParse() -> failed to parse object', err);
+    return undefined;
+  }
+};

@@ -2,36 +2,28 @@ import NProgress from 'nprogress';
 
 NProgress.configure({ showSpinner: false });
 
-const delay = 500; // in milliseconds
-let timer: any;
+const delay = 500;
+let timer: NodeJS.Timeout;
 let counter = 0;
 
-const start = () => {
-  timer = setTimeout(() => {
-    NProgress.start();
-  }, delay);
-};
-
-const done = (force?: boolean) => {
-  clearTimeout(timer);
-  NProgress.done(force);
-};
-
-export const showProgressBar = () => {
+export const startPageProgressBar = () => {
   if (counter === 0) {
-    start();
+    timer = setTimeout(() => {
+      NProgress.start();
+    }, delay);
   } else if (NProgress.isStarted()) {
     NProgress.inc();
   }
   counter++;
 };
 
-export const hideProgressBar = (force?: boolean) => {
+export const stopPageProgressBar = (force?: boolean) => {
   counter--;
   if (counter < 0 || force) {
     counter = 0;
   }
   if (counter === 0) {
-    done(force);
+    clearTimeout(timer);
+    NProgress.done(force);
   }
 };
