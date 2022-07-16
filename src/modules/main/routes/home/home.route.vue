@@ -86,10 +86,10 @@
 import { useObservable, useSubject } from '@/hooks/observer.hook';
 import { useStorage } from '@/hooks/storage.hook';
 import { useWorker } from '@/hooks/worker.hook';
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-import { defineComponent, ref } from 'vue';
 import { getTranslations, useI18n } from '@/locales';
 import { featuresApi } from '@/modules/main/api/features.api';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
 
 const translations = getTranslations('home');
 

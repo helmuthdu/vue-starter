@@ -4,8 +4,8 @@
  * const search = useObservable(search$.pipe(debounceTime(300), filter(query => !query || query.length >= 3 || query.length === 0), distinctUntilChanged()), '');
  */
 
-import { onBeforeUnmount, Ref, ref } from 'vue';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { onBeforeUnmount, Ref, ref } from 'vue';
 
 const useSubscribeTo = <T>(
   observable: Observable<T>,

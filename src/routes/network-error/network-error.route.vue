@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="networkError">
     <h1>Uh-Oh!</h1>
 
     <h3>

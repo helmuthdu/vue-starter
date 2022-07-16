@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, CancelTokenSource } from 'axios';
 import { Logger } from './logger.util';
-import { hideProgressBar, showProgressBar } from './progress-bar.util';
+import { startPageProgressBar, stopPageProgressBar } from './progress-bar.util';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
 
@@ -57,7 +57,7 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
 };
 
 export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
-  showProgressBar();
+  startPageProgressBar();
   const time = Date.now();
   return axios(config)
     .then(res => {
@@ -72,7 +72,7 @@ export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promi
       if (id) {
         delete _activeRequests[id];
       }
-      hideProgressBar();
+      stopPageProgressBar();
     });
 };
 
