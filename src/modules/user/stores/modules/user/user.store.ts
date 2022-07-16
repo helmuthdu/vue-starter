@@ -1,7 +1,7 @@
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
-import { Module } from 'vuex';
 import { AppState } from '@/stores';
+import { Module } from 'vuex';
 
 export enum ActionTypes {
   SET_STATE = 'USER/SET_STATE',

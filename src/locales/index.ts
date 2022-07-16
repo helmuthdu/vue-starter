@@ -1,5 +1,5 @@
-import { createI18n } from 'vue-i18n';
 import { getStorageItem, Http, setStorageItem } from '@/utils';
+import { createI18n } from 'vue-i18n';
 
 export type Locale = typeof locales[keyof typeof locales];
 export type LocaleStorage = { locale: Locale; messages: any; version: string };

@@ -1,8 +1,8 @@
+import { initialState } from '@/modules/user/stores/modules/user/user.store';
+import { AppState } from '@/stores';
 import { mount, VueWrapper } from '@vue/test-utils';
 import { createStore, Store } from 'vuex';
-import { initialState } from '@/modules/user/stores/modules/user/user.store';
 import SignInRoute from '../sign-in.route.vue';
-import { AppState } from '@/stores';
 
 describe('Auth/Route -> SignIn', () => {
   let store: Store<AppState>;

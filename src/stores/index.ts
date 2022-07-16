@@ -1,6 +1,6 @@
 import { State, stores } from '@/modules';
-import { RootState, rootStore } from './root';
 import { createLogger, createStore, useStore as baseUseStore } from 'vuex';
+import { RootState, rootStore } from './root';
 
 export type AppState = RootState & State;
 
