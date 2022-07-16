@@ -40,6 +40,7 @@ export const isEquals = (a: any, b: any): boolean => {
   return false;
 };
 
+// eslint-disable-next-line no-prototype-builtins
 export const has = (val: any, prop: string) => val?.hasOwnProperty(prop);
 
 export const get = <T, K extends keyof T>(obj: T, path: K | string, defaultValue: unknown = null) =>
@@ -118,12 +119,12 @@ export const toKebabCase = (str: string) =>
 
 export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 
-export const jsonParse = <T, K>(data: K, property?: keyof K): T | undefined => {
+export const parseJson = <T, K>(data: K, defaultValue: T): T => {
   try {
-    const value = property ? data[property] : data;
-    return typeof value === 'string' ? JSON.parse(value) : value;
+    const value = typeof data === 'string' ? JSON.parse(data) : data;
+    return value || defaultValue;
   } catch (err) {
-    Logger.error('jsonParse() -> failed to parse object', err);
-    return undefined;
+    Logger.error('parseJson() -> failed to parse object', err);
+    return defaultValue;
   }
 };
