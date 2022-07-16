@@ -119,7 +119,7 @@ export const toKebabCase = (str: string) =>
 
 export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 
-export const parseJson = <T, K>(data: K, defaultValue: T): T => {
+export const parseJson = <T, K>(data: K, defaultValue?: T): T | undefined => {
   try {
     const value = typeof data === 'string' ? JSON.parse(data) : data;
     return value || defaultValue;
