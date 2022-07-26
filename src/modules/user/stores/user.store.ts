@@ -2,6 +2,9 @@ import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { useStore as toRef } from '@nanostores/vue';
 import { action, computed, map } from 'nanostores';
+import type { DeepReadonly, Ref } from 'vue';
+
+type ReadonlyObjectRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
 
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [Vue()],
   test: {
     globals: true,
-    environment: 'happy-dom',
+    environment: 'jsdom',
     setupFiles: './vitest.setup.ts'
   },
   resolve: {
