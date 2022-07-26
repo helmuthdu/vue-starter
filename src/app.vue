@@ -2,7 +2,7 @@
   <router-view></router-view>
 </template>
 
-<style lang="scss">
-@import 'bulma/bulma';
+<style>
+@import 'bulma/css/bulma.css';
 @import 'nprogress/nprogress.css';
 </style>
