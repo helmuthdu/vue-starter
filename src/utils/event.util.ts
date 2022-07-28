@@ -1,39 +1,39 @@
 import { Logger } from './logger.util';
 import { uuid } from './toolbox.util';
 
-const events: { [event: string]: { [id: string]: (arg: unknown) => void } } = {};
+const events: { [event: string]: { [id: string]: (arg: any) => void } } = {};
 
-const on = (name: string, fn: (arg: unknown) => void, options?: { once: boolean }) => {
+const on = (event: string, handler: (arg: any) => void, options?: { once: boolean }) => {
   const id = uuid();
 
-  if (!events[name]) events[name] = {};
+  if (!events[event]) events[event] = {};
 
-  events[name][id] = options?.once
-    ? (arg: unknown) => {
-        fn(arg);
+  events[event][id] = options?.once
+    ? (arg: any) => {
+        handler(arg);
         stop();
       }
-    : fn;
+    : handler;
 
   const stop = () => {
-    if (events[name][id]) {
-      delete events[name][id];
-      if (Object.keys(events[name]).length === 0) delete events[name];
+    if (events[event][id]) {
+      delete events[event][id];
+      if (Object.keys(events[event]).length === 0) delete events[event];
     } else {
-      Logger.warn(`Event "${name}" already unsubscribed`);
+      Logger.warn(`Event "${event}" already unsubscribed`);
     }
   };
 
   return stop;
 };
 
-const emit = (name: string, arg: unknown) => {
+const emit = (name: string, arg: any) => {
   if (!events[name]) {
     Logger.warn(`Event "${name}" not registered`);
     return;
   }
 
-  Object.entries(events[name]).forEach(([_, fn]) => fn(arg));
+  Object.entries(events[name]).forEach(([_, handler]) => handler(arg));
 };
 
 export const eventuality = {
