@@ -1,18 +1,18 @@
 import { Logger } from './logger.util';
 import { uuid } from './toolbox.util';
 
-const events: { [event: string]: { [id: string]: (arg: any) => void } } = {};
+const events: { [event: string]: { [id: string]: (arg?: any) => void } } = {};
 
-const on = (event: string, handler: (arg: any) => void, options?: { once: boolean }) => {
+const on = (event: string, handler: (arg?: any) => void, options?: { once: boolean }) => {
   const id = uuid();
 
   if (!events[event]) events[event] = {};
 
   events[event][id] = options?.once
-    ? (arg: any) => {
-        handler(arg);
-        stop();
-      }
+    ? (arg?: any) => {
+      handler(arg);
+      stop();
+    }
     : handler;
 
   const stop = () => {
@@ -27,13 +27,13 @@ const on = (event: string, handler: (arg: any) => void, options?: { once: boolea
   return stop;
 };
 
-const emit = (name: string, arg: any) => {
-  if (!events[name]) {
-    Logger.warn(`Event "${name}" not registered`);
+const emit = (event: string, arg?: any) => {
+  if (!events[event]) {
+    Logger.warn(`Event "${event}" not registered`);
     return;
   }
 
-  Object.entries(events[name]).forEach(([_, handler]) => handler(arg));
+  Object.entries(events[event]).forEach(([_, handler]) => handler(arg));
 };
 
 export const eventuality = {
