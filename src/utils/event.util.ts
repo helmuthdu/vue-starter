@@ -10,9 +10,9 @@ const on = (event: string, handler: (arg?: any) => void, options?: { once: boole
 
   events[event][id] = options?.once
     ? (arg?: any) => {
-      handler(arg);
-      stop();
-    }
+        handler(arg);
+        stop();
+      }
     : handler;
 
   const stop = () => {
