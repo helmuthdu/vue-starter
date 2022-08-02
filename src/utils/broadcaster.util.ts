@@ -52,12 +52,11 @@ const off = (event: string) => {
 };
 
 const emit = (event: string, arg?: any) => {
-  if (!events || !events[event]) {
+  if (getEvent(event)) {
+    Object.entries(getEvent(event)).forEach(([_, fn]) => fn(arg));
+  } else {
     Logger.warn(`Event "${event}" not registered`);
-    return;
   }
-
-  Object.entries(getEvent(event)).forEach(([_, fn]) => fn(arg));
 };
 
 export const receiver = (event: string, fn: (arg?: any) => void, options?: { once: boolean; immediate: boolean }) => {
