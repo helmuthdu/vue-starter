@@ -47,7 +47,7 @@ export const waitUtilElementExists = (
 };
 
 export const importJS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
-  if (!url) return Promise.reject(new Error('appendScript() -> Missing URL Parameter'));
+  if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
   const scriptElement = document.querySelector(`script[src="${url}"]`);
   if (scriptElement !== null) return Promise.resolve(true);
 
@@ -63,7 +63,7 @@ export const importJS = (url: string, attributes?: Record<string, any>): Promise
 };
 
 export const importCSS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
-  if (!url) return Promise.reject(new Error('appendStyle() -> Missing URL Parameter'));
+  if (!url) return Promise.reject(new Error('importCSS() -> Missing URL Parameter'));
   const styleElement = document.querySelector(`link[href="${url}"]`);
   if (styleElement !== null) return Promise.resolve(true);
 
