@@ -29,7 +29,7 @@ export const waitUtilElementIntersects = (
   return observer;
 };
 
-export const waitUtilElementExists = (
+export const waitUtilElementAppears = (
   selector: string,
   { wait = 250, attempts = 10, root }: { wait: number; attempts: number; root?: HTMLElement }
 ): Promise<Element | null> => {
