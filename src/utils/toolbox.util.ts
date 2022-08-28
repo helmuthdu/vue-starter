@@ -1,5 +1,5 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
-import { Logger } from '@/utils/logger.util';
+import { Logger } from './logger.util';
 
 export const type = (val: any) => {
   if (val === null) {
@@ -74,6 +74,7 @@ export const flatten = <T>(list: T | T[]) => (isArray(list) ? list.flat(Infinity
 
 export const keys = <T, K extends keyof T>(obj: T) => Object.keys(obj) as K[];
 export const values = <T, K extends keyof T>(obj: T) => Object.values(obj) as T[K][];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const entries = <T, K extends keyof T>(obj: T) =>
   Object.entries(obj) as { [K in keyof T]: [K, T[K]] }[keyof T][];
 
@@ -127,4 +128,29 @@ export const parseJson = <T, K>(data: K, defaultValue?: T): T | undefined => {
     Logger.error('parseJson() -> failed to parse object', err);
     return defaultValue;
   }
+};
+
+export const truncate = (value: string, limit = 25, completeWords = false, ellipsis = '…'): string => {
+  if (completeWords) {
+    limit = value.substring(0, limit).lastIndexOf(' ');
+  }
+  return value.length > limit ? `${value.substring(0, limit)}${ellipsis}` : value;
+};
+
+export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0, immediate?: boolean) => {
+  let timeout: NodeJS.Timeout | undefined;
+
+  return (...args: unknown[]): ReturnType<T> | void => {
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      timeout = undefined;
+      if (!immediate) {
+        return fn(...args);
+      }
+    }, ms);
+    if (callNow) {
+      return fn(...args);
+    }
+  };
 };
