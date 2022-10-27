@@ -49,34 +49,40 @@ export const get = <T, K extends keyof T>(obj: T, path: K | string, defaultValue
     .filter(Boolean)
     .reduce((acc: any, cur: string) => (Object.hasOwnProperty.call(acc, cur) ? acc[cur] : defaultValue), obj);
 
-export const groupBy = <T>(list: T | T[] | ReadonlyArray<T>, key: keyof T) =>
-  Object.values(list).reduce(
-    (acc: DictionaryArray<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) =>
-      (acc[prop] || (acc[prop] = [])).push(val),
-    {}
-  );
+export const groupBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T) =>
+  isObject(data)
+    ? Object.values(data).reduce(
+        (acc: DictionaryArray<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) =>
+          (acc[prop] || (acc[prop] = [])).push(val),
+        {}
+      )
+    : {};
 
 export const sortBy = <T, K extends keyof T>(arr: T[], key: K) =>
   [...arr].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
 
-export const keyBy = <T>(list: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> =>
-  Object.values(list).reduce(
-    (acc: Dictionary<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) => {
-      if (!prop) return acc;
-      acc[prop] = val;
-      return acc;
-    },
-    {}
-  );
+export const keyBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> =>
+  isObject(data)
+    ? Object.values(data).reduce(
+        (acc: Dictionary<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) => {
+          if (!prop) return acc;
+          acc[prop] = val;
+          return acc;
+        },
+        {}
+      )
+    : {};
 
-export const uniq = (arr: number[]) => [...new Set(arr)];
-export const flatten = <T>(list: T | T[]) => (isArray(list) ? list.flat(Infinity) : list);
+export const uniq = (data: number[]) => [...new Set(data)];
+export const flatten = <T>(data: T | T[]) => (isArray(data) ? data.flat(Infinity) : data);
 
-export const keys = <T, K extends keyof T>(obj: T) => Object.keys(obj) as K[];
-export const values = <T, K extends keyof T>(obj: T) => Object.values(obj) as T[K][];
+export const keys = <T extends object, K extends keyof T>(data: T) =>
+  isObject(data) ? (Object.keys(data) as K[]) : [];
+export const values = <T extends object, K extends keyof T>(data: T) =>
+  isObject(data) ? (Object.values(data) as T[K][]) : [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const entries = <T, K extends keyof T>(obj: T) =>
-  Object.entries(obj) as { [K in keyof T]: [K, T[K]] }[keyof T][];
+export const entries = <T extends object, K extends keyof T>(data: T) =>
+  isObject(data) ? (Object.entries(data) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
 
 export const compose = <R>(fn: (args: R) => R, ...fns: ((args: R) => R)[]) =>
   fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn);
@@ -89,10 +95,10 @@ export const pipe =
       value => value
     )(fn(...args));
 
-export const merge = <T extends Record<string, any>[]>(...obj: [...T]): Spread<T> => {
-  const target = obj.shift();
+export const merge = <T extends Record<string, any>[]>(...data: [...T]): Spread<T> => {
+  const target = data.shift();
   if (!target) return {} as any;
-  const source = obj.shift();
+  const source = data.shift();
   if (!source) return target as any;
   entries(source).forEach(([key, val]) => {
     if (isObject(val)) {
@@ -102,18 +108,18 @@ export const merge = <T extends Record<string, any>[]>(...obj: [...T]): Spread<T
       Object.assign(target, { [key]: val });
     }
   });
-  return merge(target, ...obj) as unknown as Spread<T>;
+  return merge(target, ...data) as unknown as Spread<T>;
 };
 
-export const toSnakeCase = (str: string) =>
-  str
+export const toSnakeCase = (text: string) =>
+  text
     .replace(/\W+/g, ' ')
     .split(/ |\B(?=[A-Z])/)
     .map(s => s.toLowerCase())
     .join('_');
 
-export const toKebabCase = (str: string) =>
-  str
+export const toKebabCase = (text: string) =>
+  text
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
@@ -154,3 +160,15 @@ export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0, 
     }
   };
 };
+
+type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never;
+type UnwrapPromisify<T> = T extends Promise<infer U> ? U : T;
+export const tryit =
+  <T extends (...args: any) => any>(fn: T) =>
+  async (...args: ArgumentsType<T>): Promise<{ error?: Error; data?: UnwrapPromisify<ReturnType<T>> }> => {
+    try {
+      return { error: undefined, data: await fn(...(args as any)) };
+    } catch (err) {
+      return { error: err as Error, data: undefined };
+    }
+  };
