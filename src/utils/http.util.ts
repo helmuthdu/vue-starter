@@ -45,7 +45,9 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
         cancelToken: controller.token,
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
         params: context?.params ? { ...context.params, ...params } : params,
-        paramsSerializer: (parameters: Record<string, string>) => new URLSearchParams(parameters).toString(),
+        paramsSerializer: {
+          encode: (parameter: string | number | boolean) => encodeURIComponent(parameter)
+        },
         url: context?.url ? `${context.url}/${config.url}` : config.url
       }),
       id
@@ -105,4 +107,4 @@ export const createHttpService = (context?: ContextProps) => ({
   }
 });
 
-export const Http = createHttpService({ headers: {} });
+export const Http = createHttpService({});
