@@ -10,7 +10,7 @@ const intersectionCallback =
     });
   };
 
-export const waitUtilElementIntersects = (
+export const waitUntilElementIntersects = (
   element: Element,
   callback: () => void,
   options: IntersectionObserverInit = {
@@ -29,7 +29,7 @@ export const waitUtilElementIntersects = (
   return observer;
 };
 
-export const waitUtilElementAppears = (
+export const waitUntilElementAppears = (
   selector: string,
   { wait = 250, attempts = 10, root }: { wait: number; attempts: number; root?: HTMLElement }
 ): Promise<Element | null> => {

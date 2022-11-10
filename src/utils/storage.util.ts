@@ -3,7 +3,7 @@ import { Logger } from './logger.util';
 const generatePrefix = (): string => {
   const appName = (import.meta.env.VITE_NAME as string) ?? 'vue_app';
   const environment = (import.meta.env.NODE_ENV as string) ?? 'development';
-  return `${appName}_${environment.substr(0, 3)}`;
+  return `${appName}_${environment.substring(0, 3)}`;
 };
 
 const getKey = (key: string) => `${generatePrefix()}_${key}`.toLowerCase();
@@ -31,6 +31,10 @@ export const setStorageItem = <T>(key: string, value?: T, session = false): void
 };
 
 export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
+  if (typeof window === 'undefined') {
+    return defaultValue as T;
+  }
+
   const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
   try {
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
