@@ -17,14 +17,14 @@ const getLocaleStorage = () =>
 export const isLanguageSupported = (lang: Locale): boolean => Object.values(locales).includes(lang);
 
 export const i18n = createI18n({
-  globalInjection: true,
+  legacy: false,
   locale: getLocaleStorage().locale ?? locales.english,
   fallbackLocale: locales.english,
   messages: getLocaleStorage().messages ?? {}
 });
 
 export const setLocale = (locale: Locale, messages: Record<string, any>): Locale => {
-  i18n.global.locale = locale;
+  i18n.global.locale.value = locale;
   i18n.global.setLocaleMessage(locale, messages);
   Http.setHeaders({ 'Accept-Language': locale });
   (document.querySelector('html') as HTMLElement).setAttribute('lang', locale);

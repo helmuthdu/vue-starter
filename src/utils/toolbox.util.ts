@@ -1,53 +1,54 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 import { Logger } from './logger.util';
 
-export const type = (val: any) => {
-  if (val === null) {
+export const type = (arg: any) => {
+  if (arg === null) {
     return 'Null';
-  } else if (val === undefined) {
+  } else if (arg === undefined) {
     return 'Undefined';
-  } else if (Number.isNaN(val)) {
+  } else if (Number.isNaN(arg)) {
     return 'NaN';
   }
-  const type = Object.prototype.toString.call(val).slice(8, -1);
+  const type = Object.prototype.toString.call(arg).slice(8, -1);
   return type === 'AsyncFunction' ? 'Promise' : type;
 };
 
 export const isArray = Array.isArray;
-export const isEmpty = (val: any) => (isArray(val) || isObject(val)) && !Object.entries(val || {}).length;
-export const isFunction = (val: any) => type(val) === 'Function';
-export const isNil = (val: any) => val === undefined || val === null;
-export const isNumber = (val: any) => type(val) === 'Number';
-export const isObject = (val: any) => type(val) === 'Object';
-export const isPromise = (val: any) => ['Async', 'Promise'].includes(type(val));
-export const isString = (val: any) => type(val) === 'String';
-export const isEquals = (a: any, b: any): boolean => {
-  if (a === b) return true;
+export const isFunction = (arg: any) => type(arg) === 'Function';
+export const isNil = (arg: any) => arg === undefined || arg === null;
+export const isNumber = (arg: any) => type(arg) === 'Number';
+export const isObject = (arg: any) => type(arg) === 'Object';
+export const isPromise = (arg: any) => ['Async', 'Promise'].includes(type(arg));
+export const isString = (arg: any) => type(arg) === 'String';
+export const isEmpty = (arg: any) =>
+  isNil(arg) || ((isArray(arg) || isObject(arg)) && !Object.entries(arg || {}).length);
+export const isEquals = (curr: any, prev: any): boolean => {
+  if (curr === prev) return true;
 
-  if (type(a) !== type(b)) return false;
+  if (type(curr) !== type(prev)) return false;
 
-  if (isArray(a)) {
-    if (a.toString() !== b.toString()) return false;
-    return !a.some((val, idx) => val !== b[idx] && !isEquals(val, b[idx]));
+  if (isArray(curr)) {
+    if (curr.toString() !== prev.toString()) return false;
+    return !curr.some((val, idx) => val !== prev[idx] && !isEquals(val, prev[idx]));
   }
 
-  if (isObject(a)) {
-    const keys = Object.keys(a);
-    if (keys.length !== Object.keys(b).length) return false;
-    return !keys.some(key => a[key] !== b[key] && !isEquals(a[key], b[key]));
+  if (isObject(curr)) {
+    const keys = Object.keys(curr);
+    if (keys.length !== Object.keys(prev).length) return false;
+    return !keys.some(key => curr[key] !== prev[key] && !isEquals(curr[key], prev[key]));
   }
 
   return false;
 };
 
 // eslint-disable-next-line no-prototype-builtins
-export const has = (val: any, prop: string) => val?.hasOwnProperty(prop);
+export const has = (data: any, prop: string) => data?.hasOwnProperty(prop);
 
-export const get = <T, K extends keyof T>(obj: T, path: K | string, defaultValue: unknown = null) =>
+export const get = <T, K extends keyof T>(data: T, path: K | string, defaultValue: unknown = null) =>
   String.prototype.split
     .call(path, /[,[\].]+?/)
     .filter(Boolean)
-    .reduce((acc: any, cur: string) => (Object.hasOwnProperty.call(acc, cur) ? acc[cur] : defaultValue), obj);
+    .reduce((acc: any, cur: string) => (Object.hasOwnProperty.call(acc, cur) ? acc[cur] : defaultValue), data);
 
 export const groupBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T) =>
   isObject(data)
@@ -58,8 +59,8 @@ export const groupBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key:
       )
     : {};
 
-export const sortBy = <T, K extends keyof T>(arr: T[], key: K) =>
-  [...arr].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
+export const sortBy = <T, K extends keyof T>(data: T[], key: K) =>
+  [...data].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
 
 export const keyBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> =>
   isObject(data)
@@ -73,16 +74,17 @@ export const keyBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: k
       )
     : {};
 
-export const uniq = (data: number[]) => [...new Set(data)];
-export const flatten = <T>(data: T | T[]) => (isArray(data) ? data.flat(Infinity) : data);
+export const uniq = <T>(arg: T[]) => [...new Set(arg)];
 
-export const keys = <T extends object, K extends keyof T>(data: T) =>
-  isObject(data) ? (Object.keys(data) as K[]) : [];
-export const values = <T extends object, K extends keyof T>(data: T) =>
-  isObject(data) ? (Object.values(data) as T[K][]) : [];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const entries = <T extends object, K extends keyof T>(data: T) =>
-  isObject(data) ? (Object.entries(data) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
+export const flatten = <T>(arg: T | T[]) => (isArray(arg) ? arg.flat(Infinity) : arg);
+
+export const keys = <T extends object, K extends keyof T>(arg: T) => (isObject(arg) ? (Object.keys(arg) as K[]) : []);
+
+export const values = <T extends object, K extends keyof T>(arg: T) =>
+  isObject(arg) ? (Object.values(arg) as T[K][]) : [];
+
+export const entries = <T extends object, K extends keyof T>(arg: T) =>
+  isObject(arg) ? (Object.entries(arg) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
 
 export const compose = <R>(fn: (args: R) => R, ...fns: ((args: R) => R)[]) =>
   fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn);
@@ -95,10 +97,10 @@ export const pipe =
       value => value
     )(fn(...args));
 
-export const merge = <T extends Record<string, any>[]>(...data: [...T]): Spread<T> => {
-  const target = data.shift();
+export const merge = <T extends Record<string, any>[]>(...args: [...T]): Spread<T> => {
+  const target = args.shift();
   if (!target) return {} as any;
-  const source = data.shift();
+  const source = args.shift();
   if (!source) return target as any;
   entries(source).forEach(([key, val]) => {
     if (isObject(val)) {
@@ -108,7 +110,19 @@ export const merge = <T extends Record<string, any>[]>(...data: [...T]): Spread<
       Object.assign(target, { [key]: val });
     }
   });
-  return merge(target, ...data) as unknown as Spread<T>;
+  return merge(target, ...args) as unknown as Spread<T>;
+};
+
+export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+
+export const parseJson = <T, K>(arg: K, defaultValue?: T): T | undefined => {
+  try {
+    const value = typeof arg === 'string' ? JSON.parse(arg) : arg;
+    return value || defaultValue;
+  } catch (err) {
+    Logger.error('parseJson() -> failed to parse object', err);
+    return defaultValue;
+  }
 };
 
 export const toSnakeCase = (text: string) =>
@@ -124,23 +138,11 @@ export const toKebabCase = (text: string) =>
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
 
-export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
-
-export const parseJson = <T, K>(data: K, defaultValue?: T): T | undefined => {
-  try {
-    const value = typeof data === 'string' ? JSON.parse(data) : data;
-    return value || defaultValue;
-  } catch (err) {
-    Logger.error('parseJson() -> failed to parse object', err);
-    return defaultValue;
-  }
-};
-
-export const truncate = (value: string, limit = 25, completeWords = false, ellipsis = '…'): string => {
+export const truncate = (text: string, limit = 25, completeWords = false, ellipsis = '…'): string => {
   if (completeWords) {
-    limit = value.substring(0, limit).lastIndexOf(' ');
+    limit = text.substring(0, limit).lastIndexOf(' ');
   }
-  return value.length > limit ? `${value.substring(0, limit)}${ellipsis}` : value;
+  return text.length > limit ? `${text.substring(0, limit)}${ellipsis}` : text;
 };
 
 export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0, immediate?: boolean) => {
@@ -172,3 +174,17 @@ export const tryit =
       return { error: err as Error, data: undefined };
     }
   };
+
+export const nextTick = (fn: (...args: unknown[]) => void) => {
+  const id = window.requestAnimationFrame(() => {
+    fn?.();
+    window.cancelAnimationFrame(id);
+  });
+};
+
+export const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const sleep = async (fn: () => any, timer = 1000) => {
+  await timeout(timer);
+  return fn();
+};
