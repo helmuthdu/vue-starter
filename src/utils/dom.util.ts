@@ -10,7 +10,7 @@ const intersectionCallback =
     });
   };
 
-export const waitUtilElementIsVisible = (
+export const waitUntilElementIntersects = (
   element: Element,
   callback: () => void,
   options: IntersectionObserverInit = {
@@ -29,11 +29,14 @@ export const waitUtilElementIsVisible = (
   return observer;
 };
 
-export const waitUtilElementExists = (selector: string, wait = 250, attempts = 10): Promise<Element | null> => {
+export const waitUntilElementAppears = (
+  selector: string,
+  { wait = 250, attempts = 10, root }: { wait: number; attempts: number; root?: HTMLElement }
+): Promise<Element | null> => {
   let count = 0;
   return new Promise(resolve => {
     const interval = setInterval(() => {
-      const element = document.querySelector(selector);
+      const element = (root ?? document).querySelector(selector);
       if (element || count >= attempts) {
         clearInterval(interval);
         resolve(element);
@@ -43,8 +46,8 @@ export const waitUtilElementExists = (selector: string, wait = 250, attempts = 1
   });
 };
 
-export const appendScript = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
-  if (!url) return Promise.reject(new Error('appendScript() -> Missing URL Parameter'));
+export const importJS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
+  if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
   const scriptElement = document.querySelector(`script[src="${url}"]`);
   if (scriptElement !== null) return Promise.resolve(true);
 
@@ -59,8 +62,8 @@ export const appendScript = (url: string, attributes?: Record<string, any>): Pro
   });
 };
 
-export const appendStyle = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
-  if (!url) return Promise.reject(new Error('appendStyle() -> Missing URL Parameter'));
+export const importCSS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
+  if (!url) return Promise.reject(new Error('importCSS() -> Missing URL Parameter'));
   const styleElement = document.querySelector(`link[href="${url}"]`);
   if (styleElement !== null) return Promise.resolve(true);
 

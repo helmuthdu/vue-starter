@@ -3,8 +3,6 @@
 </template>
 
 <style lang="scss">
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bulma/bulma';
 @import 'nprogress/nprogress.css';
 </style>
