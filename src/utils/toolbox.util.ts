@@ -184,7 +184,7 @@ export const nextTick = (fn: (...args: unknown[]) => void) => {
 
 export const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const sleep = async (fn: () => any, timer = 1000) => {
+export const delay = async (fn: () => any, timer = 700) => {
   await timeout(timer);
-  return fn();
+  return Promise.resolve(fn());
 };
