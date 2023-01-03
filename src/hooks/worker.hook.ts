@@ -16,7 +16,8 @@ type UseWorker<T> = {
   terminate: () => void;
   worker: Ref<Worker | undefined>;
 };
-type UseWorkerCreateOptions<T> = {
+
+type WorkerOptions<T> = {
   defaultValue?: T;
   id: string | number;
   function?: boolean;
@@ -25,9 +26,9 @@ type UseWorkerCreateOptions<T> = {
   worker?: Worker;
 };
 
-const workers = new Map<string | number, UseWorkerCreateOptions<any>>();
+const workers = new Map<string | number, WorkerOptions<any>>();
 
-const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
+const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
   const worker = ref<Worker>() as Ref<Worker | undefined>;
   const message = ref<T>(opts.defaultValue as T) as Ref<T>;
 
@@ -85,10 +86,10 @@ const useWorkerCreate = <T>(opts: UseWorkerCreateOptions<T>): UseWorker<T> => {
 };
 
 export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
-  let opts: UseWorkerCreateOptions<T> = { defaultValue, function: true, id, terminate: true };
+  let opts: WorkerOptions<T> = { defaultValue, function: true, id, terminate: true };
 
   if (workers.has(id)) {
-    opts = workers.get(id) as UseWorkerCreateOptions<T>;
+    opts = workers.get(id) as WorkerOptions<T>;
   } else {
     const resolveString = resolve.toString();
     const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
@@ -96,11 +97,11 @@ export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue
     opts.url = window.URL.createObjectURL(blob);
   }
 
-  return useWorkerCreate<T>(opts);
+  return createWorker<T>(opts);
 };
 
 export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
-  useWorkerCreate({ defaultValue, id, terminate: true, url });
+  createWorker({ defaultValue, id, terminate: true, url });
 
 export const useWorkerFromWorker = <T>(id: string, worker: Worker, defaultValue?: T): UseWorker<T> =>
-  useWorkerCreate<T>({ defaultValue, id, worker });
+  createWorker<T>({ defaultValue, id, worker });
