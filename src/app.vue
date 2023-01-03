@@ -3,5 +3,6 @@
 </template>
 
 <style lang="scss">
-@import '~bulma/bulma';
+@import 'bulma/bulma';
+@import 'nprogress/nprogress.css';
 </style>

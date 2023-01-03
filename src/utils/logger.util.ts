@@ -43,7 +43,7 @@ export enum LogLevel {
 }
 
 const state: Required<LoggerOptions> = Object.seal({
-  logLevel: process.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.DEBUG,
+  logLevel: import.meta.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.DEBUG,
   prefix: '',
   remote: {} as LoggerRemoteOptions,
   timestamp: false
@@ -148,7 +148,7 @@ export const Logger = {
     if (logLevel > LogLevel.SUCCESS) return;
 
     const elapsed = Math.floor(Date.now() - time);
-    const colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'PREFIX_DM' : 'PREFIX';
+    const colorMode = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'PREFIX_DM' : 'PREFIX';
 
     console.groupCollapsed(
       `%c${label}%c${prefix ? `${prefix}` : ''}%c${timestamp ? `${getTimestamp()}` : ''}%c${text} %c${
@@ -167,4 +167,6 @@ export const Logger = {
   }
 };
 
-window.logger = Logger;
+if (typeof window !== 'undefined') {
+  window.logger = Logger;
+}

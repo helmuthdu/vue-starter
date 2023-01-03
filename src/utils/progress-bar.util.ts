@@ -3,7 +3,7 @@ import NProgress from 'nprogress';
 NProgress.configure({ showSpinner: false });
 
 const delay = 500;
-let timer: any;
+let timer: NodeJS.Timeout;
 let counter = 0;
 
 export const startPageProgressBar = () => {

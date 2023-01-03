@@ -7,7 +7,7 @@ import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior(to, from, scrollPosition) {
     if (scrollPosition) {
       return scrollPosition;
