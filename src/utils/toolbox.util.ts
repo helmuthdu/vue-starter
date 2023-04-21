@@ -165,20 +165,25 @@ export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0, 
 
 type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never;
 type UnwrapPromisify<T> = T extends Promise<infer U> ? U : T;
-export const tryit =
-  <T extends (...args: any) => any>(fn: T) =>
-  async (...args: ArgumentsType<T>): Promise<{ error?: Error; data?: UnwrapPromisify<ReturnType<T>> }> => {
-    try {
-      return { error: undefined, data: await fn(...(args as any)) };
-    } catch (err) {
-      return { error: err as Error, data: undefined };
-    }
-  };
+
+export async function attempt<T extends (...args: any) => any>(fn: T, ...args: ArgumentsType<T>) {
+  if (arguments.length === 1) {
+    return (...a: ArgumentsType<T>) => attempt(fn, ...a);
+  }
+
+  try {
+    return { error: undefined, result: await fn(...(args as any)) };
+  } catch (err) {
+    return { error: err as Error, result: undefined };
+  }
+}
+
+// return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, timeout))]);
 
 export const nextTick = (fn: (...args: unknown[]) => void) => {
-  const id = window.requestAnimationFrame(() => {
+  const id = requestAnimationFrame(() => {
     fn?.();
-    window.cancelAnimationFrame(id);
+    cancelAnimationFrame(id);
   });
 };
 
