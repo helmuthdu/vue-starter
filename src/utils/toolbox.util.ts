@@ -1,7 +1,9 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 import { Logger } from './logger.util';
 
-export const type = (arg: any) => {
+// FUNCTIONS
+
+export function typeOf(arg: any) {
   if (arg === null) {
     return 'Null';
   } else if (arg === undefined) {
@@ -11,21 +13,42 @@ export const type = (arg: any) => {
   }
   const type = Object.prototype.toString.call(arg).slice(8, -1);
   return type === 'AsyncFunction' ? 'Promise' : type;
-};
+}
 
 export const isArray = Array.isArray;
-export const isFunction = (arg: any) => type(arg) === 'Function';
-export const isNil = (arg: any) => arg === undefined || arg === null;
-export const isNumber = (arg: any) => type(arg) === 'Number';
-export const isObject = (arg: any) => type(arg) === 'Object';
-export const isPromise = (arg: any) => ['Async', 'Promise'].includes(type(arg));
-export const isString = (arg: any) => type(arg) === 'String';
-export const isEmpty = (arg: any) =>
-  isNil(arg) || ((isArray(arg) || isObject(arg)) && !Object.entries(arg || {}).length);
-export const isEquals = (curr: any, prev: any): boolean => {
+
+export function isFunction(arg: any) {
+  return typeOf(arg) === 'Function';
+}
+
+export function isNil(arg: any) {
+  return arg === undefined || arg === null;
+}
+
+export function isNumber(arg: any) {
+  return typeOf(arg) === 'Number';
+}
+
+export function isObject(arg: any) {
+  return typeOf(arg) === 'Object';
+}
+
+export function isPromise(arg: any) {
+  return ['Async', 'Promise'].includes(typeOf(arg));
+}
+
+export function isString(arg: any) {
+  return typeOf(arg) === 'String';
+}
+
+export function isEmpty(arg: any) {
+  return isNil(arg) || ((isArray(arg) || isObject(arg)) && !Object.entries(arg || {}).length);
+}
+
+export function isEquals(curr: any, prev: any): boolean {
   if (curr === prev) return true;
 
-  if (type(curr) !== type(prev)) return false;
+  if (typeOf(curr) !== typeOf(prev)) return false;
 
   if (isArray(curr)) {
     if (curr.toString() !== prev.toString()) return false;
@@ -39,31 +62,124 @@ export const isEquals = (curr: any, prev: any): boolean => {
   }
 
   return false;
-};
+}
 
-// eslint-disable-next-line no-prototype-builtins
-export const has = (data: any, prop: string) => data?.hasOwnProperty(prop);
+type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never;
+type UnwrapPromisify<T> = T extends Promise<infer U> ? U : T;
+type AttemptResponse<T extends (...args: any) => any> = UnwrapPromisify<ReturnType<T>>;
 
-export const get = <T, K extends keyof T>(data: T, path: K | string, defaultValue: unknown = null) =>
-  String.prototype.split
+export async function attempt<T extends (...args: any) => any>(fn: T, ...args: ArgumentsType<T>) {
+  if (arguments.length === 1) {
+    return (..._args: ArgumentsType<T>) => attempt(fn, ..._args);
+  }
+
+  try {
+    return (await fn(...(args as any))) as AttemptResponse<T>;
+  } catch (err) {
+    Logger.error('attempt() -> unexpected error', err);
+    return undefined;
+  }
+}
+
+export function observe<T extends Record<string, any>, K extends keyof T>(
+  obj: T,
+  fn: (target: T, prop: K, value: T[K], oldValue: T[K]) => void
+) {
+  return new Proxy(obj, {
+    set(target, prop, val, receiver) {
+      fn(target, prop as K, val, target[prop as K]);
+
+      return Reflect.set(target, prop, val, receiver);
+    }
+  });
+}
+
+export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms = 300, immediate?: boolean) {
+  let callback: NodeJS.Timeout | undefined;
+
+  return (...args: unknown[]): ReturnType<T> | void => {
+    if (immediate && !callback) {
+      fn(...args);
+    }
+    clearTimeout(callback);
+    callback = setTimeout(() => {
+      callback = undefined;
+      if (!immediate) {
+        fn(...args);
+      }
+    }, ms);
+  };
+}
+
+export function predict(fn: (...args: any) => any, ms = 7000) {
+  return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, ms))]);
+}
+
+export function timeout(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function delay(fn: () => any, timer = 700) {
+  await timeout(timer);
+  return Promise.resolve(fn());
+}
+
+export function uuid(): string {
+  return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+}
+
+export function parseJSON<T, K>(arg: K, defaultValue?: T): T | undefined {
+  try {
+    const value = typeof arg === 'string' ? JSON.parse(arg) : arg;
+    return value || defaultValue;
+  } catch (err) {
+    Logger.error('parseJSON() -> failed to parse object', err);
+    return defaultValue;
+  }
+}
+
+export function compose<R>(fn: (args: R) => R, ...fns: ((args: R) => R)[]) {
+  return fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn);
+}
+
+export function pipe<T extends unknown[], R>(fn: (...args: T) => R, ...fns: ((args: R) => R)[]) {
+  return (...args: T) =>
+    fns.reduce(
+      (prevFn, nextFn) => (value: R) => nextFn(prevFn(value)),
+      value => value
+    )(fn(...args));
+}
+
+// OBJECTS
+
+export function has(data: any, prop: string) {
+  // eslint-disable-next-line no-prototype-builtins
+  return data?.hasOwnProperty(prop);
+}
+
+export function get<T, K extends keyof T>(data: T, path: K | string, defaultValue: unknown = undefined) {
+  return String.prototype.split
     .call(path, /[,[\].]+?/)
     .filter(Boolean)
     .reduce((acc: any, cur: string) => (Object.hasOwnProperty.call(acc, cur) ? acc[cur] : defaultValue), data);
+}
 
-export const groupBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T) =>
-  isObject(data)
+export function groupBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T) {
+  return isObject(data)
     ? Object.values(data).reduce(
         (acc: DictionaryArray<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) =>
           (acc[prop] || (acc[prop] = [])).push(val),
         {}
       )
     : {};
+}
 
-export const sortBy = <T, K extends keyof T>(data: T[], key: K) =>
-  [...data].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
+export function sortBy<T, K extends keyof T>(data: T[], key: K) {
+  return [...data].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
+}
 
-export const keyBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> =>
-  isObject(data)
+export function keyBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> {
+  return isObject(data)
     ? Object.values(data).reduce(
         (acc: Dictionary<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) => {
           if (!prop) return acc;
@@ -73,31 +189,21 @@ export const keyBy = <T extends object>(data: T | T[] | ReadonlyArray<T>, key: k
         {}
       )
     : {};
+}
 
-export const uniq = <T>(arg: T[]) => [...new Set(arg)];
+export function keys<T extends object, K extends keyof T>(arg: T) {
+  return isObject(arg) ? (Object.keys(arg) as K[]) : [];
+}
 
-export const flatten = <T>(arg: T | T[]) => (isArray(arg) ? arg.flat(Infinity) : arg);
+export function values<T extends object, K extends keyof T>(arg: T) {
+  return isObject(arg) ? (Object.values(arg) as T[K][]) : [];
+}
 
-export const keys = <T extends object, K extends keyof T>(arg: T) => (isObject(arg) ? (Object.keys(arg) as K[]) : []);
+export function entries<T extends object, K extends keyof T>(arg: T) {
+  return isObject(arg) ? (Object.entries(arg) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
+}
 
-export const values = <T extends object, K extends keyof T>(arg: T) =>
-  isObject(arg) ? (Object.values(arg) as T[K][]) : [];
-
-export const entries = <T extends object, K extends keyof T>(arg: T) =>
-  isObject(arg) ? (Object.entries(arg) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
-
-export const compose = <R>(fn: (args: R) => R, ...fns: ((args: R) => R)[]) =>
-  fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn);
-
-export const pipe =
-  <T extends unknown[], R>(fn: (...args: T) => R, ...fns: ((args: R) => R)[]) =>
-  (...args: T) =>
-    fns.reduce(
-      (prevFn, nextFn) => (value: R) => nextFn(prevFn(value)),
-      value => value
-    )(fn(...args));
-
-export const merge = <T extends Record<string, any>[]>(...args: [...T]): Spread<T> => {
+export function merge<T extends Record<string, any>[]>(...args: [...T]): Spread<T> {
   const target = args.shift();
   if (!target) return {} as any;
   const source = args.shift();
@@ -111,85 +217,42 @@ export const merge = <T extends Record<string, any>[]>(...args: [...T]): Spread<
     }
   });
   return merge(target, ...args) as unknown as Spread<T>;
-};
+}
 
-export const uuid = (): string => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+// ARRAYS
 
-export const parseJson = <T, K>(arg: K, defaultValue?: T): T | undefined => {
-  try {
-    const value = typeof arg === 'string' ? JSON.parse(arg) : arg;
-    return value || defaultValue;
-  } catch (err) {
-    Logger.error('parseJson() -> failed to parse object', err);
-    return defaultValue;
-  }
-};
+export function uniq<T>(arg: T[]) {
+  return [...new Set(arg)];
+}
 
-export const toSnakeCase = (text: string) =>
-  text
+export function flatten<T>(arg: T | T[]) {
+  return isArray(arg) ? arg.flat(Infinity) : arg;
+}
+
+export function range(start: number, stop: number, step: number) {
+  return Array.from({ length: Math.floor((stop - start) / step) + 1 }, (_, i) => start + i * step);
+}
+
+// STRINGS
+
+export function toSnakeCase(text: string) {
+  return text
     .replace(/\W+/g, ' ')
     .split(/ |\B(?=[A-Z])/)
     .map(s => s.toLowerCase())
     .join('_');
+}
 
-export const toKebabCase = (text: string) =>
-  text
+export function toKebabCase(text: string) {
+  return text
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
+}
 
-export const truncate = (text: string, limit = 25, completeWords = false, ellipsis = '…'): string => {
+export function truncate(text: string, limit = 25, completeWords = false, ellipsis = '…'): string {
   if (completeWords) {
     limit = text.substring(0, limit).lastIndexOf(' ');
   }
   return text.length > limit ? `${text.substring(0, limit)}${ellipsis}` : text;
-};
-
-export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0, immediate?: boolean) => {
-  let timeout: NodeJS.Timeout | undefined;
-
-  return (...args: unknown[]): ReturnType<T> | void => {
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      timeout = undefined;
-      if (!immediate) {
-        return fn(...args);
-      }
-    }, ms);
-    if (callNow) {
-      return fn(...args);
-    }
-  };
-};
-
-type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never;
-type UnwrapPromisify<T> = T extends Promise<infer U> ? U : T;
-
-export async function attempt<T extends (...args: any) => any>(fn: T, ...args: ArgumentsType<T>) {
-  if (arguments.length === 1) {
-    return (...a: ArgumentsType<T>) => attempt(fn, ...a);
-  }
-
-  try {
-    return { error: undefined, result: await fn(...(args as any)) };
-  } catch (err) {
-    return { error: err as Error, result: undefined };
-  }
 }
-
-// return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, timeout))]);
-
-export const nextTick = (fn: (...args: unknown[]) => void) => {
-  const id = requestAnimationFrame(() => {
-    fn?.();
-    cancelAnimationFrame(id);
-  });
-};
-
-export const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-export const delay = async (fn: () => any, timer = 700) => {
-  await timeout(timer);
-  return Promise.resolve(fn());
-};

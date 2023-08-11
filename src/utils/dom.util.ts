@@ -10,14 +10,14 @@ const intersectionCallback =
     });
   };
 
-export const waitUntilElementIntersects = (
+export function waitUntilElementIntersects(
   element: Element,
   callback: () => void,
   options: IntersectionObserverInit = {
     root: null,
     threshold: 0
   }
-): IntersectionObserver => {
+): IntersectionObserver {
   let observer: IntersectionObserver;
   if (observers.has(element)) {
     observer = observers.get(element);
@@ -27,16 +27,21 @@ export const waitUntilElementIntersects = (
     observers.set(element, observer);
   }
   return observer;
-};
+}
 
-export const waitUntilElementAppears = (
-  selector: string,
-  { wait = 250, attempts = 10, root }: { wait: number; attempts: number; root?: HTMLElement }
-): Promise<Element | null> => {
+type WaitUntilElementAppearsConfig = { wait: number; attempts: number; root?: HTMLElement | Document };
+export function waitUntilElementAppears(
+  selectors: string | string[],
+  { wait = 250, attempts = 10, root = document }: WaitUntilElementAppearsConfig = {} as WaitUntilElementAppearsConfig
+): Promise<Element | undefined> {
   let count = 0;
   return new Promise(resolve => {
     const interval = setInterval(() => {
-      const element = (root ?? document).querySelector(selector);
+      const element = (
+        Array.isArray(selectors)
+          ? selectors.map(s => root.querySelector(s)).find(Boolean)
+          : root.querySelector(selectors)
+      ) as HTMLElement;
       if (element || count >= attempts) {
         clearInterval(interval);
         resolve(element);
@@ -44,7 +49,7 @@ export const waitUntilElementAppears = (
       count++;
     }, wait);
   });
-};
+}
 
 export const importJS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
   if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
