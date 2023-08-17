@@ -2,7 +2,7 @@ const observers = new WeakMap();
 const intersectionCallback =
   (element: Element, callback: () => void) =>
   (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         callback();
         observer.unobserve(element);
@@ -15,8 +15,8 @@ export function waitUntilElementIntersects(
   callback: () => void,
   options: IntersectionObserverInit = {
     root: null,
-    threshold: 0
-  }
+    threshold: 0,
+  },
 ): IntersectionObserver {
   let observer: IntersectionObserver;
   if (observers.has(element)) {
@@ -32,14 +32,14 @@ export function waitUntilElementIntersects(
 type WaitUntilElementAppearsConfig = { wait: number; attempts: number; root?: HTMLElement | Document };
 export function waitUntilElementAppears(
   selectors: string | string[],
-  { wait = 250, attempts = 10, root = document }: WaitUntilElementAppearsConfig = {} as WaitUntilElementAppearsConfig
+  { wait = 250, attempts = 10, root = document }: WaitUntilElementAppearsConfig = {} as WaitUntilElementAppearsConfig,
 ): Promise<Element | undefined> {
   let count = 0;
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const interval = setInterval(() => {
       const element = (
         Array.isArray(selectors)
-          ? selectors.map(s => root.querySelector(s)).find(Boolean)
+          ? selectors.map((s) => root.querySelector(s)).find(Boolean)
           : root.querySelector(selectors)
       ) as HTMLElement;
       if (element || count >= attempts) {

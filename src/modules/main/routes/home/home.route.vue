@@ -84,8 +84,8 @@ export default defineComponent({
 
     return {
       message,
-      t
+      t,
     };
-  }
+  },
 });
 </script>

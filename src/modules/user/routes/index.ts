@@ -9,8 +9,8 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: paths.signIn.path,
         name: paths.signIn.name,
-        component: () => import('./sign-in/sign-in.route.vue')
-      }
-    ]
-  }
+        component: () => import('./sign-in/sign-in.route.vue'),
+      },
+    ],
+  },
 ];

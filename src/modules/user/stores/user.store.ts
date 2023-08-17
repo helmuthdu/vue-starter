@@ -9,7 +9,7 @@ type ReadonlyObjectRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',
   NotFound = 'NOT_FOUND',
-  Invalid = 'INVALID'
+  Invalid = 'INVALID',
 }
 
 export type State = {
@@ -21,11 +21,11 @@ export type State = {
 export const state = map<State>({
   entity: User.create(),
   status: 'idle',
-  error: undefined
+  error: undefined,
 });
 
 export const getters = {
-  isLoggedIn: computed(state, s => !!s.entity.token)
+  isLoggedIn: computed(state, (s) => !!s.entity.token),
 };
 
 export const actions = {
@@ -35,13 +35,13 @@ export const actions = {
       store.set({
         entity: User.create((await userApi.signUp(payload)).data),
         status: 'completed',
-        error: undefined
+        error: undefined,
       });
     } catch (err) {
       store.set({
         entity: User.create(),
         status: 'idle',
-        error: RequestErrorType.AlreadyExists
+        error: RequestErrorType.AlreadyExists,
       });
     }
     return store.get();
@@ -52,38 +52,38 @@ export const actions = {
       store.set({
         entity: User.create((await userApi.signIn(payload)).data),
         status: 'completed',
-        error: undefined
+        error: undefined,
       });
     } catch (err: any) {
       store.set({
         entity: User.create(),
         status: 'idle',
-        error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid
+        error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
       });
     }
     return store.get();
   }),
-  signOut: action(state, 'signOut', store => {
+  signOut: action(state, 'signOut', (store) => {
     store.set({
       entity: User.create(),
       status: 'idle',
-      error: undefined
+      error: undefined,
     });
     return store.get();
-  })
+  }),
 };
 
 export const useStore = () => ({
   state: toRef(state),
   ...Object.entries(getters).reduce(
     (acc, [key, val]) => ({ ...acc, [key]: toRef(val) }),
-    {} as ReadonlyObjectRef<typeof getters>
+    {} as ReadonlyObjectRef<typeof getters>,
   ),
-  ...actions
+  ...actions,
 });
 
 export const store = {
   ...state,
   ...getters,
-  ...actions
+  ...actions,
 };

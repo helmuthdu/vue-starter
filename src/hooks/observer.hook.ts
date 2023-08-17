@@ -11,7 +11,7 @@ const useSubscribeTo = <T>(
   observable: Observable<T>,
   next?: (value: T) => void,
   error?: (err: any) => void,
-  complete?: () => void
+  complete?: () => void,
 ): Subscription => {
   const subscription = observable.subscribe({ next, error, complete });
   onBeforeUnmount(() => {
@@ -30,12 +30,12 @@ export const useObservable = <T>(observable: Observable<T>, defaultValue?: T, ou
 
   useSubscribeTo(
     observable,
-    value => {
+    (value) => {
       handler.value = value;
     },
-    error => {
+    (error) => {
       throw error;
-    }
+    },
   );
 
   return handler;
@@ -45,7 +45,7 @@ export const useSubscription = <T>(
   observable: Observable<T>,
   next?: (value: T) => void,
   error?: (err: any) => void,
-  complete?: () => void
+  complete?: () => void,
 ): Subscription => useSubscribeTo(observable, next, error, complete);
 
 export const useSubject = <T>(): { subject: Subject<T>; setSubject: (value: T) => void } => {

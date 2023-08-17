@@ -19,7 +19,7 @@ export const router: Router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: { path: `/${locales.english}/` }
+      redirect: { path: `/${locales.english}/` },
     },
     {
       path: '/:locale',
@@ -33,30 +33,30 @@ export const router: Router = createRouter({
           next({ name: '404' });
         }
       },
-      children: [...routes]
+      children: [...routes],
     },
     {
       path: '/network-error',
       name: 'NetworkError',
-      component: defineAsyncComponent(() => import('./network-error/network-error.route.vue'))
+      component: defineAsyncComponent(() => import('./network-error/network-error.route.vue')),
     },
     {
       path: '/404/:resource',
       name: '404Resource',
       component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue')),
-      props: true
+      props: true,
     },
     {
       path: '/:pathMatch(.*)*',
       name: '404',
-      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue'))
-    }
-  ]
+      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue')),
+    },
+  ],
 });
 
 router.beforeEach(async (to, from, next) => {
   startPageProgressBar();
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   requiresAuth && !store.isLoggedIn.get() ? next({ name: paths.user.signIn.path }) : next();
 });
 

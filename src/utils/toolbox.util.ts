@@ -52,13 +52,13 @@ export function isEquals(curr: any, prev: any): boolean {
 
   if (isArray(curr)) {
     if (curr.toString() !== prev.toString()) return false;
-    return !curr.some((val, idx) => val !== prev[idx] && !isEquals(val, prev[idx]));
+    return !curr.some((val: any, idx: number) => val !== prev[idx] && !isEquals(val, prev[idx]));
   }
 
   if (isObject(curr)) {
     const keys = Object.keys(curr);
     if (keys.length !== Object.keys(prev).length) return false;
-    return !keys.some(key => curr[key] !== prev[key] && !isEquals(curr[key], prev[key]));
+    return !keys.some((key) => curr[key] !== prev[key] && !isEquals(curr[key], prev[key]));
   }
 
   return false;
@@ -83,14 +83,14 @@ export async function attempt<T extends (...args: any) => any>(fn: T, ...args: A
 
 export function observe<T extends Record<string, any>, K extends keyof T>(
   obj: T,
-  fn: (target: T, prop: K, value: T[K], oldValue: T[K]) => void
+  fn: (target: T, prop: K, value: T[K], oldValue: T[K]) => void,
 ) {
   return new Proxy(obj, {
     set(target, prop, val, receiver) {
       fn(target, prop as K, val, target[prop as K]);
 
       return Reflect.set(target, prop, val, receiver);
-    }
+    },
   });
 }
 
@@ -116,11 +116,11 @@ export function predict(fn: (...args: any) => any, ms = 7000) {
 }
 
 export function timeout(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function delay(fn: () => any, timer = 700) {
-  await timeout(timer);
+export async function delay(fn: () => any, ms = 700) {
+  await timeout(ms);
   return Promise.resolve(fn());
 }
 
@@ -128,9 +128,9 @@ export function uuid(): string {
   return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 }
 
-export function parseJSON<T, K>(arg: K, defaultValue?: T): T | undefined {
+export function parseJSON<T, K>(json: K, defaultValue?: T): T | undefined {
   try {
-    const value = typeof arg === 'string' ? JSON.parse(arg) : arg;
+    const value = typeof json === 'string' ? JSON.parse(json) : json;
     return value || defaultValue;
   } catch (err) {
     Logger.error('parseJSON() -> failed to parse object', err);
@@ -139,14 +139,14 @@ export function parseJSON<T, K>(arg: K, defaultValue?: T): T | undefined {
 }
 
 export function compose<R>(fn: (args: R) => R, ...fns: ((args: R) => R)[]) {
-  return fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn);
+  return fns.reduce((prevFn, nextFn) => (value) => prevFn(nextFn(value)), fn);
 }
 
 export function pipe<T extends unknown[], R>(fn: (...args: T) => R, ...fns: ((args: R) => R)[]) {
   return (...args: T) =>
     fns.reduce(
       (prevFn, nextFn) => (value: R) => nextFn(prevFn(value)),
-      value => value
+      (value) => value,
     )(fn(...args));
 }
 
@@ -169,7 +169,7 @@ export function groupBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key:
     ? Object.values(data).reduce(
         (acc: DictionaryArray<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) =>
           (acc[prop] || (acc[prop] = [])).push(val),
-        {}
+        {},
       )
     : {};
 }
@@ -186,7 +186,7 @@ export function keyBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key: k
           acc[prop] = val;
           return acc;
         },
-        {}
+        {},
       )
     : {};
 }
@@ -239,7 +239,7 @@ export function toSnakeCase(text: string) {
   return text
     .replace(/\W+/g, ' ')
     .split(/ |\B(?=[A-Z])/)
-    .map(s => s.toLowerCase())
+    .map((s) => s.toLowerCase())
     .join('_');
 }
 

@@ -13,11 +13,11 @@ export default {
   // components: { Event },
   setup() {
     const error = ref(null);
-    onErrorCaptured(e => {
+    onErrorCaptured((e) => {
       error.value = e;
       return true;
     });
     return { error };
-  }
+  },
 };
 </script>

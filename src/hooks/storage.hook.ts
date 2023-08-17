@@ -20,7 +20,7 @@ export const useStorage = <T>(key: string, defaultValue?: T, session = false): R
       Logger.info(`[STORAGE] watch('${key}')`, state);
       setStorageItem(key, state);
     },
-    { deep: true }
+    { deep: true },
   );
 
   return storage;

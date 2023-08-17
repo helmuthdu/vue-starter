@@ -13,7 +13,7 @@ type ContextProps = {
 
 enum TypeSymbol {
   success = '✓',
-  error = '✕'
+  error = '✕',
 }
 
 const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
@@ -46,11 +46,11 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
         params: context?.params ? { ...context.params, ...params } : params,
         paramsSerializer: {
-          encode: (parameter: string | number | boolean) => encodeURIComponent(parameter)
+          encode: (parameter: string | number | boolean) => encodeURIComponent(parameter),
         },
-        url: context?.url ? `${context.url}/${config.url}` : config.url
+        url: context?.url ? `${context.url}/${config.url}` : config.url,
       }),
-      id
+      id,
     );
     _activeRequests[id] = { request, controller };
   }
@@ -62,11 +62,11 @@ export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promi
   startPageProgressBar();
   const time = Date.now();
   return axios(config)
-    .then(res => {
+    .then((res) => {
       _log('success', config, res.data, time);
       return res as AxiosResponse<T>;
     })
-    .catch(error => {
+    .catch((error) => {
       _log('error', config, error, time);
       throw error;
     })
@@ -104,7 +104,7 @@ export const createHttpService = (context?: ContextProps) => ({
         }
       }
     });
-  }
+  },
 });
 
 export const Http = createHttpService({});

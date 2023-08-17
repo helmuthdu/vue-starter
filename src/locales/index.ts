@@ -11,7 +11,7 @@ export type Locale = (typeof locales)[keyof typeof locales];
 export type LocaleStorage = { locale: Locale; messages: Record<string, any>; version: string };
 
 export const locales = {
-  english: 'en-US'
+  english: 'en-US',
 } as const;
 
 const getLocaleStorage = () =>
@@ -36,7 +36,7 @@ export const setCurrentLocale = (loc: Locale) => {
 
 export const locale = localeFrom(
   currentLocale,
-  browser({ available: Object.keys(locales), fallback: locales.english })
+  browser({ available: Object.keys(locales), fallback: locales.english }),
 );
 
 export const format = formatter(locale);
@@ -58,11 +58,11 @@ export const i18n = createI18n(locale, {
     setStorageItem(STORAGE_KEY, {
       locale: loc,
       messages,
-      version: APP_VERSION
+      version: APP_VERSION,
     });
 
     return messages;
-  }
+  },
 });
 
 export const getTranslations = (name: string, translations: Translations = {}) => i18n(name, translations);

@@ -10,13 +10,13 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: paths.about.path,
         name: paths.about.name,
-        component: () => defineAsyncComponent(() => import('./about/about.route.vue'))
+        component: () => defineAsyncComponent(() => import('./about/about.route.vue')),
       },
       {
         path: paths.home.path,
         name: paths.home.name,
-        component: () => defineAsyncComponent(() => import('./home/home.route.vue'))
-      }
-    ]
-  }
+        component: () => defineAsyncComponent(() => import('./home/home.route.vue')),
+      },
+    ],
+  },
 ];

@@ -83,5 +83,5 @@ export const Broadcaster = {
   on,
   once,
   off,
-  emit
+  emit,
 };

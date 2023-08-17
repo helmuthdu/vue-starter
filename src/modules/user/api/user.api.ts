@@ -7,15 +7,15 @@ export type UserRequest = Partial<UserSchema> & {
 };
 
 const signIn = async (payload: UserSchema): Promise<Response & { data: UserSchema }> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         status: 400,
         data: {
           userName: 'johndoe',
           email: 'johndoe@mail.com',
-          token: 'secret'
-        }
+          token: 'secret',
+        },
       } as any);
     }, 1000);
   });
@@ -29,5 +29,5 @@ const update = async (payload: UserSchema) =>
 export const userApi = {
   signIn,
   signUp,
-  update
+  update,
 };
