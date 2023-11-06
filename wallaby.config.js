@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-module.exports = wallaby => {
+module.exports = (wallaby) => {
   process.env.VUE_CLI_BABEL_TRANSPILE_MODULES = true;
 
   return {
@@ -8,9 +8,9 @@ module.exports = wallaby => {
     tests: ['src/**/__tests__/**/*.ts'],
     env: {
       type: 'node',
-      runner: 'node'
+      runner: 'node',
     },
     testFramework: 'vitest',
-    debug: true
+    debug: true,
   };
 };
