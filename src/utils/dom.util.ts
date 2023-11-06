@@ -51,6 +51,12 @@ export function waitUntilElementAppears(
   });
 }
 
+export function getHostElement(target: ParentNode) {
+  let node = target;
+  while (node.parentNode) node = node.parentNode;
+  return (node as ShadowRoot).host;
+}
+
 export const importJS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
   if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
   const scriptElement = document.querySelector(`script[src="${url}"]`);
