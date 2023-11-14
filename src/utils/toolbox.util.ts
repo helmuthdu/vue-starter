@@ -128,10 +128,10 @@ export function uuid(): string {
   return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 }
 
-export function parseJSON<T, K>(json: K, defaultValue?: T): T | undefined {
+export function parseJSON<T, K>(json?: K, defaultValue?: T): T | undefined {
   try {
     const value = typeof json === 'string' ? JSON.parse(json) : json;
-    return value || defaultValue;
+    return value ?? defaultValue;
   } catch (err) {
     Logger.error('parseJSON() -> failed to parse object', err);
     return defaultValue;
@@ -229,8 +229,16 @@ export function flatten<T>(arg: T | T[]) {
   return isArray(arg) ? arg.flat(Infinity) : arg;
 }
 
-export function range(start: number, stop: number, step: number) {
-  return Array.from({ length: Math.floor((stop - start) / step) + 1 }, (_, i) => start + i * step);
+export function range(min: number, max: number, steps: number) {
+  const difference = max - min;
+  const increment = difference / (steps - 1);
+  return [
+    min,
+    ...Array(steps - 2)
+      .fill(undefined)
+      .map((_, idx) => min + increment * (idx + 1)),
+    max,
+  ];
 }
 
 // STRINGS
