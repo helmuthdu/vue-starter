@@ -229,7 +229,7 @@ export function flatten<T>(arg: T | T[]) {
   return isArray(arg) ? arg.flat(Infinity) : arg;
 }
 
-export function range(min: number, max: number, steps: number) {
+export function grade(min: number, max: number, steps: number) {
   const difference = max - min;
   const increment = difference / (steps - 1);
   return [
@@ -239,6 +239,10 @@ export function range(min: number, max: number, steps: number) {
       .map((_, idx) => min + increment * (idx + 1)),
     max,
   ];
+}
+
+export function range(start: number, stop: number, step: number) {
+  return Array.from({ length: Math.floor((stop - start) / step) + 1 }, (_, i) => start + i * step);
 }
 
 // STRINGS
