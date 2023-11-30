@@ -15,7 +15,7 @@
     }
   },
   "plugins": ["@typescript-eslint", "prettier"],
-  "extends": ["plugin:vue/vue3-recommended", "eslint:recommended", "@vue/typescript/recommended", "plugin:prettier/recommended"],
+  "extends": ["plugin:vue/vue3-recommended", "eslint:recommended", "plugin:prettier/recommended"],
   "rules": {
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
