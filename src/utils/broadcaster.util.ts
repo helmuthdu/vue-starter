@@ -12,12 +12,14 @@ const getEventById = (event: string, id: string) => events?.[event]?.[id];
 
 const setEvent = (event: string, id: string, fn: any) => {
   if (!getEvent(event)) events[event] = {};
+
   events[event][id] = fn;
 };
 
 const stop = (event: string, id: string) => {
   if (getEventById(event, id)) {
     delete events[event][id];
+
     if (Object.keys(getEvent(event)).length === 0) delete events[event];
   } else {
     Logger.warn(`Event "${event}" already stopped`);

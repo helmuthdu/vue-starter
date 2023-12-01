@@ -27,11 +27,11 @@
   </div>
 </template>
 <script lang="ts">
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
 import { useObservable, useSubject } from '@/hooks/observer.hook';
 import { useStorage } from '@/hooks/storage.hook';
 import { featuresApi } from '@/modules/main/api/features.api';
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-import { defineComponent, ref } from 'vue';
 import { Feature } from '../../entities/feature/feature.type';
 
 export default defineComponent({
@@ -54,6 +54,7 @@ export default defineComponent({
         map((query) =>
           featureList.value.filter((feat) => {
             if (!query) return true;
+
             return (
               feat.type.toLowerCase().includes(query) || feat.css.some((css) => css.name.toLowerCase().includes(query))
             );
@@ -68,6 +69,7 @@ export default defineComponent({
     );
 
     const feats = await featuresApi.get();
+
     features.value = feats;
     featureList.value = feats;
 

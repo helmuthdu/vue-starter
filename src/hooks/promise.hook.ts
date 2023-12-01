@@ -1,4 +1,4 @@
-import { ref, Ref } from 'vue';
+import { Ref, ref } from 'vue';
 
 export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T = null as any) => {
   const result = ref(defaultValue) as Ref<T>;
@@ -8,6 +8,7 @@ export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T 
     loading.value = true;
     error.value = null;
     result.value = defaultValue;
+
     try {
       result.value = await fn(...args);
     } catch (err) {
@@ -16,5 +17,6 @@ export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T 
       loading.value = false;
     }
   };
+
   return { result, loading, error, run };
 };

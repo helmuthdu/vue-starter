@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { useStore } from '@/stores';
 import { defineComponent, ref } from 'vue';
+import { useStore } from '@/stores';
 
 export default defineComponent({
   name: 'SignInRoute',

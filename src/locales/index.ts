@@ -1,8 +1,7 @@
-import { getStorageItem, Http, setStorageItem } from '@/utils';
-import { browser, createI18n, formatter, localeFrom, Translations } from '@nanostores/i18n';
-import { Messages } from '@nanostores/i18n/create-i18n';
+import { browser, createI18n, formatter, localeFrom, Messages, Translations } from '@nanostores/i18n';
 import { useStore } from '@nanostores/vue';
 import { atom } from 'nanostores';
+import { getStorageItem, Http, setStorageItem } from '@/utils';
 
 const STORAGE_KEY = 'locale';
 const APP_VERSION = import.meta.env.VITE_VERSION;

@@ -1,5 +1,5 @@
-import { paths } from '@/modules/user/routes/paths';
 import { RouteRecordRaw } from 'vue-router';
+import { paths } from '@/modules/user/routes/paths';
 
 export const routes: Array<RouteRecordRaw> = [
   {

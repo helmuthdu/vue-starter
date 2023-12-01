@@ -11,7 +11,9 @@ export function typeOf(arg: any) {
   } else if (Number.isNaN(arg)) {
     return 'NaN';
   }
+
   const type = Object.prototype.toString.call(arg).slice(8, -1);
+
   return type === 'AsyncFunction' ? 'Promise' : type;
 }
 
@@ -52,12 +54,15 @@ export function isEquals(curr: any, prev: any): boolean {
 
   if (isArray(curr)) {
     if (curr.toString() !== prev.toString()) return false;
+
     return !curr.some((val: any, idx: number) => val !== prev[idx] && !isEquals(val, prev[idx]));
   }
 
   if (isObject(curr)) {
     const keys = Object.keys(curr);
+
     if (keys.length !== Object.keys(prev).length) return false;
+
     return !keys.some((key) => curr[key] !== prev[key] && !isEquals(curr[key], prev[key]));
   }
 
@@ -77,6 +82,7 @@ export async function attempt<T extends (...args: any) => any>(fn: T, ...args: A
     return (await fn(...(args as any))) as AttemptResponse<T>;
   } catch (err) {
     Logger.error('attempt() -> unexpected error', err);
+
     return undefined;
   }
 }
@@ -101,9 +107,11 @@ export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms = 300
     if (immediate && !callback) {
       fn(...args);
     }
+
     clearTimeout(callback);
     callback = setTimeout(() => {
       callback = undefined;
+
       if (!immediate) {
         fn(...args);
       }
@@ -121,6 +129,7 @@ export function timeout(ms: number) {
 
 export async function delay(fn: () => any, ms = 700) {
   await timeout(ms);
+
   return Promise.resolve(fn());
 }
 
@@ -131,9 +140,11 @@ export function uuid(): string {
 export function parseJSON<T, K>(json?: K, defaultValue?: T): T | undefined {
   try {
     const value = typeof json === 'string' ? JSON.parse(json) : json;
+
     return value ?? defaultValue;
   } catch (err) {
     Logger.error('parseJSON() -> failed to parse object', err);
+
     return defaultValue;
   }
 }
@@ -183,11 +194,8 @@ export function entries<T extends object>(arg: T): Entries<T> {
 }
 
 type OptionalPropertyNames<T> = { [K in keyof T]-?: object extends { [P in K]: T[K] } ? K : never }[keyof T];
-
 type OptionalObject<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
-
 type SpreadProperties<L, R, K extends keyof L & keyof R> = { [P in K]: L[P] | Exclude<R[P], undefined> };
-
 type Spread<L, R> = OptionalObject<
   Pick<L, Exclude<keyof L, keyof R>> &
     Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
@@ -199,15 +207,21 @@ type Merge<A extends Record<string, any>> = A extends [infer L, ...infer R] ? Sp
 
 export function merge<T extends Record<string, any>[]>(...args: [...T]): Merge<T> {
   const target = args.shift();
+
   if (!target) return {} as any;
+
   const source = args.shift();
+
   if (!source) return target as any;
+
   entries(source).forEach(([key, value]) => {
     if (isObject(value)) {
       if (!target[key]) Object.assign(target, { [key]: {} });
+
       merge(target[key], value);
     } else if (isArray(value)) {
       if (!target[key]) Object.assign(target, { [key]: [] });
+
       (value as any[]).forEach((curr) => {
         if (!target[key].some((prev: any) => isEquals(curr, prev))) {
           target[key].push(curr);
@@ -217,6 +231,7 @@ export function merge<T extends Record<string, any>[]>(...args: [...T]): Merge<T
       Object.assign(target, { [key]: value });
     }
   });
+
   return merge(target, ...args) as unknown as Merge<T>;
 }
 
@@ -233,6 +248,7 @@ export function flatten<T>(arg: T | T[]) {
 export function rate(min: number, max: number, steps = 5) {
   const difference = max - min;
   const increment = difference / (steps - 1);
+
   return [
     min,
     ...Array(steps - 2)
@@ -279,5 +295,6 @@ export function truncate(text: string, limit = 25, completeWords = false, ellips
   if (completeWords) {
     limit = text.substring(0, limit).lastIndexOf(' ');
   }
+
   return text.length > limit ? `${text.substring(0, limit)}${ellipsis}` : text;
 }

@@ -1,15 +1,15 @@
+import { defineAsyncComponent } from 'vue';
+import { createRouter, createWebHistory, Router } from 'vue-router';
 import { Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
 import { store } from '@/modules/user/stores/user.store';
 import { Logger } from '@/utils';
 import { startPageProgressBar, stopPageProgressBar } from '@/utils/progress-bar.util';
-import { defineAsyncComponent } from 'vue';
-import { createRouter, createWebHistory, Router } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  scrollBehavior(to, from, scrollPosition) {
+  scrollBehavior(_to, _from, scrollPosition) {
     if (scrollPosition) {
       return scrollPosition;
     } else {
@@ -24,7 +24,7 @@ export const router: Router = createRouter({
     {
       path: '/:locale',
       component: DefaultLayout,
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (to, _from, next) => {
         try {
           setCurrentLocale(to.params.locale as Locale);
           next();
@@ -54,9 +54,11 @@ export const router: Router = createRouter({
   ],
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   startPageProgressBar();
+
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+
   requiresAuth && !store.isLoggedIn.get() ? next({ name: paths.user.signIn.path }) : next();
 });
 

@@ -14,15 +14,38 @@
       "jsx": true
     }
   },
-  "plugins": ["@typescript-eslint", "prettier"],
   "extends": ["plugin:vue/vue3-recommended", "eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["@typescript-eslint", "simple-import-sort", "unused-imports", "prettier"],
   "rules": {
-    "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": ["off", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "off",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "padding-line-between-statements": [
+      "error",
+      // After directives (like 'use-strict'), except between directives
+      {"blankLine": "always", "prev": "directive", "next": "*"},
+      {"blankLine": "any", "prev": "directive", "next": "directive"},
+      // After imports, except between imports
+      {"blankLine": "always", "prev": "import", "next": "*"},
+      {"blankLine": "any", "prev": "import", "next": "import"},
+      // Before and after every sequence of variable declarations
+      {"blankLine": "always", "prev": "*", "next": ["const", "let", "var"]},
+      {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      {"blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+      // Before and after class declaration, if, while, switch, try
+      {"blankLine": "always", "prev": "*", "next": ["class", "if", "while", "switch", "try"]},
+      {"blankLine": "always", "prev": ["class", "if", "while", "switch", "try"], "next": "*"},
+      // Before return statements
+      {"blankLine": "always", "prev": "*", "next": "return"}
+    ],
     "prettier/prettier": "error"
   },
   "overrides": [
@@ -30,6 +53,17 @@
       "files": ["*.ts", "*.tsx"],
       "rules": {
         "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx", "*.ts", "*.tsx", "*.vue"],
+      "rules": {
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [["^\\u0000", "^node:", "^@?\\w", "^", "^\\."]]
+          }
+        ]
       }
     },
     {

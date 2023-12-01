@@ -14,6 +14,7 @@ const useSubscribeTo = <T>(
   complete?: () => void,
 ): Subscription => {
   const subscription = observable.subscribe({ next, error, complete });
+
   onBeforeUnmount(() => {
     subscription.unsubscribe();
   });
@@ -53,5 +54,6 @@ export const useSubject = <T>(): { subject: Subject<T>; setSubject: (value: T) =
   const setSubject = (value: T): void => {
     subject.next(value);
   };
+
   return { subject, setSubject };
 };

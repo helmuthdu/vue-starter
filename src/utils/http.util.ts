@@ -24,8 +24,11 @@ const _generateId = (options: any): string => {
 
 const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
   const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+
   url.shift();
+
   const elapsed = Math.floor(Date.now() - time);
+
   Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
@@ -52,6 +55,7 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
       }),
       id,
     );
+
     _activeRequests[id] = { request, controller };
   }
 
@@ -60,10 +64,13 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
 
 export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   startPageProgressBar();
+
   const time = Date.now();
+
   return axios(config)
     .then((res) => {
       _log('success', config, res.data, time);
+
       return res as AxiosResponse<T>;
     })
     .catch((error) => {
@@ -74,6 +81,7 @@ export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promi
       if (id) {
         delete _activeRequests[id];
       }
+
       stopPageProgressBar();
     });
 };

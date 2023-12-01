@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { useWorker } from '@/hooks/worker.hook';
 import { getTranslations, useI18n } from '@/locales';
 import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
-import { defineComponent } from 'vue';
 
 const translations = getTranslations('home');
 
@@ -75,9 +75,11 @@ export default defineComponent({
   setup() {
     const resolve = (val: number): number => {
       const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+
       return fib(val);
     };
     const { message, post } = useWorker('W1', resolve);
+
     post(43);
 
     const t = useI18n(translations);

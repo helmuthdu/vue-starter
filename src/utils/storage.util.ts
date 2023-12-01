@@ -3,6 +3,7 @@ import { Logger } from './logger.util';
 const generatePrefix = (): string => {
   const appName = (import.meta.env.VITE_NAME as string) ?? 'vue_app';
   const environment = (import.meta.env.NODE_ENV as string) ?? 'development';
+
   return `${appName}_${environment.substring(0, 3)}`;
 };
 
@@ -20,6 +21,7 @@ export const removeStorageItem = (key: string): void => {
 export const setStorageItem = <T>(key: string, value?: T, session = false): void => {
   try {
     const storage = session ? sessionStorage : localStorage;
+
     if (value === undefined) {
       storage.removeItem(getKey(key));
     } else {
@@ -36,6 +38,7 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
   }
 
   const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
+
   try {
     return typeof item === 'string' ? JSON.parse(item) : defaultValue;
   } catch {
@@ -44,6 +47,7 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
     }
 
     Logger.error(`Storage item "${getKey(key)}" not available`);
+
     return defaultValue as T;
   }
 };

@@ -1,8 +1,8 @@
-import { userApi, UserRequest } from '@/modules/user/api/user.api';
-import { User, UserSchema } from '@/modules/user/entities/user';
 import { useStore as toRef } from '@nanostores/vue';
 import { action, computed, map } from 'nanostores';
 import type { DeepReadonly, Ref } from 'vue';
+import { userApi, UserRequest } from '@/modules/user/api/user.api';
+import { User, UserSchema } from '@/modules/user/entities/user';
 
 type ReadonlyObjectRef<T> = { [K in keyof T]: DeepReadonly<Ref<T[K]>> };
 
@@ -31,6 +31,7 @@ export const getters = {
 export const actions = {
   signUp: action(state, 'signUp', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
+
     try {
       store.set({
         entity: User.create((await userApi.signUp(payload)).data),
@@ -44,10 +45,12 @@ export const actions = {
         error: RequestErrorType.AlreadyExists,
       });
     }
+
     return store.get();
   }),
   signIn: action(state, 'signIn', async (store, payload: UserRequest) => {
     store.setKey('status', 'pending');
+
     try {
       store.set({
         entity: User.create((await userApi.signIn(payload)).data),
@@ -61,6 +64,7 @@ export const actions = {
         error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
       });
     }
+
     return store.get();
   }),
   signOut: action(state, 'signOut', (store) => {
@@ -69,6 +73,7 @@ export const actions = {
       status: 'idle',
       error: undefined,
     });
+
     return store.get();
   }),
 };
