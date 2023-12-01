@@ -53,7 +53,7 @@ const off = (event: string) => {
 
 const emit = (event: string, arg?: any) => {
   if (getEvent(event)) {
-    Object.entries(getEvent(event)).forEach(([_, fn]) => fn(arg));
+    Object.entries(getEvent(event)).forEach(([, fn]) => fn(arg));
   } else {
     Logger.warn(`Event "${event}" not registered`);
   }

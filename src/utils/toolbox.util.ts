@@ -95,7 +95,7 @@ export function observe<T extends Record<string, any>, K extends keyof T>(
 }
 
 export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms = 300, immediate?: boolean) {
-  let callback: NodeJS.Timeout | undefined;
+  let callback: any | undefined;
 
   return (...args: unknown[]): ReturnType<T> | void => {
     if (immediate && !callback) {
@@ -164,31 +164,8 @@ export function get<T, K extends keyof T>(data: T, path: K | string, defaultValu
     .reduce((acc: any, cur: string) => (Object.hasOwnProperty.call(acc, cur) ? acc[cur] : defaultValue), data);
 }
 
-export function groupBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T) {
-  return isObject(data)
-    ? Object.values(data).reduce(
-        (acc: DictionaryArray<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) =>
-          (acc[prop] || (acc[prop] = [])).push(val),
-        {},
-      )
-    : {};
-}
-
 export function sortBy<T, K extends keyof T>(data: T[], key: K) {
   return [...data].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
-}
-
-export function keyBy<T extends object>(data: T | T[] | ReadonlyArray<T>, key: keyof T): Dictionary<T> {
-  return isObject(data)
-    ? Object.values(data).reduce(
-        (acc: Dictionary<T>, val: T, idx: number, arr: T[] | ReadonlyArray<T>, prop = val[key]) => {
-          if (!prop) return acc;
-          acc[prop] = val;
-          return acc;
-        },
-        {},
-      )
-    : {};
 }
 
 export function keys<T extends object, K extends keyof T>(arg: T) {
@@ -199,24 +176,48 @@ export function values<T extends object, K extends keyof T>(arg: T) {
   return isObject(arg) ? (Object.values(arg) as T[K][]) : [];
 }
 
-export function entries<T extends object, K extends keyof T>(arg: T) {
+type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
+
+export function entries<T extends object>(arg: T): Entries<T> {
   return isObject(arg) ? (Object.entries(arg) as { [K in keyof T]: [K, T[K]] }[keyof T][]) : [];
 }
 
-export function merge<T extends Record<string, any>[]>(...args: [...T]): Spread<T> {
+type OptionalPropertyNames<T> = { [K in keyof T]-?: object extends { [P in K]: T[K] } ? K : never }[keyof T];
+
+type OptionalObject<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
+
+type SpreadProperties<L, R, K extends keyof L & keyof R> = { [P in K]: L[P] | Exclude<R[P], undefined> };
+
+type Spread<L, R> = OptionalObject<
+  Pick<L, Exclude<keyof L, keyof R>> &
+    Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
+    Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>> &
+    SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
+>;
+
+type Merge<A extends Record<string, any>> = A extends [infer L, ...infer R] ? Spread<L, Merge<R>> : unknown;
+
+export function merge<T extends Record<string, any>[]>(...args: [...T]): Merge<T> {
   const target = args.shift();
   if (!target) return {} as any;
   const source = args.shift();
   if (!source) return target as any;
-  entries(source).forEach(([key, val]) => {
-    if (isObject(val)) {
+  entries(source).forEach(([key, value]) => {
+    if (isObject(value)) {
       if (!target[key]) Object.assign(target, { [key]: {} });
-      merge(target[key], val);
+      merge(target[key], value);
+    } else if (isArray(value)) {
+      if (!target[key]) Object.assign(target, { [key]: [] });
+      (value as any[]).forEach((curr) => {
+        if (!target[key].some((prev: any) => isEquals(curr, prev))) {
+          target[key].push(curr);
+        }
+      });
     } else {
-      Object.assign(target, { [key]: val });
+      Object.assign(target, { [key]: value });
     }
   });
-  return merge(target, ...args) as unknown as Spread<T>;
+  return merge(target, ...args) as unknown as Merge<T>;
 }
 
 // ARRAYS
@@ -229,7 +230,7 @@ export function flatten<T>(arg: T | T[]) {
   return isArray(arg) ? arg.flat(Infinity) : arg;
 }
 
-export function grade(min: number, max: number, steps: number) {
+export function rate(min: number, max: number, steps = 5) {
   const difference = max - min;
   const increment = difference / (steps - 1);
   return [
@@ -243,6 +244,18 @@ export function grade(min: number, max: number, steps: number) {
 
 export function range(start: number, stop: number, step: number) {
   return Array.from({ length: Math.floor((stop - start) / step) + 1 }, (_, i) => start + i * step);
+}
+
+type KeyBy<T extends Record<string, any>, K extends keyof T> = Record<T[K], T>;
+
+export function keyBy<T extends Record<string, any>, K extends keyof T>(data: T[], key: K): KeyBy<T, K> {
+  return data.reduce((acc: any, val: T) => ({ ...acc, [val[key]]: val }), {});
+}
+
+type GroupBy<T extends Record<string, any>, K extends keyof T> = Record<T[K], T[]>;
+
+export function groupBy<T extends Record<string, any>, K extends keyof T>(data: T[], key: K): GroupBy<T, K> {
+  return data.reduce((acc: any, val: T) => ({ ...acc, [val[key]]: [...(acc[val[key]] || []), val] }), {});
 }
 
 // STRINGS

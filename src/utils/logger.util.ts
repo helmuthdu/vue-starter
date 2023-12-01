@@ -53,7 +53,7 @@ const getTimestamp = (): string => new Date().toISOString().split('T')[1].substr
 
 const print = (level: LoggerLevelKey, color: keyof typeof COLORS, ...args: any[]) => {
   const { logLevel, prefix, remote, timestamp } = state;
-  const type = (['DEBUG', 'SUCCESS'].includes(level) ? 'log' : level.toLowerCase()) as keyof Console;
+  const type = ['DEBUG', 'SUCCESS'].includes(level) ? 'log' : level.toLowerCase();
 
   if (logLevel > LogLevel[level]) return;
 
@@ -79,7 +79,7 @@ const print = (level: LoggerLevelKey, color: keyof typeof COLORS, ...args: any[]
   }
 
   stdout.push('color: inherit;', ...args);
-  (console[type].apply as any)(null, stdout);
+  (console as any)[type].apply(null, stdout);
 
   if (remote.handler) {
     if (remote.logLevel > LogLevel[level]) return;
