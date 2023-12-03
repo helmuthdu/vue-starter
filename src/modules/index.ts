@@ -10,5 +10,5 @@ export const stores = { ...userModule.stores };
 export default {
   paths,
   routes,
-  stores
+  stores,
 };

@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import { useWorker } from '@/hooks/worker.hook';
-import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useWorker } from '@/hooks/worker.hook';
+import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
 
 export default defineComponent({
   name: 'HomeRoute',
@@ -75,15 +75,17 @@ export default defineComponent({
 
     const resolve = (val: number): number => {
       const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+
       return fib(val);
     };
     const { message, post } = useWorker('W1', resolve);
+
     post(43);
 
     return {
       message,
-      t
+      t,
     };
-  }
+  },
 });
 </script>

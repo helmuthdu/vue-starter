@@ -1,5 +1,5 @@
-import i18n from '@/locales';
 import { shallowMount, VueWrapper } from '@vue/test-utils';
+import i18n from '@/locales';
 import HomeRoute from '../home.route.vue';
 
 describe('Route -> Home', () => {

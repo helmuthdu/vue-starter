@@ -13,7 +13,7 @@ type ContextProps = {
 
 enum TypeSymbol {
   success = '✓',
-  error = '✕'
+  error = '✕',
 }
 
 const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
@@ -24,8 +24,11 @@ const _generateId = (options: any): string => {
 
 const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
   const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+
   url.shift();
+
   const elapsed = Math.floor(Date.now() - time);
+
   Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
@@ -46,12 +49,13 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
         params: context?.params ? { ...context.params, ...params } : params,
         paramsSerializer: {
-          encode: (parameter: string | number | boolean) => encodeURIComponent(parameter)
+          encode: (parameter: string | number | boolean) => encodeURIComponent(parameter),
         },
-        url: context?.url ? `${context.url}/${config.url}` : config.url
+        url: context?.url ? `${context.url}/${config.url}` : config.url,
       }),
-      id
+      id,
     );
+
     _activeRequests[id] = { request, controller };
   }
 
@@ -60,13 +64,16 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
 
 export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   startPageProgressBar();
+
   const time = Date.now();
+
   return axios(config)
-    .then(res => {
+    .then((res) => {
       _log('success', config, res.data, time);
+
       return res as AxiosResponse<T>;
     })
-    .catch(error => {
+    .catch((error) => {
       _log('error', config, error, time);
       throw error;
     })
@@ -74,6 +81,7 @@ export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promi
       if (id) {
         delete _activeRequests[id];
       }
+
       stopPageProgressBar();
     });
 };
@@ -104,7 +112,7 @@ export const createHttpService = (context?: ContextProps) => ({
         }
       }
     });
-  }
+  },
 });
 
 export const Http = createHttpService({});

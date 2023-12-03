@@ -1,11 +1,11 @@
+import { defineStore } from 'pinia';
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
-import { defineStore } from 'pinia';
 
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',
   NotFound = 'NOT_FOUND',
-  Invalid = 'INVALID'
+  Invalid = 'INVALID',
 }
 
 export type State = {
@@ -32,46 +32,48 @@ export const useStore = defineStore<Name, State, Getter, Action>(name, {
   state: () => ({
     entity: User.create(),
     status: 'idle',
-    error: undefined
+    error: undefined,
   }),
   actions: {
     async signUp(payload: UserRequest) {
       this.$patch({ status: 'pending' });
+
       try {
         this.$patch({
           entity: User.create((await userApi.signUp(payload)).data),
           status: 'completed',
-          error: undefined
+          error: undefined,
         });
       } catch (err: any) {
         this.$patch({
           entity: User.create(),
           status: 'idle',
-          error: RequestErrorType.AlreadyExists
+          error: RequestErrorType.AlreadyExists,
         });
       }
     },
     async signIn(payload: UserRequest) {
       this.$patch({ status: 'pending' });
+
       try {
         this.$patch({
           entity: User.create((await userApi.signIn(payload)).data),
           status: 'completed',
-          error: undefined
+          error: undefined,
         });
       } catch (err: any) {
         this.$patch({
           entity: User.create(),
           status: 'idle',
-          error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid
+          error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
         });
       }
     },
     signOut() {
       this.$reset();
-    }
+    },
   },
   getters: {
-    isLoggedIn: state => !!state.entity.token
-  }
+    isLoggedIn: (state) => !!state.entity.token,
+  },
 });

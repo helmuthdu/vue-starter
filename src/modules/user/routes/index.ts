@@ -1,5 +1,5 @@
-import { paths } from '@/modules/user/routes/paths';
 import { RouteRecordRaw } from 'vue-router';
+import { paths } from '@/modules/user/routes/paths';
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -9,8 +9,8 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: paths.signIn.path,
         name: paths.signIn.name,
-        component: () => import('./sign-in/sign-in.route.vue')
-      }
-    ]
-  }
+        component: () => import('./sign-in/sign-in.route.vue'),
+      },
+    ],
+  },
 ];

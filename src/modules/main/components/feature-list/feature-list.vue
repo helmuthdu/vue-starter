@@ -27,11 +27,11 @@
   </div>
 </template>
 <script lang="ts">
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
 import { useObservable, useSubject } from '@/hooks/observer.hook';
 import { useStorage } from '@/hooks/storage.hook';
 import { featuresApi } from '@/modules/main/api/features.api';
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-import { defineComponent, ref } from 'vue';
 import { Feature } from '../../entities/feature/feature.type';
 
 export default defineComponent({
@@ -45,29 +45,31 @@ export default defineComponent({
     useObservable(
       search$.pipe(
         debounceTime(300),
-        filter(query => !query || query.length >= 3 || query.length === 0),
+        filter((query) => !query || query.length >= 3 || query.length === 0),
         distinctUntilChanged(),
-        map(query => query?.toLowerCase()),
-        tap(query => {
+        map((query) => query?.toLowerCase()),
+        tap((query) => {
           searchStorage.value.query = query ?? '';
         }),
-        map(query =>
-          featureList.value.filter(feat => {
+        map((query) =>
+          featureList.value.filter((feat) => {
             if (!query) return true;
+
             return (
-              feat.type.toLowerCase().includes(query) || feat.css.some(css => css.name.toLowerCase().includes(query))
+              feat.type.toLowerCase().includes(query) || feat.css.some((css) => css.name.toLowerCase().includes(query))
             );
-          })
+          }),
         ),
-        tap(val => {
+        tap((val) => {
           searchStorage.value.total = val.length;
-        })
+        }),
       ),
       [],
-      features
+      features,
     );
 
     const feats = await featuresApi.get();
+
     features.value = feats;
     featureList.value = feats;
 
@@ -77,8 +79,8 @@ export default defineComponent({
       features,
       onInput(evt: any) {
         setSearch$(evt.target.value);
-      }
+      },
     };
-  }
+  },
 });
 </script>

@@ -7,8 +7,8 @@
  * const { message, post } = useWorker('W1', resolve, 0);
  */
 
-import { Logger } from '@/utils';
 import { onBeforeUnmount, Ref, ref } from 'vue';
+import { Logger } from '@/utils';
 
 type UseWorker<T> = {
   message: Ref<T>;
@@ -43,8 +43,10 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
   const setup = () => {
     if (!opts.worker && !opts.url) {
       Logger.error(`[WORKER|${opts.id}] Missing url/worker Property`);
+
       return;
     }
+
     worker.value = opts.worker ?? new Worker(opts.url as string);
     worker.value.addEventListener('message', onMessage, false);
     worker.value.addEventListener('error', onError, false);
@@ -53,15 +55,19 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
 
   const terminate = () => {
     Logger.info(`[WORKER|${opts.id}] Terminate`);
+
     if (worker.value) {
       worker.value.removeEventListener('message', onMessage);
       worker.value.removeEventListener('error', onError);
+
       if (!opts.terminate) {
         worker.value.terminate();
       }
+
       if (opts.function && opts.url) {
         window.URL.revokeObjectURL(opts.url);
       }
+
       workers.delete(opts.id);
       worker.value = undefined;
     }
@@ -69,6 +75,7 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
 
   const post = (data: any) => {
     Logger.info(`[WORKER|${opts.id}] Post Message`, data);
+
     if (worker.value) {
       worker.value.postMessage(data);
     } else {
@@ -94,6 +101,7 @@ export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue
     const resolveString = resolve.toString();
     const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
     const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
+
     opts.url = window.URL.createObjectURL(blob);
   }
 
