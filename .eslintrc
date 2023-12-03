@@ -20,7 +20,7 @@
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["@typescript-eslint", "simple-import-sort", "unused-imports", "prettier"],
+  "plugins": ["@typescript-eslint", "simple-import-sort", "unused-imports"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -54,12 +54,6 @@
     "prettier/prettier": "error"
   },
   "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "no-unused-vars": "off"
-      }
-    },
     {
       "files": ["*.js", "*.jsx", "*.ts", "*.tsx", "*.vue"],
       "rules": {
