@@ -1,12 +1,15 @@
 pre-commit:
-  parallel: true
+  piped: true
+  follow: true
   commands:
-    test:unit:
-      glob: '*.{spec,test}.{[tj]s,[tj]sx}'
+    lint:assets:
+      glob: '*.{html,json,yml}'
+      run: npx prettier --write {staged_files}
+    lint:css:
+      glob: '*.{css,scss}'
       run: >
         npx prettier --write {staged_files} &&
-        npx eslint --fix {staged_files} &&
-        npx vitest {staged_files} --run
+        npx stylelint --fix {staged_files}
     lint:js:
       glob: '*[!.{spec,test}].{[tj]s,[tj]sx}'
       run: >
@@ -20,11 +23,9 @@ pre-commit:
         npx eslint --fix {staged_files}  &&
         npx stylelint --fix {staged_files} &&
         npx vitest related {staged_files} --passWithNoTests --run
-    lint:css:
-      glob: '*.{css,scss}'
+    test:unit:
+      glob: '*.{spec,test}.{[tj]s,[tj]sx}'
       run: >
         npx prettier --write {staged_files} &&
-        npx stylelint --fix {staged_files}
-    lint:misc:
-      glob: '*.{html,json,yml}'
-      run: npx prettier --write {staged_files}
+        npx eslint --fix {staged_files} &&
+        npx vitest {staged_files} --run
