@@ -1,5 +1,5 @@
 import { useStore as toRef } from '@nanostores/vue';
-import { action, computed, map } from 'nanostores';
+import { action, computed, map, MapStore } from 'nanostores';
 import type { DeepReadonly, Ref } from 'vue';
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
@@ -48,7 +48,7 @@ export const actions = {
 
     return store.get();
   }),
-  signIn: action(state, 'signIn', async (store, payload: UserRequest) => {
+  signIn: action(state, 'signIn', async (store: MapStore<State>, payload: UserRequest) => {
     store.setKey('status', 'pending');
 
     try {
@@ -67,7 +67,7 @@ export const actions = {
 
     return store.get();
   }),
-  signOut: action(state, 'signOut', (store) => {
+  signOut: action(state, 'signOut', (store: MapStore<State>) => {
     store.set({
       entity: User.create(),
       status: 'idle',
