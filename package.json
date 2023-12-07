@@ -23,15 +23,14 @@
     "radash": "^11.0.0",
     "rxjs": "^7.8.1",
     "vee-validate": "^4.12.2",
-    "vue": "^3.3.9",
+    "vue": "^3.3.10",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@types/nprogress": "^0.2.3",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
     "@vitejs/plugin-vue": "^4.5.1",
-    "@vue/eslint-config-typescript": "^12.0.0",
     "@vue/test-utils": "^2.4.3",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
@@ -46,13 +45,14 @@
     "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "stylelint": "^15.11.0",
+    "stylelint-config-recess-order": "^4.4.0",
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^11.1.0",
-    "typescript": "^5.3.2",
-    "vite": "^5.0.4",
-    "vite-node": "^0.34.6",
-    "vitest": "^0.34.6",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.6",
+    "vite-node": "^1.0.1",
+    "vitest": "^1.0.1",
     "vue-eslint-parser": "^9.3.2",
-    "vue-tsc": "^1.8.24"
+    "vue-tsc": "^1.8.25"
   }
 }
