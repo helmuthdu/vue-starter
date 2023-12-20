@@ -7,16 +7,12 @@
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
-    "extraFileExtensions": [".vue"],
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    "sourceType": "module"
   },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:vitest/recommended",
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended"
   ],
@@ -27,9 +23,11 @@
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
-      "off",
+      "error",
       {
+        "varsIgnorePattern": "^_",
         "argsIgnorePattern": "^_"
       }
     ],
@@ -63,12 +61,6 @@
             "groups": [["^\\u0000", "^node:", "^@?\\w", "^", "^\\."]]
           }
         ]
-      }
-    },
-    {
-      "files": ["**/__tests__/*.{j,t}s?(x)", "**/src/**/*.spec.{j,t}s?(x)"],
-      "env": {
-        "jest": true
       }
     }
   ]
