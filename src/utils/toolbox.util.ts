@@ -350,7 +350,7 @@ export function memoize<T extends (...args: any[]) => any>(fn: T) {
   return (...args: Parameters<T>) => {
     const key = JSON.stringify(args);
 
-    if (!cache[key]) cache[key] = fn(args);
+    if (!cache[key]) cache[key] = fn(...args);
 
     return cache[key];
   };
@@ -360,14 +360,14 @@ export function memoize<T extends (...args: any[]) => any>(fn: T) {
  * Creates a new Proxy for the given object that invokes a function whenever a property of the object is set.
  *
  * @param {Object} obj - The object to observe.
- * @param {Function} fn - The function to be invoked when a property of the object is set. It receives the target object, the property key, the new value, and the previous value as arguments.
+ * @param {Function} fn - The function to be invoked when a property of the object is set. It receives the property key, the new value, the previous, and the target object value as arguments.
  *
  * @returns {Proxy} - A new Proxy for the given object.
  *
  * @example
  *
  * const obj = { a: 1, b: 2 };
- * const log = (target, prop, curr, prev) => console.log(`Property '${prop}' changed from ${prev} to ${curr}`);
+ * const log = (prop, curr, prev, target) => console.log(`Property '${prop}' changed from ${prev} to ${curr}`);
  *
  * const observedObj = observe(obj, log);
  *
@@ -375,11 +375,11 @@ export function memoize<T extends (...args: any[]) => any>(fn: T) {
  */
 export function observe<T extends Record<any, any>, K extends keyof T>(
   obj: T,
-  fn: (target: T, prop: K, curr: T[K], prev: T[K]) => void,
+  fn: (prop: K, curr: T[K], prev: T[K], target: T) => void,
 ) {
   return new Proxy(obj, {
     set(target, prop, val, receiver) {
-      fn(target, prop as K, val, target[prop as K]);
+      fn(prop as K, val, target[prop as K], target);
 
       return Reflect.set(target, prop, val, receiver);
     },
@@ -481,6 +481,47 @@ export function pipe<T extends any[], U>(fn: (...args: T) => U, ...fns: Array<(a
  */
 export function predict<T extends (...args: any[]) => any>(fn: T, ms = 7000) {
   return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, ms))]);
+}
+
+/**
+ * Retries an asynchronous function a specified number of times with a delay.
+ *
+ * @param {() => Promise<T>} fn - The asynchronous function to retry.
+ * @param {{ times: number; delay: number }} options - The options for retrying the function.
+ * @param {number} options.times - The number of times to retry the function.
+ * @param {number} options.delay - The delay in milliseconds between retries.
+ *
+ * @returns {Promise<T>} - The result of the asynchronous function.
+ *
+ * @example
+ *
+ * const asyncFn = async () => {
+ *   // Some asynchronous operation...
+ * };
+ *
+ * retry(fn, { times: 3, delay: 1000 })
+ *   .then(result => console.log(result))
+ *   .catch(error => console.error(error));
+ */
+export async function retry<T>(
+  fn: () => Promise<T>,
+  { times = 3, delay = 300 }: { times: number; delay: number },
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (times === 0) {
+      Logger.error('retry() -> unexpected error', err);
+
+      throw err;
+    } else {
+      Logger.error(`retry() -> unexpected error, retrying (${times}x) again in ${delay}ms`, err);
+    }
+
+    if (delay > 0) await timeout(delay);
+
+    return retry(fn, { delay, times: times - 1 });
+  }
 }
 
 /**
