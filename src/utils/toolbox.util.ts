@@ -14,7 +14,6 @@ type Spread<L, R> = OptionalObject<
 >;
 type Merge<A> = A extends [infer L, ...infer R] ? Spread<L, Merge<R>> : unknown;
 type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
-
 type KeyBy<T extends Record<any, any>, K extends keyof T> = Record<T[K], T>;
 type GroupBy<T extends Record<any, any>, K extends keyof T> = Record<T[K], T[]>;
 
