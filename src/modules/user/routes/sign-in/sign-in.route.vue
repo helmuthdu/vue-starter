@@ -5,34 +5,32 @@
       <input v-model="password" name="password" placeholder="Password" required type="password" />
       <button @click.prevent="submit">Sign-in</button>
     </form>
-    <template v-if="isLoggedIn"> User: {{ user.entity.email }} </template>
+    <template v-if="isLoggedIn"> User: {{ user.data.email }}</template>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { useStore } from '@/stores';
 
-export default defineComponent({
+defineOptions({
   name: 'SignInRoute',
-  setup() {
-    const store = useStore();
-    const email = ref('');
-    const password = ref('');
-
-    const submit = () =>
-      store.user.signIn({
-        email: email.value,
-        password: password.value,
-      });
-
-    return {
-      email,
-      password,
-      submit,
-      isLoggedIn: store.user.isLoggedIn,
-      user: store.user.state,
-    };
-  },
 });
+
+const {
+  user: {
+    actions: { signIn },
+    state: user,
+    getters: { isLoggedIn },
+  },
+} = useStore();
+
+const email = ref('');
+const password = ref('');
+
+const submit = () =>
+  signIn({
+    email: email.value,
+    password: password.value,
+  });
 </script>
