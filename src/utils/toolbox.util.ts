@@ -227,7 +227,7 @@ export function isEmpty(arg: any) {
  * isEquals([1, 2, 3], [4, 5, 6]); // returns false
  * isEquals({ a: 1, b: 2 }, { c: 3, d: 4 }); // returns false
  */
-export function isEquals(curr: any, prev: any): boolean {
+export function isEqual(curr: any, prev: any): boolean {
   if (curr === prev) return true;
 
   if (typeOf(curr) !== typeOf(prev)) return false;
@@ -235,7 +235,7 @@ export function isEquals(curr: any, prev: any): boolean {
   if (isArray(curr)) {
     if (curr.toString() !== prev.toString()) return false;
 
-    return !curr.some((val: any, idx: number) => val !== prev[idx] && !isEquals(val, prev[idx]));
+    return !curr.some((val: any, idx: number) => val !== prev[idx] && !isEqual(val, prev[idx]));
   }
 
   if (isObject(curr)) {
@@ -243,7 +243,7 @@ export function isEquals(curr: any, prev: any): boolean {
 
     if (keys.length !== Object.keys(prev).length) return false;
 
-    return !keys.some((key) => curr[key] !== prev[key] && !isEquals(curr[key], prev[key]));
+    return !keys.some((key) => curr[key] !== prev[key] && !isEqual(curr[key], prev[key]));
   }
 
   return false;
@@ -292,7 +292,7 @@ export function attempt<T extends (...args: any[]) => any>(fn: T, ...args: Param
  * delay(log, 1000); // logs 'Hello, world!' after 1 second
  */
 export async function delay<T extends () => void>(fn: T, ms = 700) {
-  await timeout(ms);
+  await sleep(ms);
 
   return Promise.resolve(fn());
 }
@@ -517,7 +517,7 @@ export async function retry<T>(
       Logger.error(`retry() -> unexpected error, retrying (${times}x) again in ${delay}ms`, err);
     }
 
-    if (delay > 0) await timeout(delay);
+    if (delay > 0) await sleep(delay);
 
     return retry(fn, { delay, times: times - 1 });
   }
@@ -532,9 +532,9 @@ export async function retry<T>(
  *
  * @example
  *
- * timeout(1000).then(() => console.log('Hello, world!')); // logs 'Hello, world!' after 1 second
+ * sleep(1000).then(() => console.log('Hello, world!')); // logs 'Hello, world!' after 1 second
  */
-export function timeout(ms: number) {
+export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -604,6 +604,37 @@ export function clone<T>(obj: T) {
 }
 
 /**
+ * Computes the difference between two objects.
+ *
+ * @param {T} prev - The previous object.
+ * @param {T} curr - The current object.
+ *
+ * @returns {T} - An object containing new/diff properties from a previous object.
+ *
+ * @example
+ *
+ * const obj1 = { a: 1, b: 2, c: 3 };
+ * const obj2 = { b: 2, c: 3, d: 4 };
+ *
+ * const difference = diff(obj1, obj2);
+ *
+ * console.log(difference); // logs { d: 4 }
+ */
+export const diff = <T extends Record<string, any>>(prev: T, curr: T) => {
+  const data = {} as T;
+
+  Object.keys(curr).forEach((key: keyof T) => {
+    if (isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
+      data[key] = diff(prev[key], curr[key]);
+    } else if (!isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
+      data[key] = curr[key];
+    }
+  });
+
+  return data;
+};
+
+/**
  * Returns an array of a given object's own enumerable string-keyed property [key, value] pairs.
  *
  * @param {T} obj - The object whose properties are to be returned.
@@ -613,7 +644,7 @@ export function clone<T>(obj: T) {
  * @example
  *
  * const obj = { a: 1, b: 2, c: 3 };
- * const ent = entries(obj);
+ * const res = entries(obj);
  *
  * console.log(ent); // logs [['a', 1], ['b', 2], ['c', 3]]
  */
@@ -727,7 +758,7 @@ export function merge<T extends Record<any, any>[]>(...args: [...T]): Merge<T> {
       if (!target[key]) Object.assign(target, { [key]: [] });
 
       (value as any[]).forEach((curr) => {
-        if (!target[key].some((prev: any) => isEquals(curr, prev))) {
+        if (!target[key].some((prev: any) => isEqual(curr, prev))) {
           target[key].push(curr);
         }
       });
@@ -775,6 +806,27 @@ export function values<T extends Record<any, any>, K extends keyof T>(obj: T) {
  */
 export function flatten<T>(arr: T | T[]) {
   return isArray(arr) ? arr.flat(Infinity) : arr;
+}
+
+/**
+ * Checks if a value is present in an array.
+ *
+ * @param {any[]} arr - The array to check.
+ * @param {any} value - The value to search for.
+ *
+ * @returns {boolean} - Returns true if the value is present in the array, else false.
+ *
+ * @example
+ *
+ * const arr = [1, 2, 3, { a: 1 }, 'hello'];
+ * const value = { a: 1 };
+ *
+ * const isPresent = contains(arr, value);
+ *
+ * console.log(isPresent); // logs true
+ */
+export function contains(arr: any[], value: any) {
+  return arr.some((item) => isEqual(item, value));
 }
 
 /**
