@@ -5,7 +5,7 @@ describe('Route -> NotFound', () => {
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = mount(NotFoundRoute);
+    wrapper = mount(NotFoundRoute, { props: { resource: 'test' } });
   });
 
   it('should renders with props', () => {

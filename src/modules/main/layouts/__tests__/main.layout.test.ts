@@ -8,7 +8,12 @@ describe('Layout -> Main', () => {
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
-    wrapper = mount(MainLayout, { global: { plugins: [router] } });
+    wrapper = mount(MainLayout, {
+      global: {
+        plugins: [router],
+        stubs: ['router-view'],
+      },
+    });
   });
 
   it('should renders with props', () => {

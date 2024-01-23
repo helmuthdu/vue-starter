@@ -17,7 +17,7 @@ type State = {
   error?: RequestErrorType;
 };
 
-const state = {
+export const state: State = {
   data: User.create(),
   status: 'idle',
   error: undefined,

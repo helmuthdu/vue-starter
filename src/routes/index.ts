@@ -59,7 +59,7 @@ router.beforeEach(async (to, _from, next) => {
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
-  requiresAuth && !store.isLoggedIn.get() ? next({ name: paths.user.signIn.path }) : next();
+  requiresAuth && !store.getters.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
 });
 
 router.afterEach(() => {

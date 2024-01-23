@@ -3,7 +3,7 @@ import { paths } from './routes/paths';
 import * as stores from './stores';
 
 export type State = Readonly<{
-  user: stores.user.State;
+  user: typeof stores.user.state;
 }>;
 
 export { paths, routes, stores };
