@@ -891,6 +891,83 @@ export function range(start: number, stop: number, step: number) {
 }
 
 /**
+ * Generates an array of dates between a start and end date, with a specified interval and step size.
+ *
+ * @param {Date | string} start - The start date of the range. Can be a Date object or a string in a format recognized by the Date.parse() method.
+ * @param {Date | string} end - The end date of the range. Can be a Date object or a string in a format recognized by the Date.parse() method.
+ * @param {{ interval: 'D' | 'W' | 'M' | 'MS' | 'ME' | 'Y' | 'YS' | 'YE'; steps: number; latest: boolean }} options - The options for generating the date range.
+ * @param {string} options.interval - The interval for generating the dates. Can be 'D' for days, 'W' for weeks, 'M' for months, 'MS' for start of the month, 'ME' for end of the month, 'Y' for years, 'YS' for start of the year, 'YE' for end of the year.
+ * @param {number} options.steps - The step size for generating the dates. For example, if interval is 'D' and steps is 2, dates will be generated every 2 days.
+ * @param {boolean} options.latest - If true, the function will include the latest date even if it falls outside the specified interval.
+ *
+ * @returns {Date[]} - An array of dates between the start and end date, with the specified interval and step size.
+ *
+ * @example
+ *
+ * const start = '2022-01-01';
+ * const end = '2022-01-31';
+ * const options = { interval: 'D', steps: 1, latest: false };
+ *
+ * const dates = dateRange(start, end, options); // returns an array of dates for every day in January 2022
+ */
+export function dateRange(
+  start: Date | string,
+  end: Date | string,
+  {
+    interval = 'D',
+    steps = 1,
+    latest = false,
+  }: { interval: 'D' | 'W' | 'M' | 'MS' | 'ME' | 'Y' | 'YS' | 'YE'; steps: number; latest: boolean },
+) {
+  try {
+    const dateArray = [];
+    let currentDate = typeof start === 'string' ? new Date(start) : start;
+    let endDate = typeof end === 'string' ? new Date(end) : end;
+
+    switch (interval) {
+      case 'MS':
+        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        break;
+      case 'ME':
+        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+        break;
+      case 'YS':
+        currentDate = new Date(currentDate.getFullYear(), 0, 1);
+        break;
+      case 'YE':
+        currentDate = new Date(currentDate.getFullYear(), 11, 31);
+        endDate = new Date(endDate.getFullYear(), 11, 31);
+        break;
+    }
+
+    const calculateInterval = {
+      D: () => currentDate.setUTCDate(currentDate.getUTCDate() + steps),
+      W: () => currentDate.setUTCDate(currentDate.getUTCDate() + 7 * steps),
+      M: () => currentDate.setUTCMonth(currentDate.getUTCMonth() + steps),
+      MS: () => (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps, 1)),
+      ME: () => (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps + 1, 0)),
+      Y: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
+      YS: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
+      YE: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
+    };
+
+    while (currentDate <= endDate) {
+      dateArray.push(new Date(currentDate));
+      calculateInterval[interval]();
+
+      if (currentDate >= endDate && latest) dateArray.push(new Date(currentDate));
+    }
+
+    return dateArray;
+  } catch (err) {
+    Logger.error('dateRange() -> unexpected error', err);
+
+    return [];
+  }
+}
+
+/**
  * Creates an array of numbers progressing from min to max with a specified number of steps.
  *
  * @param {number} min - The start of the range.
