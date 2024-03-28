@@ -1,5 +1,5 @@
 import { useStore as toRef } from '@nanostores/vue';
-import { action, computed, map, MapStore } from 'nanostores';
+import { computed, map, MapStore } from 'nanostores';
 import type { DeepReadonly, Ref } from 'vue';
 import { getStorageItem, setStorageItem } from '@/utils';
 
@@ -26,10 +26,10 @@ export const defineStore = <
     actions: Object.entries(store.actions).reduce(
       (acc, [key, fn]) => ({
         ...acc,
-        [key]: action(state, key, async (...payload) => {
-          await fn(...payload);
+        [key]: async (...payload: any) => {
+          await fn(state, ...payload);
           setStorageItem<State>(name, state.get());
-        }),
+        },
       }),
       {},
     ) as { [K in keyof Actions]: OmitFirstArg<(...payload: Parameters<Actions[K]>) => Promise<void>> },

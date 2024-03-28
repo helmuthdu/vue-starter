@@ -1,4 +1,4 @@
-import type { MapStore } from 'nanostores';
+import { type MapStore, task } from 'nanostores';
 import { userApi, UserRequest } from '@/modules/user/api/user.api';
 import { User, UserSchema } from '@/modules/user/entities/user';
 import { createUseStore, defineStore } from '@/utils/store.util.ts';
@@ -13,18 +13,27 @@ enum RequestErrorType {
 
 type State = {
   data: UserSchema;
-  status: 'idle' | 'pending' | 'completed';
+  status?: 'error' | 'pending' | 'success';
   error?: RequestErrorType;
 };
 
 export const state: State = {
   data: User.create(),
-  status: 'idle',
+  status: undefined,
   error: undefined,
 };
 
 export const getters = {
   isLoggedIn: (state: State) => !!state.data.token,
+  isRegistered: () =>
+    task(
+      async () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(false);
+          }, 1000);
+        }),
+    ),
 };
 
 export const actions = {
@@ -34,13 +43,13 @@ export const actions = {
     try {
       store.set({
         data: User.create((await userApi.signUp(payload)).data),
-        status: 'completed',
+        status: 'success',
         error: undefined,
       });
     } catch (err) {
       store.set({
         data: User.create(),
-        status: 'idle',
+        status: 'error',
         error: RequestErrorType.AlreadyExists,
       });
     }
@@ -51,13 +60,13 @@ export const actions = {
     try {
       store.set({
         data: User.create((await userApi.signIn(payload)).data),
-        status: 'completed',
+        status: 'success',
         error: undefined,
       });
     } catch (err: any) {
       store.set({
         data: User.create(),
-        status: 'idle',
+        status: 'error',
         error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
       });
     }
@@ -65,7 +74,7 @@ export const actions = {
   signOut: (store: MapStore<State>) => {
     store.set({
       data: User.create(),
-      status: 'idle',
+      status: 'success',
       error: undefined,
     });
   },
