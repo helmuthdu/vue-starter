@@ -1,8 +1,8 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, mount } from '@vue/test-utils';
 import NetworkErrorRoute from '../network-error.route.vue';
 
 describe('Route -> Network Error', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
     wrapper = mount(NetworkErrorRoute);

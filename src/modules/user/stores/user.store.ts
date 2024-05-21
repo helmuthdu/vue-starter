@@ -1,7 +1,7 @@
-import { type MapStore, task } from 'nanostores';
-import { userApi, UserRequest } from '@/modules/user/api/user.api';
-import { User, UserSchema } from '@/modules/user/entities/user';
+import { type UserRequest, userApi } from '@/modules/user/api/user.api';
+import { User, type UserSchema } from '@/modules/user/entities/user';
 import { createUseStore, defineStore } from '@/utils/store.util.ts';
+import { type MapStore, task } from 'nanostores';
 
 export const name = 'user' as const;
 
@@ -63,6 +63,7 @@ export const actions = {
         status: 'success',
         error: undefined,
       });
+      // biome-ignore lint/suspicious/noExplicitAny: axios error handling
     } catch (err: any) {
       store.set({
         data: User.create(),

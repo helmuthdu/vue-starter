@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { useStore } from '@/stores';
+import { ref } from 'vue';
 
 defineOptions({
   name: 'SignInRoute',

@@ -1,4 +1,4 @@
-import { UserSchema } from './user.type';
+import type { UserSchema } from './user.type';
 
 export class User implements UserSchema {
   readonly email: string;

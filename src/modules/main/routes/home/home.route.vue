@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { useWorker } from '@/hooks/worker.hook';
 import { getTranslations, useI18n } from '@/locales';
 import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
+import { defineComponent } from 'vue';
 
 const translations = getTranslations('home');
 

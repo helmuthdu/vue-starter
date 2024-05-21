@@ -14,7 +14,9 @@ type Spread<L, R> = OptionalObject<
 >;
 type Merge<A> = A extends [infer L, ...infer R] ? Spread<L, Merge<R>> : unknown;
 type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type KeyBy<T extends Record<any, any>, K extends keyof T> = Record<T[K], T>;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type GroupBy<T extends Record<any, any>, K extends keyof T> = Record<T[K], T[]>;
 
 // FUNCTIONS
@@ -40,12 +42,14 @@ type GroupBy<T extends Record<any, any>, K extends keyof T> = Record<T[K], T[]>;
  * typeOf([]); // returns 'Array'
  * typeOf(() => {}); // returns 'Function'
  */
-export function typeOf(arg: any) {
+export function typeOf(arg: unknown) {
   if (arg === null) {
     return 'Null';
-  } else if (arg === undefined) {
+  }
+  if (arg === undefined) {
     return 'Undefined';
-  } else if (Number.isNaN(arg)) {
+  }
+  if (Number.isNaN(arg)) {
     return 'NaN';
   }
 
@@ -84,7 +88,7 @@ export const isArray = Array.isArray;
  *
  * console.log(isFunc); // logs true
  */
-export function isFunction(arg: any) {
+export function isFunction(arg: unknown) {
   return typeOf(arg) === 'Function';
 }
 
@@ -102,7 +106,7 @@ export function isFunction(arg: any) {
  *
  * console.log(isValueNil); // logs true
  */
-export function isNil(arg: any) {
+export function isNil(arg: unknown) {
   return arg === undefined || arg === null;
 }
 
@@ -120,7 +124,7 @@ export function isNil(arg: any) {
  *
  * console.log(isValueNumber); // logs true
  */
-export function isNumber(arg: any) {
+export function isNumber(arg: unknown) {
   return typeOf(arg) === 'Number';
 }
 
@@ -138,7 +142,7 @@ export function isNumber(arg: any) {
  *
  * console.log(isValueObject); // logs true
  */
-export function isObject(arg: any) {
+export function isObject(arg: unknown) {
   return typeOf(arg) === 'Object';
 }
 
@@ -156,7 +160,7 @@ export function isObject(arg: any) {
  *
  * console.log(isValuePromise); // logs true
  */
-export function isPromise(arg: any) {
+export function isPromise(arg: unknown) {
   return ['Async', 'Promise'].includes(typeOf(arg));
 }
 
@@ -174,7 +178,7 @@ export function isPromise(arg: any) {
  *
  * console.log(isValueString); // logs true
  */
-export function isString(arg: any) {
+export function isString(arg: unknown) {
   return typeOf(arg) === 'String';
 }
 
@@ -197,7 +201,7 @@ export function isString(arg: any) {
  * isEmpty([1, 2, 3]); // returns false
  * isEmpty({ a: 1, b: 2 }); // returns false
  */
-export function isEmpty(arg: any) {
+export function isEmpty(arg: unknown) {
   return isNil(arg) || ((isArray(arg) || isObject(arg)) && !Object.entries(arg || {}).length);
 }
 
@@ -227,6 +231,8 @@ export function isEmpty(arg: any) {
  * isEquals([1, 2, 3], [4, 5, 6]); // returns false
  * isEquals({ a: 1, b: 2 }, { c: 3, d: 4 }); // returns false
  */
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function isEqual(curr: any, prev: any): boolean {
   if (curr === prev) return true;
 
@@ -235,7 +241,7 @@ export function isEqual(curr: any, prev: any): boolean {
   if (isArray(curr)) {
     if (curr.toString() !== prev.toString()) return false;
 
-    return !curr.some((val: any, idx: number) => val !== prev[idx] && !isEqual(val, prev[idx]));
+    return !curr.some((val: unknown, idx: number) => val !== prev[idx] && !isEqual(val, prev[idx]));
   }
 
   if (isObject(curr)) {
@@ -253,7 +259,7 @@ export function isEqual(curr: any, prev: any): boolean {
  * Attempts to execute a function and returns its result. If an error occurs during the execution, it logs the error and returns undefined.
  *
  * @param {Function} fn - The function to be executed.
- * @param {...any} args - The arguments to be passed to the function.
+ * @param {any} args - The arguments to be passed to the function.
  *
  * @returns {any} - The result of the function execution if successful, otherwise undefined.
  *
@@ -265,7 +271,8 @@ export function isEqual(curr: any, prev: any): boolean {
  * attempt(successfulFn); // returns 'success'
  * attempt(failingFn); // logs the error and returns undefined
  */
-export function attempt<T extends (...args: any[]) => any>(fn: T, ...args: Parameters<T>) {
+export function attempt<T extends (...args: unknown[]) => R, R>(fn: T, ...args: Parameters<T>) {
+  // biome-ignore lint/style/noArguments: <explanation>
   if (arguments.length === 1) return (..._args: Parameters<T>) => attempt(fn, ..._args) as ReturnType<T>;
 
   try {
@@ -273,7 +280,7 @@ export function attempt<T extends (...args: any[]) => any>(fn: T, ...args: Param
   } catch (err) {
     Logger.error('attempt() -> unexpected error', err);
 
-    return undefined;
+    return Promise.reject(err);
   }
 }
 
@@ -313,8 +320,8 @@ export async function delay<T extends () => void>(fn: T, ms = 700) {
  *
  * debouncedLog(); // logs 'Hello, world!' after 1 second, subsequent calls within the same second will reset the delay
  */
-export function debounce<T extends (...args: any[]) => void>(fn: T, ms = 300, immediate?: boolean) {
-  let timeout: any;
+export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms = 300, immediate?: boolean) {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
   return (...args: Parameters<T>) => {
     if (immediate && !timeout) fn(...args);
@@ -343,13 +350,13 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms = 300, im
  * memoizedAdd(1, 2); // returns 3 and caches the result
  * memoizedAdd(1, 2); // retrieves the result from cache instead of invoking the function again
  */
-export function memoize<T extends (...args: any[]) => any>(fn: T) {
+export function memoize<T extends (...args: unknown[]) => unknown>(fn: T) {
   const cache: Record<string, ReturnType<T>> = {};
 
   return (...args: Parameters<T>) => {
     const key = JSON.stringify(args);
 
-    if (!cache[key]) cache[key] = fn(...args);
+    if (!cache[key]) cache[key] = fn(...args) as ReturnType<T>;
 
     return cache[key];
   };
@@ -372,7 +379,7 @@ export function memoize<T extends (...args: any[]) => any>(fn: T) {
  *
  * observedObj.a = 3; // logs 'Property 'a' changed from 1 to 3'
  */
-export function observe<T extends Record<any, any>, K extends keyof T>(
+export function observe<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   fn: (prop: K, curr: T[K], prev: T[K], target: T) => void,
 ) {
@@ -453,7 +460,7 @@ export function compose<T>(fn: (args: T) => T, ...fns: Array<(args: T) => T>) {
  *
  * pipedFn(5); // returns ((5 * 3) + 2) - 4 = 13
  */
-export function pipe<T extends any[], U>(fn: (...args: T) => U, ...fns: Array<(args: U) => U>) {
+export function pipe<T extends unknown[], U>(fn: (...args: T) => U, ...fns: Array<(args: U) => U>) {
   const piped = fns.reduce(
     (prevFn, nextFn) => (value: U) => nextFn(prevFn(value)),
     (value) => value,
@@ -478,7 +485,7 @@ export function pipe<T extends any[], U>(fn: (...args: T) => U, ...fns: Array<(a
  * predict(slowFn, 7000); // rejects after 7 seconds
  * predict(fastFn, 7000); // resolves with 'fast' after 5 seconds
  */
-export function predict<T extends (...args: any[]) => any>(fn: T, ms = 7000) {
+export function predict<T extends Promise<unknown>>(fn: T, ms = 7000) {
   return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, ms))]);
 }
 
@@ -513,9 +520,9 @@ export async function retry<T>(
       Logger.error('retry() -> unexpected error', err);
 
       throw err;
-    } else {
-      Logger.error(`retry() -> unexpected error, retrying (${times}x) again in ${delay}ms`, err);
     }
+
+    Logger.error(`retry() -> unexpected error, retrying (${times}x) again in ${delay}ms`, err);
 
     if (delay > 0) await sleep(delay);
 
@@ -555,7 +562,7 @@ export function sleep(ms: number) {
  * throttledLog(); // does nothing because less than 1 second has passed since the last invocation
  * setTimeout(throttledLog, 1000); // logs 'Hello, world!' after 1 second
  */
-export function throttle<T extends (...args: any[]) => void>(fn: T, ms = 700) {
+export function throttle<T extends (...args: unknown[]) => void>(fn: T, ms = 700) {
   let elapsed = 0;
 
   return (...args: Parameters<T>) => {
@@ -620,12 +627,12 @@ export function clone<T>(obj: T) {
  *
  * console.log(difference); // logs { d: 4 }
  */
-export const diff = <T extends Record<string, any>>(prev: T, curr: T) => {
+export const diff = <T extends Record<string, unknown>>(prev: T, curr: T) => {
   const data = {} as T;
 
   Object.keys(curr).forEach((key: keyof T) => {
     if (isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
-      data[key] = diff(prev[key], curr[key]);
+      data[key] = diff(prev[key] as T, curr[key] as T) as T[keyof T];
     } else if (!isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
       data[key] = curr[key];
     }
@@ -648,7 +655,7 @@ export const diff = <T extends Record<string, any>>(prev: T, curr: T) => {
  *
  * console.log(ent); // logs [['a', 1], ['b', 2], ['c', 3]]
  */
-export function entries<T extends Record<any, any>>(obj: T): Entries<T> {
+export function entries<T extends Record<string, unknown>>(obj: T): Entries<T> {
   return isObject(obj) ? (Object.entries(obj) as Entries<T>) : [];
 }
 
@@ -668,12 +675,16 @@ export function entries<T extends Record<any, any>>(obj: T): Entries<T> {
  * get(obj, 'a.b.c'); // returns 3
  * get(obj, 'a.b.d', 'default'); // returns 'default'
  */
-export function get<T extends Record<any, any>, K extends string>(obj: T, path: K | string, defaultValue?: any) {
+export function get<T extends Record<string, unknown>, K extends string>(
+  obj: T,
+  path: K | string,
+  defaultValue?: unknown,
+) {
   const fragments = path.split(/[,[\].]+?/);
-  let value;
+  let value: unknown;
 
   for (let i = 0; i < fragments.length; i++) {
-    // eslint-disable-next-line no-prototype-builtins
+    // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
     if (!obj.hasOwnProperty(fragments[i])) {
       return defaultValue;
     }
@@ -699,8 +710,8 @@ export function get<T extends Record<any, any>, K extends string>(obj: T, path: 
  * has(obj, 'a'); // returns true
  * has(obj, 'd'); // returns false
  */
-export function has<T, K extends keyof T>(obj: T, prop: K) {
-  // eslint-disable-next-line no-prototype-builtins
+export function has<T extends Record<string, unknown>, K extends keyof T>(obj: T, prop: K) {
+  // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
   return obj?.hasOwnProperty(prop);
 }
 
@@ -719,7 +730,7 @@ export function has<T, K extends keyof T>(obj: T, prop: K) {
  * has(obj, 'a'); // returns true
  * has(obj, 'd'); // returns false
  */
-export function keys<T extends Record<any, any>, K extends keyof T>(obj: T) {
+export function keys<T extends Record<string, unknown>, K extends keyof T>(obj: T) {
   return isObject(obj) ? (Object.keys(obj) as K[]) : [];
 }
 
@@ -740,26 +751,26 @@ export function keys<T extends Record<any, any>, K extends keyof T>(obj: T) {
  *
  * console.log(merged); // logs { a: 1, b: 3, c: 5, d: 6 }
  */
-export function merge<T extends Record<any, any>[]>(...args: [...T]): Merge<T> {
+export function merge<T extends Record<string, unknown>[]>(...args: [...T]): Merge<T> {
   const target = args.shift();
 
-  if (!target) return {} as any;
+  if (!target) return {} as Merge<T>;
 
   const source = args.shift();
 
-  if (!source) return target as any;
+  if (!source) return target as Merge<T>;
 
   entries(source).forEach(([key, value]) => {
     if (isObject(value)) {
       if (!target[key]) Object.assign(target, { [key]: {} });
 
-      merge(target[key], value);
+      merge(target[key] as Record<string, unknown>, value as Record<string, unknown>);
     } else if (isArray(value)) {
       if (!target[key]) Object.assign(target, { [key]: [] });
 
-      (value as any[]).forEach((curr) => {
-        if (!target[key].some((prev: any) => isEqual(curr, prev))) {
-          target[key].push(curr);
+      (value as unknown[]).forEach((curr) => {
+        if (!(target[key] as unknown[]).some((prev: unknown) => isEqual(curr, prev))) {
+          (target[key] as unknown[]).push(curr);
         }
       });
     } else {
@@ -784,7 +795,7 @@ export function merge<T extends Record<any, any>[]>(...args: [...T]): Merge<T> {
  *
  * console.log(val); // logs [1, 2, 3]
  */
-export function values<T extends Record<any, any>, K extends keyof T>(obj: T) {
+export function values<T extends Record<string, unknown>, K extends keyof T>(obj: T) {
   return isObject(obj) ? (Object.values(obj) as T[K][]) : [];
 }
 
@@ -805,7 +816,7 @@ export function values<T extends Record<any, any>, K extends keyof T>(obj: T) {
  * console.log(flat); // logs [1, 2, 3, 4, 5]
  */
 export function flatten<T>(arr: T | T[]) {
-  return isArray(arr) ? arr.flat(Infinity) : arr;
+  return isArray(arr) ? arr.flat(Number.POSITIVE_INFINITY) : arr;
 }
 
 /**
@@ -825,7 +836,7 @@ export function flatten<T>(arr: T | T[]) {
  *
  * console.log(isPresent); // logs true
  */
-export function contains(arr: any[], value: any) {
+export function contains(arr: unknown[], value: unknown) {
   return arr.some((item) => isEqual(item, value));
 }
 
@@ -844,8 +855,14 @@ export function contains(arr: any[], value: any) {
  *
  * console.log(grouped); // logs { '1': [{ a: 1 }, { a: 1 }], '2': [{ a: 2 }] }
  */
-export function groupBy<T extends Record<any, any>, K extends keyof T>(arr: T[], key: K): GroupBy<T, K> {
-  return arr.reduce((acc: any, val: T) => ({ ...acc, [val[key]]: [...(acc[val[key]] || []), val] }), {});
+export function groupBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K): GroupBy<T, K> {
+  return arr.reduce(
+    (acc, val: T) => {
+      acc[val[key]] = [...(acc[val[key]] || []), val];
+      return acc;
+    },
+    {} as GroupBy<T, K>,
+  );
 }
 
 /**
@@ -863,8 +880,14 @@ export function groupBy<T extends Record<any, any>, K extends keyof T>(arr: T[],
  *
  * console.log(keyed); // logs { '1': { a: 1 }, '2': { a: 2 } }
  */
-export function keyBy<T extends Record<any, any>, K extends keyof T>(arr: T[], key: K): KeyBy<T, K> {
-  return arr.reduce((acc: any, val: T) => ({ ...acc, [val[key]]: val }), {});
+export function keyBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K): KeyBy<T, K> {
+  return arr.reduce(
+    (acc, val: T) => {
+      acc[val[key]] = val;
+      return acc;
+    },
+    {} as KeyBy<T, K>,
+  );
 }
 
 /**
@@ -945,7 +968,9 @@ export function dateRange(
       D: () => currentDate.setUTCDate(currentDate.getUTCDate() + steps),
       W: () => currentDate.setUTCDate(currentDate.getUTCDate() + 7 * steps),
       M: () => currentDate.setUTCMonth(currentDate.getUTCMonth() + steps),
+      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
       MS: () => (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps, 1)),
+      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
       ME: () => (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps + 1, 0)),
       Y: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
       YS: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
@@ -1092,9 +1117,10 @@ export function toSnakeCase(str: string) {
  * console.log(truncated); // logs 'Hello…'
  */
 export function truncate(str: string, limit = 25, completeWords = false, ellipsis = '…'): string {
+  let _limit = limit;
   if (completeWords) {
-    limit = str.substring(0, limit).lastIndexOf(' ');
+    _limit = str.substring(0, _limit).lastIndexOf(' ');
   }
 
-  return str.length > limit ? `${str.substring(0, limit)}${ellipsis}` : str;
+  return str.length > _limit ? `${str.substring(0, _limit)}${ellipsis}` : str;
 }

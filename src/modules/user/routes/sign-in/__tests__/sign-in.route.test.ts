@@ -1,8 +1,8 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, mount } from '@vue/test-utils';
 import SignInRoute from '../sign-in.route.vue';
 
 describe('Auth/Route -> SignIn', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
     wrapper = mount(SignInRoute);

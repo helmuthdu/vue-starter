@@ -1,8 +1,8 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, mount } from '@vue/test-utils';
 import AboutRoute from '../about.route.vue';
 
 describe('Route -> About', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
     wrapper = mount(AboutRoute);

@@ -7,12 +7,12 @@
  * const { message, post } = useWorker('W1', resolve, 0);
  */
 
-import { onBeforeUnmount, Ref, ref } from 'vue';
 import { Logger } from '@/utils';
+import { type Ref, onBeforeUnmount, ref } from 'vue';
 
 type UseWorker<T> = {
   message: Ref<T>;
-  post: (data: any) => void;
+  post: (data: unknown) => void;
   terminate: () => void;
   worker: Ref<Worker | undefined>;
 };
@@ -26,7 +26,7 @@ type WorkerOptions<T> = {
   worker?: Worker;
 };
 
-const workers = new Map<string | number, WorkerOptions<any>>();
+const workers = new Map<string | number, WorkerOptions<unknown>>();
 
 const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
   const worker = ref<Worker>() as Ref<Worker | undefined>;
@@ -73,7 +73,7 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
     }
   };
 
-  const post = (data: any) => {
+  const post = (data: unknown) => {
     Logger.info(`[WORKER|${opts.id}] Post Message`, data);
 
     if (worker.value) {
@@ -92,7 +92,7 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
   return { message, post, terminate, worker };
 };
 
-export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue?: T): UseWorker<T> => {
+export const useWorker = <T>(id: string, resolve: (data: never) => T, defaultValue?: T): UseWorker<T> => {
   let opts: WorkerOptions<T> = { defaultValue, function: true, id, terminate: true };
 
   if (workers.has(id)) {
@@ -109,7 +109,7 @@ export const useWorker = <T>(id: string, resolve: (data: any) => T, defaultValue
 };
 
 export const useWorkerFromUrl = <T>(id: string, url: string, defaultValue?: T): UseWorker<T> =>
-  createWorker({ defaultValue, id, terminate: true, url });
+  createWorker<T>({ defaultValue, id, terminate: true, url });
 
 export const useWorkerFromWorker = <T>(id: string, worker: Worker, defaultValue?: T): UseWorker<T> =>
   createWorker<T>({ defaultValue, id, worker });

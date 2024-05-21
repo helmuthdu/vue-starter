@@ -1,13 +1,13 @@
-import { browser, createI18n, formatter, localeFrom, Messages, Translations } from '@nanostores/i18n';
+import { Http, getStorageItem, setStorageItem } from '@/utils';
+import { type Messages, type Translations, browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
 import { useStore } from '@nanostores/vue';
 import { atom } from 'nanostores';
-import { getStorageItem, Http, setStorageItem } from '@/utils';
 
 const STORAGE_KEY = 'locale';
 const APP_VERSION = import.meta.env.VITE_VERSION;
 
 export type Locale = (typeof locales)[keyof typeof locales];
-export type LocaleStorage = { locale: Locale; messages: Record<string, any>; version: string };
+export type LocaleStorage = { locale: Locale; messages: Record<string, unknown>; version: string };
 
 export const locales = {
   english: 'en-US',

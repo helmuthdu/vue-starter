@@ -1,5 +1,5 @@
 import { defineAsyncComponent } from 'vue';
-import { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import { paths } from './paths';
 
 export const routes: Array<RouteRecordRaw> = [

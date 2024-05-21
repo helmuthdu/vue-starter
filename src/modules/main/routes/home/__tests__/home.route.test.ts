@@ -1,8 +1,8 @@
-import { shallowMount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, shallowMount } from '@vue/test-utils';
 import HomeRoute from '../home.route.vue';
 
 describe('Route -> Home', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
     wrapper = shallowMount(HomeRoute);
