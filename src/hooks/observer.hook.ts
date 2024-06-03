@@ -22,13 +22,6 @@ const useSubscribeTo = <T, E>(
   return subscription;
 };
 
-export const useSubscription = <T, E>(
-  observable: Observable<T>,
-  next?: (value: T) => void,
-  error?: (err: E) => void,
-  complete?: () => void,
-): Subscription => useSubscribeTo(observable, next, error, complete);
-
 export const useObservable = <T>(observable: Observable<T>, defaultValue?: T, outRef?: Ref<T>): Ref<T> => {
   if (outRef && defaultValue && !outRef.value) {
     outRef.value = defaultValue;
@@ -48,6 +41,13 @@ export const useObservable = <T>(observable: Observable<T>, defaultValue?: T, ou
 
   return handler;
 };
+
+export const useSubscription = <T, E>(
+  observable: Observable<T>,
+  next?: (value: T) => void,
+  error?: (err: E) => void,
+  complete?: () => void,
+): Subscription => useSubscribeTo(observable, next, error, complete);
 
 export const useSubject = <T>(): { subject: Subject<T>; setSubject: (value: T) => void } => {
   const subject = new Subject<T>();

@@ -26,7 +26,7 @@ export type Action = {
 
 export type Name = typeof name;
 
-const name = 'user' as const;
+export const name = 'user' as const;
 
 export const useStore = defineStore<Name, State, Getter, Action>(name, {
   state: () => ({
