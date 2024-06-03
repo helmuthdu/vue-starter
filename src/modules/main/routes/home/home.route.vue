@@ -63,11 +63,9 @@
 
 <script lang="ts">
 import { useWorker } from '@/hooks/worker.hook';
-import { getTranslations, useI18n } from '@/locales';
+import { useI18n } from '@/locales';
 import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
 import { defineComponent } from 'vue';
-
-const translations = getTranslations('home');
 
 export default defineComponent({
   name: 'HomeRoute',
@@ -82,7 +80,7 @@ export default defineComponent({
 
     post(43);
 
-    const t = useI18n(translations);
+    const t = useI18n('home');
 
     return {
       message,

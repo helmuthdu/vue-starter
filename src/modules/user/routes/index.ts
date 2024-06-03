@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 export const routes: Array<RouteRecordRaw> = [
   {
-    path: paths.path,
+    path: paths.root,
     component: () => import('../layouts/user.layout.vue'),
     children: [
       {

@@ -1,5 +1,5 @@
+import { join } from 'node:path';
 import vue from '@vitejs/plugin-vue';
-import { join } from 'path';
 import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/

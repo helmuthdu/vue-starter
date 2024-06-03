@@ -1,5 +1,5 @@
 import { Http, getStorageItem, setStorageItem } from '@/utils';
-import { type Messages, type Translations, browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
+import { type Translations, browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
 import { useStore } from '@nanostores/vue';
 import { atom } from 'nanostores';
 
@@ -41,7 +41,7 @@ export const locale = localeFrom(
 export const format = formatter(locale);
 
 export const i18n = createI18n(locale, {
-  async get(loc) {
+  async get(loc: string) {
     const localeStorage = getLocaleStorage();
 
     if (localeStorage.locale === loc && localeStorage.version === APP_VERSION) {
@@ -64,8 +64,6 @@ export const i18n = createI18n(locale, {
   },
 });
 
-export const getTranslations = (name: string, translations: Translations = {}) => i18n(name, translations);
-
-export const useI18n = (messages: Messages) => {
-  return useStore(messages);
+export const useI18n = (name: string, translations: Translations = {}) => {
+  return useStore(i18n(name, translations));
 };

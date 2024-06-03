@@ -1,5 +1,5 @@
 export const paths = Object.freeze({
-  path: '',
+  root: '',
   home: {
     name: 'home',
     path: '',

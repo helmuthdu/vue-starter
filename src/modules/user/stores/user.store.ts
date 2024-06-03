@@ -23,19 +23,6 @@ export const state: State = {
   error: undefined,
 };
 
-export const getters = {
-  isLoggedIn: (state: State) => !!state.data.token,
-  isRegistered: () =>
-    task(
-      async () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(false);
-          }, 1000);
-        }),
-    ),
-};
-
 export const actions = {
   signUp: async (store: MapStore<State>, payload: UserRequest) => {
     store.setKey('status', 'pending');
@@ -79,6 +66,19 @@ export const actions = {
       error: undefined,
     });
   },
+};
+
+export const getters = {
+  isLoggedIn: (state: State) => !!state.data.token,
+  isRegistered: () =>
+    task(
+      async () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(false);
+          }, 1000);
+        }),
+    ),
 };
 
 export const store = defineStore(name, {

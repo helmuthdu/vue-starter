@@ -4,7 +4,7 @@ import { paths } from './paths';
 
 export const routes: Array<RouteRecordRaw> = [
   {
-    path: paths.path,
+    path: paths.root,
     component: () => defineAsyncComponent(() => import('../layouts/main.layout.vue')),
     children: [
       {
