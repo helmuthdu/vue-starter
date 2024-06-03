@@ -1,22 +1,26 @@
+import { Logger } from '@/utils';
 import { type Ref, ref } from 'vue';
 
-export const usePromise = <T>(fn: (...args: unknown[]) => Promise<T>, defaultValue?: T) => {
-  const result = ref(defaultValue) as Ref<T>;
-  const loading = ref(false);
-  const error = ref<unknown>(null);
-  const run = async (...args: unknown[]) => {
-    loading.value = true;
-    error.value = null;
-    result.value = defaultValue as T;
+export enum PromiseStatus {
+  PENDING = 'PENDING',
+  RESOLVED = 'RESOLVED',
+  REJECTED = 'REJECTED',
+}
 
+export const usePromise = <T>(fn: (...args: unknown[]) => Promise<T>, defaultValue?: T) => {
+  const value = ref(defaultValue) as Ref<T>;
+  const status = ref<PromiseStatus>();
+  const run = async (...args: unknown[]) => {
     try {
-      result.value = await fn(...args);
+      status.value = PromiseStatus.PENDING;
+      value.value = await fn(...args);
     } catch (err) {
-      error.value = err;
+      Logger.error('usePromise -> promise failed', err);
+      status.value = PromiseStatus.REJECTED;
     } finally {
-      loading.value = false;
+      status.value = PromiseStatus.RESOLVED;
     }
   };
 
-  return { result, loading, error, run };
+  return { value, status, run };
 };
