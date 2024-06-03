@@ -1,13 +1,13 @@
-import { Ref, ref } from 'vue';
+import { type Ref, ref } from 'vue';
 
-export const usePromise = <T>(fn: (...args: any) => Promise<T>, defaultValue: T = null as any) => {
+export const usePromise = <T>(fn: (...args: unknown[]) => Promise<T>, defaultValue?: T) => {
   const result = ref(defaultValue) as Ref<T>;
   const loading = ref(false);
   const error = ref<unknown>(null);
-  const run = async (...args: any) => {
+  const run = async (...args: unknown[]) => {
     loading.value = true;
     error.value = null;
-    result.value = defaultValue;
+    result.value = defaultValue as T;
 
     try {
       result.value = await fn(...args);

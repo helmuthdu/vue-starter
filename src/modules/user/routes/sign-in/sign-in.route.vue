@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
 import { useStore } from '@/stores';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'SignInRoute',
@@ -20,7 +20,7 @@ export default defineComponent({
     const email = ref('');
     const password = ref('');
     const isLoggedIn = computed(() => store.user.isLoggedIn);
-    const user = computed(() => store.user.entity);
+    const user = computed(() => store.user.data);
 
     const submit = () =>
       store.user.signIn({

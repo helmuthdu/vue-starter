@@ -1,8 +1,8 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, mount } from '@vue/test-utils';
 import UserLayout from '../user.layout.vue';
 
 describe('User/Layout', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
     wrapper = mount(UserLayout);

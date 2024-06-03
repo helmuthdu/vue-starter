@@ -1,12 +1,11 @@
-import { shallowMount, VueWrapper } from '@vue/test-utils';
-import i18n from '@/locales';
+import { type VueWrapper, shallowMount } from '@vue/test-utils';
 import HomeRoute from '../home.route.vue';
 
 describe('Route -> Home', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
-    wrapper = shallowMount(HomeRoute, { global: { plugins: [i18n] } });
+    wrapper = shallowMount(HomeRoute);
   });
 
   it('should renders with props', () => {

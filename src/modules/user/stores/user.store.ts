@@ -1,6 +1,6 @@
+import { type UserRequest, userApi } from '@/modules/user/api/user.api';
+import { User, type UserSchema } from '@/modules/user/entities/user';
 import { defineStore } from 'pinia';
-import { userApi, UserRequest } from '@/modules/user/api/user.api';
-import { User, UserSchema } from '@/modules/user/entities/user';
 
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',
@@ -9,7 +9,7 @@ enum RequestErrorType {
 }
 
 export type State = {
-  entity: UserSchema;
+  data: UserSchema;
   status: 'idle' | 'pending' | 'completed';
   error?: RequestErrorType;
 };
@@ -30,7 +30,7 @@ const name = 'user' as const;
 
 export const useStore = defineStore<Name, State, Getter, Action>(name, {
   state: () => ({
-    entity: User.create(),
+    data: User.create(),
     status: 'idle',
     error: undefined,
   }),
@@ -40,13 +40,14 @@ export const useStore = defineStore<Name, State, Getter, Action>(name, {
 
       try {
         this.$patch({
-          entity: User.create((await userApi.signUp(payload)).data),
+          data: User.create((await userApi.signUp(payload)).data),
           status: 'completed',
           error: undefined,
         });
+        // biome-ignore lint/suspicious/noExplicitAny: axios error handling
       } catch (err: any) {
         this.$patch({
-          entity: User.create(),
+          data: User.create(),
           status: 'idle',
           error: RequestErrorType.AlreadyExists,
         });
@@ -57,13 +58,14 @@ export const useStore = defineStore<Name, State, Getter, Action>(name, {
 
       try {
         this.$patch({
-          entity: User.create((await userApi.signIn(payload)).data),
+          data: User.create((await userApi.signIn(payload)).data),
           status: 'completed',
           error: undefined,
         });
+        // biome-ignore lint/suspicious/noExplicitAny: axios error handling
       } catch (err: any) {
         this.$patch({
-          entity: User.create(),
+          data: User.create(),
           status: 'idle',
           error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
         });
@@ -74,6 +76,6 @@ export const useStore = defineStore<Name, State, Getter, Action>(name, {
     },
   },
   getters: {
-    isLoggedIn: (state) => !!state.entity.token,
+    isLoggedIn: (state) => !!state.data.token,
   },
 });

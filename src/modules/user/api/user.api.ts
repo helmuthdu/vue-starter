@@ -1,5 +1,5 @@
 import { Http, Logger } from '@/utils';
-import { UserSchema } from '../entities/user';
+import type { UserSchema } from '../entities/user';
 
 export type UserRequest = Partial<UserSchema> & {
   email: string;
@@ -18,7 +18,7 @@ const signIn = async (payload: UserSchema): Promise<Response & { data: UserSchem
           email: 'johndoe@mail.com',
           token: 'secret',
         },
-      } as any);
+      } as Response & { data: UserSchema });
     }, 1000);
   });
 };

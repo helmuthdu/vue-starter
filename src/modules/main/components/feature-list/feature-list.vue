@@ -27,12 +27,12 @@
   </div>
 </template>
 <script lang="ts">
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
-import { defineComponent, ref } from 'vue';
 import { useObservable, useSubject } from '@/hooks/observer.hook';
 import { useStorage } from '@/hooks/storage.hook';
 import { featuresApi } from '@/modules/main/api/features.api';
-import { Feature } from '../../entities/feature/feature.type';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { defineComponent, ref } from 'vue';
+import type { Feature } from '../../entities/feature/feature.type';
 
 export default defineComponent({
   name: 'FeatureList',
@@ -77,8 +77,8 @@ export default defineComponent({
 
     return {
       features,
-      onInput(evt: any) {
-        setSearch$(evt.target.value);
+      onInput(evt: Event) {
+        setSearch$((evt.target as HTMLInputElement)?.value);
       },
     };
   },

@@ -1,9 +1,0 @@
-node_modules
-dist
-public
-build
-storybook-static
-.cache
-.vscode
-.idea
-package.json

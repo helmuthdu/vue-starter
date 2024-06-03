@@ -57,6 +57,7 @@ export function waitUntilElementAppears(
 }
 
 export function getHostElement(target: HTMLElement) {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   let node: any = target;
 
   while (node.parentNode) node = node.parentNode;
@@ -64,7 +65,7 @@ export function getHostElement(target: HTMLElement) {
   return (node as ShadowRoot).host;
 }
 
-export const importJS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
+export const importJS = (url: string, attributes?: Record<string, string>): Promise<boolean> => {
   if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
 
   const scriptElement = document.querySelector(`script[src="${url}"]`);
@@ -83,7 +84,7 @@ export const importJS = (url: string, attributes?: Record<string, any>): Promise
   });
 };
 
-export const importCSS = (url: string, attributes?: Record<string, any>): Promise<boolean> => {
+export const importCSS = (url: string, attributes?: Record<string, string>): Promise<boolean> => {
   if (!url) return Promise.reject(new Error('importCSS() -> Missing URL Parameter'));
 
   const styleElement = document.querySelector(`link[href="${url}"]`);

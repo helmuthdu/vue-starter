@@ -4,13 +4,13 @@ import { uuid } from './toolbox.util';
 
 type Subscription = { stop: () => void };
 
-const events: { [event: string]: { [id: string]: (arg?: any) => void } } = {};
+const events: { [event: string]: { [id: string]: (...args: unknown[]) => void } } = {};
 
 const getEvent = (event: string) => events?.[event];
 
 const getEventById = (event: string, id: string) => events?.[event]?.[id];
 
-const setEvent = (event: string, id: string, fn: any) => {
+const setEvent = (event: string, id: string, fn: (...args: unknown[]) => void) => {
   if (!getEvent(event)) events[event] = {};
 
   events[event][id] = fn;
@@ -26,7 +26,7 @@ const stop = (event: string, id: string) => {
   }
 };
 
-const on = (event: string, fn: (arg?: any) => void): Subscription => {
+const on = (event: string, fn: (...args: unknown[]) => void): Subscription => {
   const id = uuid();
 
   setEvent(event, id, fn);
@@ -34,11 +34,11 @@ const on = (event: string, fn: (arg?: any) => void): Subscription => {
   return { stop: () => stop(event, id) };
 };
 
-const once = (event: string, fn: (arg?: any) => void): Subscription => {
+const once = (event: string, fn: (...args: unknown[]) => void): Subscription => {
   const id = uuid();
 
-  setEvent(event, id, (arg?: any) => {
-    fn(arg);
+  setEvent(event, id, (...args: unknown[]) => {
+    fn(...args);
     stop(event, id);
   });
 
@@ -53,15 +53,19 @@ const off = (event: string) => {
   }
 };
 
-const emit = (event: string, arg?: any) => {
+const emit = (event: string, ...args: unknown[]) => {
   if (getEvent(event)) {
-    Object.entries(getEvent(event)).forEach(([, fn]) => fn(arg));
+    Object.entries(getEvent(event)).forEach(([, fn]) => fn(...args));
   } else {
     Logger.warn(`Event "${event}" not registered`);
   }
 };
 
-export const receiver = (event: string, fn: (arg?: any) => void, options?: { once: boolean; immediate: boolean }) => {
+export const receiver = (
+  event: string,
+  fn: (...args: unknown[]) => void,
+  options?: { once: boolean; immediate: boolean },
+) => {
   let subscription: Subscription;
 
   if (options?.once) {

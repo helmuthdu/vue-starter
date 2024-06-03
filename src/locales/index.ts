@@ -1,11 +1,12 @@
+import { Http, getStorageItem, setStorageItem } from '@/utils';
 import { createI18n } from 'vue-i18n';
-import { getStorageItem, Http, setStorageItem } from '@/utils';
 
 const STORAGE_KEY = 'locale';
 const APP_VERSION = import.meta.env.VITE_VERSION;
 
-export type Locale = (typeof locales)[keyof typeof locales];
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type LocaleStorage = { locale: Locale; messages: Record<string, any>; version: string };
+export type Locale = (typeof locales)[keyof typeof locales];
 
 export const locales = {
   english: 'en-US',
@@ -23,7 +24,7 @@ export const i18n = createI18n({
   messages: getLocaleStorage().messages ?? {},
 });
 
-export const setLocale = (locale: Locale, messages: Record<string, any>): Locale => {
+export const setLocale = (locale: Locale, messages: Record<string, unknown>): Locale => {
   i18n.global.locale.value = locale;
   i18n.global.setLocaleMessage(locale, messages);
   Http.setHeaders({ 'Accept-Language': locale });

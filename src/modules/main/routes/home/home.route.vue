@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useWorker } from '@/hooks/worker.hook';
 import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'HomeRoute',

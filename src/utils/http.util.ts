@@ -1,4 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, CancelTokenSource } from 'axios';
+import axios, {
+  type AxiosRequestConfig,
+  type AxiosRequestHeaders,
+  type AxiosResponse,
+  type CancelTokenSource,
+} from 'axios';
 import { Logger } from './logger.util';
 import { startPageProgressBar, stopPageProgressBar } from './progress-bar.util';
 
@@ -16,9 +21,10 @@ enum TypeSymbol {
   error = '✕',
 }
 
-const _activeRequests = {} as Record<string, { request: Promise<any>; controller: CancelTokenSource }>;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const _activeRequests: Record<string, { request: Promise<AxiosResponse<any>>; controller: CancelTokenSource }> = {};
 
-const _generateId = (options: any): string => {
+const _generateId = (options: unknown): string => {
   return `${JSON.stringify(options)}`;
 };
 
@@ -62,7 +68,7 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
   return _activeRequests[id].request;
 };
 
-export const fetcher = <T = any>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
+export const fetcher = async <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
   startPageProgressBar();
 
   const time = Date.now();

@@ -1,9 +1,9 @@
-import { defineAsyncComponent } from 'vue';
-import { createRouter, createWebHistory, Router } from 'vue-router';
-import { loadTranslations, Locale, locales } from '@/locales';
+import { type Locale, loadTranslations, locales } from '@/locales';
 import { paths, routes } from '@/modules';
 import { useStore } from '@/stores';
 import { startPageProgressBar, stopPageProgressBar } from '@/utils/progress-bar.util';
+import { defineAsyncComponent } from 'vue';
+import { type Router, createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
@@ -11,9 +11,8 @@ export const router: Router = createRouter({
   scrollBehavior(_to, _from, scrollPosition) {
     if (scrollPosition) {
       return scrollPosition;
-    } else {
-      return { top: 0 };
     }
+    return { top: 0 };
   },
   routes: [
     {

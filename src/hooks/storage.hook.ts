@@ -1,6 +1,6 @@
-import { Ref, ref, watch } from 'vue';
 import { Logger } from '@/utils';
 import { getStorageItem, setStorageItem } from '@/utils/storage.util';
+import { type Ref, ref, watch } from 'vue';
 
 export const useStorage = <T>(key: string, defaultValue?: T, session = false): Ref<T> => {
   const getItem = () => {

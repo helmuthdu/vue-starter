@@ -1,11 +1,11 @@
-import { mount, VueWrapper } from '@vue/test-utils';
+import { type VueWrapper, mount } from '@vue/test-utils';
 import NotFoundRoute from '../not-found.route.vue';
 
 describe('Route -> NotFound', () => {
-  let wrapper: VueWrapper<any>;
+  let wrapper: VueWrapper<unknown>;
 
   beforeEach(() => {
-    wrapper = mount(NotFoundRoute);
+    wrapper = mount(NotFoundRoute, { props: { resource: 'test' } });
   });
 
   it('should renders with props', () => {
