@@ -1,5 +1,5 @@
 import { type UserRequest, userApi } from '@/modules/user/api/user.api';
-import { User, type UserSchema } from '@/modules/user/entities/user';
+import { User, type UserJSON } from '@/modules/user/models/user';
 import { defineStore } from 'pinia';
 
 enum RequestErrorType {
@@ -9,7 +9,7 @@ enum RequestErrorType {
 }
 
 export type State = {
-  data: UserSchema;
+  data: UserJSON;
   status: 'idle' | 'pending' | 'completed';
   error?: RequestErrorType;
 };

@@ -1,6 +1,6 @@
-import type { UserSchema } from './user.type';
+import type { UserJSON } from './user.type';
 
-export class User implements UserSchema {
+export class User implements UserJSON {
   readonly email: string;
   readonly emailVerified: boolean;
   readonly id?: number;
@@ -12,7 +12,7 @@ export class User implements UserSchema {
   readonly facebookId?: string;
   readonly token?: string;
 
-  static create(user?: UserSchema) {
-    return Object.assign({}, new User(), { ...(user ?? {}) }) as UserSchema;
+  static create(user?: UserJSON) {
+    return Object.assign({}, new User(), { ...(user ?? {}) }) as UserJSON;
   }
 }

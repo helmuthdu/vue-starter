@@ -1,8 +1,8 @@
 import { Logger } from './logger.util';
 
 const generatePrefix = (): string => {
-  const appName = (import.meta.env.VITE_NAME as string) ?? 'vue_app';
-  const environment = (import.meta.env.NODE_ENV as string) ?? 'development';
+  const appName = (import.meta.env.VITE_NAME as string) ?? 'app';
+  const environment = (import.meta.env.NODE_ENV as string) ?? 'dev';
 
   return `${appName}_${environment.substring(0, 3)}`;
 };
