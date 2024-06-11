@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "npm run lint:script && npm run lint:style",
-    "lint:script": "biome check --apply src",
+    "lint:script": "biome check --write src",
     "lint:style": "stylelint --fix src/**/*.{css,scss,vue}"
   },
   "dependencies": {
@@ -19,13 +19,13 @@
     "pinia": "^2.1.7",
     "radash": "^12.1.0",
     "rxjs": "^7.8.1",
-    "vee-validate": "^4.13.0",
+    "vee-validate": "^4.13.1",
     "vue": "^3.4.27",
     "vue-i18n": "^9.13.1",
-    "vue-router": "^4.3.2"
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.3",
+    "@biomejs/biome": "1.8.1",
     "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/test-utils": "^2.4.6",
@@ -39,10 +39,10 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "typescript": "^5.4.5",
-    "vite": "^5.2.12",
+    "vite": "^5.2.13",
     "vite-node": "^1.6.0",
     "vitest": "^1.6.0",
     "vue-eslint-parser": "^9.4.3",
-    "vue-tsc": "^2.0.19"
+    "vue-tsc": "^2.0.21"
   }
 }
