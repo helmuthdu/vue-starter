@@ -1,4 +1,4 @@
-export type UserSchema = {
+export type UserJSON = {
   email: string;
   emailVerified?: boolean;
   id?: number;

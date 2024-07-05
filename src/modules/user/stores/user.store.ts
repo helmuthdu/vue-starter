@@ -1,5 +1,5 @@
 import { type UserRequest, userApi } from '@/modules/user/api/user.api';
-import { User, type UserSchema } from '@/modules/user/entities/user';
+import { User, type UserJSON } from '@/modules/user/models/user';
 import { createUseStore, defineStore } from '@/utils/store.util.ts';
 import { type MapStore, task } from 'nanostores';
 
@@ -12,7 +12,7 @@ enum RequestErrorType {
 }
 
 type State = {
-  data: UserSchema;
+  data: UserJSON;
   status?: 'error' | 'pending' | 'success';
   error?: RequestErrorType;
 };
