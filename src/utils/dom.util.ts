@@ -75,11 +75,13 @@ export const importJS = (url: string, attributes?: Record<string, string>): Prom
   return new Promise((resolve, reject) => {
     const element = document.createElement('script');
 
-    element.setAttribute('async', '');
-    element.setAttribute('src', url);
-    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
     element.onload = () => resolve(true);
     element.onerror = () => reject(new Error('Failed to load injected script element'));
+
+    element.setAttribute('async', '');
+    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
+    element.setAttribute('src', url);
+
     document.head.append(element);
   });
 };
@@ -94,11 +96,13 @@ export const importCSS = (url: string, attributes?: Record<string, string>): Pro
   return new Promise((resolve, reject) => {
     const element = document.createElement('link');
 
-    element.setAttribute('rel', 'stylesheet');
-    element.setAttribute('href', url);
-    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
     element.onload = () => resolve(true);
     element.onerror = () => reject(new Error('Failed to load injected style element'));
+
+    element.setAttribute('rel', 'stylesheet');
+    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
+    element.setAttribute('href', url);
+
     document.head.insertBefore(element, document.head.firstChild);
   });
 };
