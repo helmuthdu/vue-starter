@@ -3,7 +3,7 @@ import { useStore as toRef } from '@nanostores/vue';
 import { type MapStore, type Store, computed, map } from 'nanostores';
 import type { DeepReadonly, Ref } from 'vue';
 
-type OmitFirstArg<F> = F extends (x: unknown, ...args: infer P) => infer R ? (...args: P) => R : never;
+type OmitFirstArg<F> = F extends (x: never, ...args: infer P) => infer R ? (...args: P) => R : never;
 
 type NanoStore<State, Actions, Getters> = {
   state: State;
@@ -11,12 +11,13 @@ type NanoStore<State, Actions, Getters> = {
   getters: Getters;
 };
 
+export * from 'nanostores';
+
 export const defineStore = <
   State extends object,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Actions extends Record<string, (store: MapStore, ...payload: any[]) => Promise<void> | void>,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Getters extends Record<string, (state: any) => unknown>,
+  Actions extends Record<string, (store: MapStore<State>, ...payload: any) => Promise<void> | void>,
+  Getters extends Record<string, (state: State) => unknown>,
 >(
   name: string,
   store: NanoStore<State, Actions, Getters>,
@@ -61,5 +62,3 @@ export const createUseStore = <
 
   return () => _store;
 };
-
-export * from 'nanostores';
