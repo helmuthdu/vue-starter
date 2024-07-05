@@ -14,11 +14,10 @@ export const usePromise = <T>(fn: (...args: unknown[]) => Promise<T>, defaultVal
     try {
       status.value = PromiseStatus.PENDING;
       value.value = await fn(...args);
+      status.value = PromiseStatus.RESOLVED;
     } catch (err) {
       Logger.error('usePromise -> promise failed', err);
       status.value = PromiseStatus.REJECTED;
-    } finally {
-      status.value = PromiseStatus.RESOLVED;
     }
   };
 
