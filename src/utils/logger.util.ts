@@ -57,29 +57,36 @@ const print = (level: LoggerLevelKey, color: keyof typeof COLORS, ...args: unkno
 
   if (logLevel > LogLevel[level]) return;
 
-  const stdout: string[] = [
-    `%c${level}%c`,
-    `background: ${COLORS[color].BG}; color: ${COLORS[color].COLOR};
+  const stdout: string[] = [];
+
+  if (typeof window !== 'undefined') {
+    stdout.push(
+      `%c${level}%c`,
+      `background: ${COLORS[color].BG}; color: ${COLORS[color].COLOR};
      border: 1px solid ${COLORS[color].BORDER}; border-radius: 4px; font-weight: bold;
      padding: 0 3px; margin-right: ${timestamp || prefix ? '6px' : '0'};`,
-  ];
-
-  if (prefix) {
-    const colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'PREFIX_DM' : 'PREFIX';
-
-    stdout[0] = `${stdout[0]}${prefix}%c`;
-    stdout.push(
-      `background: ${COLORS[colorMode].BG}; color: ${COLORS[colorMode].COLOR}; border-radius: 8px;
-       padding: 0 3px; margin-right: ${timestamp ? '6px' : '0'}; margin-top: 2px; font: italic small-caps bold 12px;`,
     );
+
+    if (prefix) {
+      const colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'PREFIX_DM' : 'PREFIX';
+
+      stdout[0] = `${stdout[0]}${prefix}%c`;
+      stdout.push(
+        `background: ${COLORS[colorMode].BG}; color: ${COLORS[colorMode].COLOR}; border-radius: 8px;
+       padding: 0 3px; margin-right: ${timestamp ? '6px' : '0'}; margin-top: 2px; font: italic small-caps bold 12px;`,
+      );
+    }
+
+    if (timestamp) {
+      stdout[0] = `${stdout[0]}${getTimestamp()}%c`;
+      stdout.push('color: gray;');
+    }
+
+    stdout.push('color: inherit;', ...(args as string[]));
+  } else {
+    stdout.push(...(args as string[]));
   }
 
-  if (timestamp) {
-    stdout[0] = `${stdout[0]}${getTimestamp()}%c`;
-    stdout.push('color: gray;');
-  }
-
-  stdout.push('color: inherit;', ...(args as string[]));
   (console[type] as (...args: unknown[]) => void)(...stdout);
 
   if (remote.handler) {
@@ -95,6 +102,9 @@ export const Logger = {
   },
   getLevel(): LogLevel {
     return state.logLevel;
+  },
+  getPrefix(): string {
+    return state.prefix;
   },
   getTimestamp(): boolean {
     return state.timestamp;
