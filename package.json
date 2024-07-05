@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "npm run lint:script && npm run lint:style",
-    "lint:script": "biome check --apply src",
+    "lint:script": "biome check --write src",
     "lint:style": "stylelint --fix src/**/*.{css,scss,vue}"
   },
   "dependencies": {
@@ -23,29 +23,29 @@
     "nprogress": "^0.2.0",
     "radash": "^12.1.0",
     "rxjs": "^7.8.1",
-    "vee-validate": "^4.13.0",
-    "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "vee-validate": "^4.13.1",
+    "vue": "^3.4.31",
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.3",
+    "@biomejs/biome": "1.8.3",
     "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^24.1.0",
-    "lefthook": "^1.6.15",
-    "postcss": "^8.4.38",
+    "lefthook": "^1.6.18",
+    "postcss": "^8.4.39",
     "postcss-html": "^1.7.0",
-    "sass": "^1.77.4",
+    "sass": "^1.77.6",
     "stylelint": "^16.6.1",
     "stylelint-config-recess-order": "^5.0.1",
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.12",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
     "vite-node": "^1.6.0",
     "vitest": "^1.6.0",
     "vue-eslint-parser": "^9.4.3",
-    "vue-tsc": "^2.0.19"
+    "vue-tsc": "^2.0.26"
   }
 }
