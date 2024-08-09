@@ -242,6 +242,25 @@ export function isEqual(curr: any, prev: any): boolean {
 }
 
 /**
+ * Asserts that the condition is true. If the condition is false, it throws an error with the provided message.
+ *
+ * @example
+ *
+ * assert(Array.isArray([])); // does nothing
+ * assert(typeof foo === 'string', 'This is an error message'); // throws an Error with the message 'This is an error message'
+ *
+ * @param {boolean} condition - The condition to assert.
+ * @param {string} [message] - The error message to throw if the condition is false. Default is 'assertion failed'.
+ *
+ * @throws {Error} - Throws an error if the condition is false.
+ */
+export function assert(condition: boolean, message?: string) {
+  if (!condition) {
+    throw new Error(message ?? 'assertion failed');
+  }
+}
+
+/**
  * Attempts to execute a function and returns its result. If an error occurs during the execution, it logs the error and returns undefined.
  *
  * @example
@@ -257,7 +276,7 @@ export function isEqual(curr: any, prev: any): boolean {
  * @param {T} fn - The function to be executed.
  * @param {Parameters<T>} args - The arguments to be passed to the function.
  *
- * @returns {ReturnType<T>} - The result of the function execution if successful, otherwise undefined.
+ * @returns R - The result of the function execution if successful, otherwise undefined.
  */
 export function attempt<T extends (...args: unknown[]) => R, R>(fn: T, ...args: Parameters<T>) {
   // biome-ignore lint/style/noArguments: <explanation>
@@ -290,7 +309,7 @@ export function attempt<T extends (...args: unknown[]) => R, R>(fn: T, ...args: 
 export async function delay<T extends () => void>(fn: T, ms = 700) {
   await sleep(ms);
 
-  return Promise.resolve(fn());
+  return fn();
 }
 
 /**
@@ -361,9 +380,9 @@ export function memoize<T extends (...args: unknown[]) => unknown>(fn: T) {
  * const obj = { a: 1, b: 2 };
  * const log = (prop, curr, prev, target) => console.log(`Property '${prop}' changed from ${prev} to ${curr}`);
  *
- * const observedObj = observe(obj, log);
+ * const proxyObj = proxy(obj, log);
  *
- * observedObj.a = 3; // logs 'Property 'a' changed from 1 to 3'
+ * proxyObj.a = 3; // logs 'Property 'a' changed from 1 to 3'
  *
  * @template T
  * @param {Object} obj - The object to observe.
@@ -845,6 +864,7 @@ export function contains(arr: unknown[], value: unknown) {
  * @returns {GroupBy<T, K>} - An object with keys as the grouped values and values as arrays of elements.
  */
 export function groupBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K): GroupBy<T, K> {
+  // return Object.groupBy(arr, (val: never) => val[key]);
   return arr.reduce(
     (acc, val: T) => {
       acc[val[key]] ||= [];
