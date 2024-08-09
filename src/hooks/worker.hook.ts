@@ -92,13 +92,13 @@ const createWorker = <T>(opts: WorkerOptions<T>): UseWorker<T> => {
   return { message, post, terminate, worker };
 };
 
-export const useWorker = <T>(id: string, resolve: (data: never) => T, defaultValue?: T): UseWorker<T> => {
+export const useWorker = <T>(id: string, fn: (data: never) => T, defaultValue?: T): UseWorker<T> => {
   let opts: WorkerOptions<T> = { defaultValue, function: true, id, terminate: true };
 
   if (workers.has(id)) {
     opts = workers.get(id) as WorkerOptions<T>;
   } else {
-    const resolveString = resolve.toString();
+    const resolveString = fn.toString();
     const webWorkerTemplate = `self.onmessage = function(e) { self.postMessage((${resolveString})(e.data)); }`;
     const blob = new Blob([webWorkerTemplate], { type: 'text/javascript' });
 
