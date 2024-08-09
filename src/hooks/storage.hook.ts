@@ -12,7 +12,7 @@ export const useStorage = <T>(key: string, defaultValue?: T, session = false): R
       return defaultValue;
     }
 
-    return item;
+    return item as T;
   };
 
   const storage = ref(getItem()) as Ref<T>;
