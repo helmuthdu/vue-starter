@@ -5,7 +5,6 @@ import axios, {
   type CancelTokenSource,
 } from 'axios';
 import { Logger } from './logger.util';
-import { startPageProgressBar, stopPageProgressBar } from './progress-bar.util';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
 
@@ -69,8 +68,6 @@ const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Pro
 };
 
 export const fetcher = async <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
-  startPageProgressBar();
-
   const time = Date.now();
 
   return axios(config)
@@ -87,8 +84,6 @@ export const fetcher = async <T>(config: AxiosRequestConfig, id?: string): Promi
       if (id) {
         delete _activeRequests[id];
       }
-
-      stopPageProgressBar();
     });
 };
 

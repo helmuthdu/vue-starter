@@ -2,7 +2,6 @@ import { type Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
 import { store } from '@/modules/user/stores/user.store';
 import { Logger } from '@/utils';
-import { startPageProgressBar, stopPageProgressBar } from '@/utils/progress-bar.util';
 import { defineAsyncComponent } from 'vue';
 import { type Router, createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';
@@ -54,13 +53,7 @@ export const router: Router = createRouter({
 });
 
 router.beforeEach(async (to, _from, next) => {
-  startPageProgressBar();
-
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   requiresAuth && !store.getters.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
-});
-
-router.afterEach(() => {
-  stopPageProgressBar();
 });
