@@ -1,12 +1,13 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
-    "include": ["*.js", "*.ts", "*.json", "*.vue", "*.css", "*.html"]
+    "include": ["*.js", "*.cjs", "*.mjs", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.css", "*.html", "*.json"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "lineWidth": 120
+    "lineWidth": 120,
+    "attributePosition": "auto"
   },
   "organizeImports": {
     "enabled": true
@@ -16,13 +17,19 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "noExcessiveCognitiveComplexity": "warn"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noNodejsModules": "error"
       }
     }
   },
   "javascript": {
     "formatter": {
       "bracketSameLine": true,
+      "jsxQuoteStyle": "double",
       "quoteStyle": "single",
       "semicolons": "always"
     }
