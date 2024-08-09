@@ -23,7 +23,7 @@ const useSubscribeTo = <T, E>(
 };
 
 export const useObservable = <T>(observable: Observable<T>, defaultValue?: T, outRef?: Ref<T>): Ref<T> => {
-  if (outRef && defaultValue && !outRef.value) {
+  if (defaultValue && outRef && !outRef.value) {
     outRef.value = defaultValue;
   }
 
