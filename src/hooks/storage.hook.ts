@@ -1,4 +1,4 @@
-import { Logger } from '@/utils';
+import { Logger } from '@/utils/logger.util';
 import { getStorageItem, setStorageItem } from '@/utils/storage.util';
 import { type Ref, ref, watch } from 'vue';
 

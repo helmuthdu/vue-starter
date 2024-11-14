@@ -1,5 +1,6 @@
 import type { UserJSON } from '@/modules/user/models/user';
-import { Http, Logger } from '@/utils';
+import { Http } from '@/utils/http.util';
+import { Logger } from '@/utils/logger.util';
 
 export type UserRequest = Partial<UserJSON> & {
   email: string;

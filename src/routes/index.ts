@@ -1,7 +1,7 @@
 import { type Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
 import { store } from '@/modules/user/stores/user.store';
-import { Logger } from '@/utils';
+import { Logger } from '@/utils/logger.util';
 import { defineAsyncComponent } from 'vue';
 import { type Router, createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from '../layouts/default.layout.vue';

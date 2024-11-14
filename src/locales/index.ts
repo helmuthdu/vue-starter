@@ -1,4 +1,5 @@
-import { Http, getStorageItem, setStorageItem } from '@/utils';
+import { Http } from '@/utils/http.util';
+import { getStorageItem, setStorageItem } from '@/utils/storage.util';
 import { type Translations, browser, createI18n, formatter, localeFrom } from '@nanostores/i18n';
 import { useStore } from '@nanostores/vue';
 import { atom } from 'nanostores';

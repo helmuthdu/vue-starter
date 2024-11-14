@@ -47,8 +47,8 @@ export function waitUntilElementAppears(
       ) as HTMLElement;
 
       if (element || count >= attempts) {
-        clearInterval(interval);
         resolve(element);
+        clearInterval(interval);
       }
 
       count++;

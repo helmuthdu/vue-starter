@@ -7,7 +7,7 @@
  * const { message, post } = useWorker('W1', resolve, 0);
  */
 
-import { Logger } from '@/utils';
+import { Logger } from '@/utils/logger.util';
 import { type Ref, onBeforeUnmount, ref } from 'vue';
 
 type UseWorker<T> = {

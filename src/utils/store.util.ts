@@ -1,4 +1,4 @@
-import { getStorageItem, setStorageItem } from '@/utils';
+import { getStorageItem, setStorageItem } from '@/utils/storage.util.ts';
 import { useStore as toRef } from '@nanostores/vue';
 import { type MapStore, type Store, computed, map } from 'nanostores';
 import type { DeepReadonly, Ref } from 'vue';
@@ -13,7 +13,7 @@ type NanoStore<State, Actions, Getters> = {
 
 export * from 'nanostores';
 
-export const defineStore = <
+export const createStore = <
   State extends object,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   Actions extends Record<string, (store: MapStore<State>, ...payload: any) => Promise<void> | void>,

@@ -1,6 +1,6 @@
 import { type UserRequest, userApi } from '@/modules/user/api/user.api';
 import { User, type UserJSON } from '@/modules/user/models/user';
-import { createUseStore, defineStore } from '@/utils/store.util.ts';
+import { createStore, createUseStore } from '@/utils/store.util.ts';
 import { type MapStore, task } from 'nanostores';
 
 export const name = 'user' as const;
@@ -81,7 +81,7 @@ export const getters = {
     ),
 };
 
-export const store = defineStore(name, {
+export const store = createStore(name, {
   state,
   actions,
   getters,
