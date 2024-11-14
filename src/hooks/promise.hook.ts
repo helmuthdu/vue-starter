@@ -1,36 +1,37 @@
-import { Logger } from '@/utils';
+import { retry } from '@/utils/toolbox.util.ts';
 import { type Ref, ref } from 'vue';
 
-export enum PromiseStatus {
-  IDLE = 'idle',
-  PENDING = 'pending',
-  RESOLVED = 'resolved',
-  REJECTED = 'rejected',
-}
+export const usePromise = <T>(
+  fn: (...args: unknown[]) => T,
+  defaultValue?: T,
+  options?: { immediate?: boolean; retry?: number; delay?: number },
+) => {
+  const data = ref(defaultValue) as Ref<T>;
+  const error = ref();
+  const loading = ref(false);
+  const ready = ref(false);
 
-export function usePromise<T>() {
-  let resolve: (value: T | PromiseLike<T>) => void = () => {};
-  let reject: (reason?: unknown) => void = () => {};
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  return { promise, resolve, reject };
-}
+  const run = (...args: unknown[]) => {
+    error.value = undefined;
+    loading.value = true;
+    ready.value = false;
 
-export const usePledge = <T>(fn: (...args: unknown[]) => Promise<T>, defaultValue?: T) => {
-  const value = ref(defaultValue) as Ref<T>;
-  const status = ref<PromiseStatus>(PromiseStatus.IDLE);
-  const run = async (...args: unknown[]) => {
-    try {
-      status.value = PromiseStatus.PENDING;
-      value.value = await fn(...args);
-      status.value = PromiseStatus.RESOLVED;
-    } catch (err) {
-      Logger.error('usePromise -> promise failed', err);
-      status.value = PromiseStatus.REJECTED;
-    }
+    retry(() => fn(...args), { times: options?.retry ?? 0, delay: options?.delay ?? 0 })
+      .then((val) => {
+        data.value = val;
+        ready.value = true;
+      })
+      .catch((err) => {
+        error.value = err;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
 
-  return { value, status, run };
+  if (options?.immediate) {
+    run();
+  }
+
+  return { data, error, loading, ready, run };
 };
