@@ -1,3 +1,5 @@
+import { isDev } from './env.util.ts';
+
 declare global {
   interface Window {
     logger: LoggerInstance;
@@ -28,9 +30,10 @@ export const Colors: Record<LoggerColors, { color: string; bg: string; border: s
   time: { color: '#ffffff', bg: '#0097a7', border: '#00838f' },
   tracer: { color: '#ffffff', bg: '#d81b60', border: '#c2185b' },
   warn: { color: '#ffffff', bg: '#ffb300', border: '#ffa000' },
-  ns: window?.matchMedia?.('(prefers-color-scheme: dark)').matches
-    ? { color: '#000000', bg: '#fafafa', border: '#c7c7c7' }
-    : { color: '#ffffff', bg: '#424242', border: '#212121' },
+  ns:
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+      ? { color: '#000000', bg: '#fafafa', border: '#c7c7c7' }
+      : { color: '#ffffff', bg: '#424242', border: '#212121' },
 });
 
 export const loggerLevel: Record<LoggerLevel, number> = Object.freeze({
@@ -46,7 +49,7 @@ export const loggerLevel: Record<LoggerLevel, number> = Object.freeze({
 });
 
 const state: Required<LoggerOptions> = Object.seal({
-  logLevel: import.meta.env.NODE_ENV === 'production' ? 'error' : 'debug',
+  logLevel: isDev() ? 'debug' : 'error',
   namespace: '',
   remote: {
     logLevel: 'off',
