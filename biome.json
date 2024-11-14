@@ -1,30 +1,14 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
   "files": {
     "include": ["*.js", "*.cjs", "*.mjs", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.css", "*.html", "*.json"]
   },
   "formatter": {
+    "attributePosition": "auto",
     "enabled": true,
     "indentStyle": "space",
     "lineWidth": 120,
-    "attributePosition": "auto"
-  },
-  "organizeImports": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "complexity": {
-        "noForEach": "off",
-        "noExcessiveCognitiveComplexity": "warn"
-      },
-      "correctness": {
-        "noUnusedImports": "error",
-        "noNodejsModules": "error"
-      }
-    }
+    "useEditorconfig": true
   },
   "javascript": {
     "formatter": {
@@ -38,5 +22,22 @@
     "formatter": {
       "trailingCommas": "none"
     }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noForEach": "off"
+      },
+      "correctness": {
+        "noNodejsModules": "error",
+        "noUnusedImports": "error"
+      },
+      "recommended": true
+    }
+  },
+  "organizeImports": {
+    "enabled": true
   }
 }
