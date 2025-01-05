@@ -31,7 +31,6 @@
         "noForEach": "off"
       },
       "correctness": {
-        "noNodejsModules": "error",
         "noUnusedImports": "error"
       },
       "recommended": true
