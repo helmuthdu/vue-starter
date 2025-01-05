@@ -277,8 +277,8 @@ export function assert(condition: boolean, message?: string) {
  * attempt(failingFn); // logs the error and returns undefined
  *
  * @template R
- * @param {T} fn the function to be executed.
- * @param {Parameters<T>} args the arguments to be passed to the function.
+ * @param fn the function to be executed.
+ * @param args the arguments to be passed to the function.
  *
  * @returns R the result of the function execution if successful, otherwise undefined.
  */
