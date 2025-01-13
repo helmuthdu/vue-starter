@@ -2,9 +2,7 @@ import { type Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
 import { store } from '@/modules/user/stores/user.store';
 import { Logger } from '@/utils/logger.util';
-import { defineAsyncComponent } from 'vue';
 import { type Router, createRouter, createWebHistory } from 'vue-router';
-import DefaultLayout from '../layouts/default.layout.vue';
 
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +19,7 @@ export const router: Router = createRouter({
     },
     {
       path: '/:locale',
-      component: DefaultLayout,
+      component: () => import('../layouts/default.layout.vue'),
       beforeEnter: (to, _from, next) => {
         try {
           setCurrentLocale(to.params.locale as Locale);
@@ -36,18 +34,18 @@ export const router: Router = createRouter({
     {
       path: '/network-error',
       name: 'NetworkError',
-      component: defineAsyncComponent(() => import('./network-error/network-error.route.vue')),
+      component: () => import('./network-error/network-error.route.vue'),
     },
     {
       path: '/404/:resource',
       name: '404Resource',
-      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue')),
+      component: () => import('./not-found/not-found.route.vue'),
       props: true,
     },
     {
       path: '/:pathMatch(.*)*',
       name: '404',
-      component: () => defineAsyncComponent(() => import('./not-found/not-found.route.vue')),
+      component: () => import('./not-found/not-found.route.vue'),
     },
   ],
 });
