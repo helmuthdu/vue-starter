@@ -38,5 +38,12 @@
   },
   "organizeImports": {
     "enabled": true
+  },
+  "assists": {
+    "actions": {
+      "source": {
+        "sortJsxProps": "on"
+      }
+    }
   }
 }
