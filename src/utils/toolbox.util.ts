@@ -845,7 +845,16 @@ export function contains(arr: unknown[], value: unknown) {
  * @returns an object with keys as the grouped values and values as arrays of elements.
  */
 export function groupBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K) {
-  return Object.groupBy(arr, (val) => val[key] as PropertyKey);
+  // return Object.groupBy(arr, (val) => val[key] as PropertyKey);
+  return arr.reduce(
+    (acc, val: T) => {
+      const valueKey = String(val[key]);
+      acc[valueKey] ||= [];
+      acc[valueKey].push(val);
+      return acc;
+    },
+    {} as Record<string, T[]>,
+  );
 }
 
 /**
@@ -1164,9 +1173,7 @@ function isSimilar(str1: string, str2: string, chunkSize = 2) {
     return 0.0;
   }
 
-  const [pairs1, pairs2] = [str1, str2]
-    .toSorted((s1, s2) => s1.length - s2.length)
-    .map((str) => toChunks(str, chunkSize));
+  const [pairs1, pairs2] = [str1, str2].sort((s1, s2) => s1.length - s2.length).map((str) => toChunks(str, chunkSize));
 
   const chars = new Set<string>(pairs1);
   let hits = 0;
