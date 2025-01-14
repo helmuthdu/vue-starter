@@ -1,9 +1,10 @@
-import { type UserRequest, userApi } from '@/modules/user/api/user.api';
+import { type UserRequestPayload, userApi } from '@/modules/user/api/user.api';
 import { User, type UserJSON } from '@/modules/user/models/user';
-import { createStore, createUseStore } from '@/utils/store.util.ts';
-import { type MapStore, task } from 'nanostores';
-
-export const name = 'user' as const;
+import { Logger } from '@/utils/logger.util';
+import { getStorageItem, setStorageItem } from '@/utils/storage.util';
+import { clone, diff } from '@/utils/toolbox.util.ts';
+import { useStore as toRef } from '@nanostores/vue';
+import { computed, map, task } from 'nanostores';
 
 enum RequestErrorType {
   AlreadyExists = 'ALREADY_EXISTS',
@@ -13,54 +14,89 @@ enum RequestErrorType {
 
 type State = {
   data: UserJSON;
-  status?: 'error' | 'pending' | 'success';
+  status: 'pending' | 'success' | 'error';
   error?: RequestErrorType;
 };
 
-export const state: State = {
-  data: User.create(),
-  status: undefined,
-  error: undefined,
+export const name = 'user' as const;
+
+export const initialState: State = getStorageItem<State>(
+  name,
+  {
+    data: User.create(),
+    status: 'pending',
+    error: undefined,
+  } satisfies State,
+  (state) => ({
+    ...state,
+    data: User.create(state.data),
+  }),
+);
+
+const state = map<State>(initialState);
+
+state.subscribe((curr, prev) => {
+  Logger.groupCollapsed(name, 'NANOSTORE');
+  Logger.debug('PREV_STATE', clone(prev));
+  Logger.debug('CURR_STATE', clone(curr));
+  Logger.debug('STATE_DIFF', diff(prev ?? {}, curr));
+  Logger.groupEnd();
+
+  setStorageItem(name, curr);
+});
+
+const getters = {
+  isLoggedIn: computed(state, (s) => !!s.data.token),
+  isRegistered: computed(state, () =>
+    task(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(false);
+          }, 1000);
+        }),
+    ),
+  ),
 };
 
-export const actions = {
-  signUp: async (store: MapStore<State>, payload: UserRequest) => {
-    store.setKey('status', 'pending');
+const actions = {
+  signUp: async (payload: UserRequestPayload) => {
+    state.setKey('status', 'pending');
 
     try {
-      store.set({
+      state.set({
         data: User.create((await userApi.signUp(payload)).data),
         status: 'success',
         error: undefined,
       });
     } catch (err) {
-      store.set({
+      state.set({
         data: User.create(),
         status: 'error',
         error: RequestErrorType.AlreadyExists,
       });
     }
   },
-  signIn: async (store: MapStore<State>, payload: UserRequest) => {
-    store.setKey('status', 'pending');
+  signIn: async (payload: UserRequestPayload) => {
+    state.setKey('status', 'pending');
 
     try {
-      store.set({
+      state.set({
         data: User.create((await userApi.signIn(payload)).data),
         status: 'success',
         error: undefined,
       });
       // biome-ignore lint/suspicious/noExplicitAny: axios error handling
     } catch (err: any) {
-      store.set({
+      state.set({
         data: User.create(),
         status: 'error',
         error: err.status === 409 ? RequestErrorType.NotFound : RequestErrorType.Invalid,
       });
     }
   },
-  signOut: (store: MapStore<State>) => {
-    store.set({
+  signOut: () => {
+    state.set({
       data: User.create(),
       status: 'success',
       error: undefined,
@@ -68,23 +104,15 @@ export const actions = {
   },
 };
 
-export const getters = {
-  isLoggedIn: (state: State) => !!state.data.token,
-  isRegistered: () =>
-    task(
-      async () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(false);
-          }, 1000);
-        }),
-    ),
+export const store = {
+  user: state,
+  ...getters,
+  ...actions,
 };
 
-export const store = createStore(name, {
-  state,
-  actions,
-  getters,
+export const useStore = () => ({
+  user: toRef(state),
+  isLoggedIn: toRef(getters.isLoggedIn),
+  isRegistered: toRef(getters.isRegistered),
+  ...actions,
 });
-
-export const useStore = createUseStore(store);
