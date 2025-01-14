@@ -32,7 +32,7 @@ export const setStorageItem = <T>(key: string, value?: T, session = false): void
   }
 };
 
-export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
+export const getStorageItem = <T>(key: string, defaultValue?: T, parser?: (val: T) => T): T => {
   if (typeof window === 'undefined') {
     return defaultValue as T;
   }
@@ -40,13 +40,13 @@ export const getStorageItem = <T>(key: string, defaultValue?: T): T => {
   const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
 
   try {
-    return item ? JSON.parse(item) : defaultValue;
+    return item ? (parser ? parser(JSON.parse(item)) : JSON.parse(item)) : defaultValue;
   } catch {
     if (item !== undefined) {
       return item as unknown as T;
     }
 
-    Logger.error(`Storage item "${getKey(key)}" not available`);
+    Logger.warn(`Storage item "${getKey(key)}" not available`);
 
     return defaultValue as T;
   }

@@ -590,7 +590,7 @@ export function throttle<T extends (...args: unknown[]) => void>(fn: T, ms = 700
  * @returns a unique identifier.
  */
 export function uuid(): string {
-  return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+  return [Math.random() * 10 ** 17, Date.now()].map((val) => val.toString(36)).join('');
 }
 
 // OBJECTS
@@ -612,7 +612,7 @@ export function uuid(): string {
  * @returns a deep copy of the provided data.
  */
 export function clone<T>(obj: T) {
-  return structuredClone(obj);
+  return obj && structuredClone(obj);
 }
 
 /**
@@ -630,17 +630,19 @@ export function clone<T>(obj: T) {
  *
  * @returns an object containing new/diff properties from a previous object.
  */
-export const diff = <T extends Record<string, unknown>>(prev: T, curr: T) => {
+export const diff = <T extends Record<string, unknown>>(curr?: T, prev?: T) => {
   const data = {} as T;
+  const keys = Object.keys(curr ?? prev ?? {}) as (keyof T)[];
 
-  Object.keys(curr).forEach((key: keyof T) => {
-    if (isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
-      data[key] = diff(prev[key] as T, curr[key] as T) as T[keyof T];
-    } else if (!isObject(curr[key]) && !isEqual(prev[key], curr[key])) {
-      data[key] = curr[key];
+  for (const key of keys) {
+    const _curr = curr?.[key]!;
+    const _prev = prev?.[key]!;
+    if (isObject(_curr) && !isEqual(_curr, _prev)) {
+      data[key] = diff(_curr, _prev);
+    } else if (!isObject(_curr) && !isEqual(_curr, _prev)) {
+      data[key] = _curr;
     }
-  });
-
+  }
   return data;
 };
 
