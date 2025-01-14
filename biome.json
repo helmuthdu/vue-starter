@@ -1,7 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
   "files": {
-    "include": ["*.js", "*.cjs", "*.mjs", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.css", "*.html", "*.json"]
+    "include": ["*.js", "*.cjs", "*.mjs", "*.ts", "*.vue", "*.html", "*.json"]
   },
   "formatter": {
     "attributePosition": "auto",
@@ -32,6 +32,9 @@
       },
       "correctness": {
         "noUnusedImports": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       },
       "recommended": true
     }

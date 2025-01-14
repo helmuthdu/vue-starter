@@ -5,32 +5,27 @@ pre-commit:
     lint:resources:
       glob: '*.{html,json,yml}'
       run: >
-        npx biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && 
-        git update-index --again
+        npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
     lint:css:
       glob: '*.{css,scss}'
       run: >
-        npx stylelint --fix {staged_files} &&
-        npx biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && 
-        git update-index --again
+        npx stylelint {staged_files} &&
+        npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
     lint:js:
       glob: '*[!.{spec,test}].{[tj]s,[tj]sx}'
       run: >
-        npx biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && 
-        git update-index --again
-        npx vitest related {staged_files} --passWithNoTests --run
+        npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+        npx vitest related {staged_files}
     lint:vue:
       glob: '*.{vue}'
       run: >
-        npx stylelint --fix {staged_files} &&
-        npx biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && 
-        git update-index --again
-        npx vitest related {staged_files} --passWithNoTests --run
+        npx stylelint {staged_files} &&
+        npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+        npx vitest related {staged_files}
     test:unit:
       glob: '*.{spec,test}.{[tj]s,[tj]sx}'
       run: >
-        npx biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && 
-        git update-index --again
+        npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
         npx vitest {staged_files} --run
 
 pre-push:
