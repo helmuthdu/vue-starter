@@ -1,119 +1,175 @@
-import axios, {
-  type AxiosRequestConfig,
-  type AxiosRequestHeaders,
-  type AxiosResponse,
-  type CancelTokenSource,
-} from 'axios';
+import axios, { AxiosHeaders, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { Logger } from './logger.util';
 
 export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
 
-type ContextData = Record<string, string | number | undefined>;
 type ContextProps = {
+  expiresIn?: number;
+  headers?: AxiosHeaders;
+  params?: Record<string, string | number | undefined>;
+  timeout?: number;
   url?: string;
-  headers?: AxiosRequestHeaders;
-  params?: ContextData;
 };
+
+type RequestData<T> = {
+  controller: AbortController;
+  expires: ReturnType<typeof setTimeout>;
+  request: Promise<AxiosResponse<T>>;
+  status: RequestStatus;
+  timeout: ReturnType<typeof setTimeout>;
+};
+
+const REQUEST_TIMEOUT = 1000 * 7; // 7 seconds
+const CACHE_EXPIRES_IN = 1000 * 60 * 2; // 2 minutes
 
 enum TypeSymbol {
-  success = '✓',
-  error = '✕',
+  ERROR = '✕',
+  SUCCESS = '✓',
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const _activeRequests: Record<string, { request: Promise<AxiosResponse<any>>; controller: CancelTokenSource }> = {};
+enum RequestMethod {
+  DELETE = 'delete',
+  GET = 'get',
+  PATCH = 'patch',
+  POST = 'post',
+  PUT = 'put',
+}
 
-const _generateId = (options: unknown): string => {
-  return `${JSON.stringify(options)}`;
-};
+export enum RequestErrorType {
+  BAD_REQUEST = '400|BAD_REQUEST',
+  UNAUTHORIZED = '401|UNAUTHORIZED',
+  FORBIDDEN = '403|FORBIDDEN',
+  NOT_FOUND = '404|NOT_FOUND',
+  NOT_ALLOWED = '405|NOT_ALLOWED',
+  TIMEOUT = '408|TIMEOUT',
+  CONFLICT = '409|CONFLICT',
+  ABORTED = '499|ABORTED',
+}
 
-const _log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
-  const url = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+export enum RequestStatus {
+  ERROR = 'error',
+  PENDING = 'pending',
+  SUCCESS = 'success',
+}
 
-  url.shift();
+const requestData: Record<string, RequestData<unknown>> = {};
 
+const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
   const elapsed = Math.floor(Date.now() - time);
+  const logType = type.toLowerCase() as Lowercase<keyof typeof TypeSymbol>;
+  const logUrl = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
 
-  Logger[type](`HTTP::${req.method?.toUpperCase()}(…/${url.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
+  logUrl.shift();
+
+  Logger[logType](`HTTP::${req.method?.toUpperCase()}(…/${logUrl.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
 };
 
-const _makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
-  const { id = _generateId(config), headers, params, cancelable, ...cfg } = config;
+function deleteRequest(id: string) {
+  if (requestData[id]?.status === RequestStatus.PENDING) requestData[id].controller.abort('Request aborted');
 
-  if (_activeRequests[id] && cancelable) {
-    _activeRequests[id].controller.cancel();
-    delete _activeRequests[id];
+  clearTimeout(requestData[id].expires);
+  clearTimeout(requestData[id].timeout);
+  delete requestData[id];
+}
+
+const makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
+  const { id = JSON.stringify(config), headers, params, cancelable, ...cfg } = config;
+  const data = requestData[id];
+
+  if ((cancelable && data?.status === RequestStatus.PENDING) || data?.status === RequestStatus.ERROR) {
+    deleteRequest(id);
   }
 
-  if (!_activeRequests[id]) {
-    const controller = axios.CancelToken.source();
+  if (!data) {
+    const controller = new AbortController();
 
-    const request = fetcher(
+    const request = fetcher<T>(
       Object.assign({}, cfg, {
-        cancelToken: controller.token,
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
         params: context?.params ? { ...context.params, ...params } : params,
         paramsSerializer: {
           encode: (parameter: string | number | boolean) => encodeURIComponent(parameter),
         },
+        signal: controller.signal,
         url: context?.url ? `${context.url}/${config.url}` : config.url,
       }),
       id,
     );
 
-    _activeRequests[id] = { request, controller };
+    requestData[id] = {
+      controller,
+      expires: setTimeout(() => delete requestData[id], context?.expiresIn ?? CACHE_EXPIRES_IN),
+      request,
+      status: RequestStatus.PENDING,
+      timeout: setTimeout(() => {
+        if (requestData[id].status === RequestStatus.PENDING) {
+          controller.abort('Request timeout');
+        }
+      }, context?.timeout ?? REQUEST_TIMEOUT),
+    };
   }
 
-  return _activeRequests[id].request;
+  return requestData[id].request as Promise<AxiosResponse<T>>;
 };
 
-export const fetcher = async <T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> => {
+export async function fetcher<T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> {
   const time = Date.now();
 
   return axios(config)
     .then((res) => {
-      _log('success', config, res.data, time);
+      log('SUCCESS', config, res.data, time);
+
+      if (id) {
+        requestData[id].status = RequestStatus.SUCCESS;
+      }
 
       return res as AxiosResponse<T>;
     })
     .catch((error) => {
-      _log('error', config, error, time);
+      log('ERROR', config, error, time);
+
+      if (id) {
+        requestData[id].status = RequestStatus.ERROR;
+      }
+
       throw error;
     })
     .finally(() => {
-      if (id) {
-        delete _activeRequests[id];
+      if (id && config.method !== RequestMethod.GET) {
+        deleteRequest(id);
       }
     });
-};
+}
 
-export const createHttpService = (context?: ContextProps) => ({
-  get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'get', ...config }, context);
-  },
-  post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'post', ...config }, context);
-  },
-  put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'put', ...config }, context);
-  },
-  patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'patch', ...config }, context);
-  },
-  delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
-    return _makeRequest<T>({ url, method: 'delete', ...config }, context);
-  },
-  setHeaders(headers: Record<string, string | undefined>): void {
-    Object.entries(headers).forEach(([key, val]) => {
-      if (context?.headers) {
+export function createHttpService(context = {} as ContextProps) {
+  return {
+    delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+      return makeRequest<T>({ url, method: RequestMethod.DELETE, ...config }, context);
+    },
+    get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+      return makeRequest<T>({ url, method: RequestMethod.GET, ...config }, context);
+    },
+    patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+      return makeRequest<T>({ url, method: RequestMethod.PATCH, ...config }, context);
+    },
+    post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+      return makeRequest<T>({ url, method: RequestMethod.POST, ...config }, context);
+    },
+    put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+      return makeRequest<T>({ url, method: RequestMethod.PUT, ...config }, context);
+    },
+    setHeaders(payload: Record<string, string | undefined>): void {
+      context.headers ||= new AxiosHeaders();
+      const headers = Object.entries(payload);
+      for (const [key, val] of headers) {
         if (val === undefined) {
-          delete context.headers[key];
+          context.headers.delete(key);
         } else {
-          context.headers[key] = val;
+          context.headers.set(key, val);
         }
       }
-    });
-  },
-});
+    },
+  };
+}
 
-export const Http = createHttpService({});
+export const Http = createHttpService();
