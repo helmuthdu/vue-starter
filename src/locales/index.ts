@@ -42,21 +42,21 @@ export const locale = localeFrom(
 export const format = formatter(locale);
 
 export const i18n = createI18n(locale, {
-  async get(loc: string) {
+  async get(locale: string) {
     const localeStorage = getLocaleStorage();
 
-    if (localeStorage.locale === loc && localeStorage.version === APP_VERSION) {
+    if (localeStorage.locale === locale && localeStorage.version === APP_VERSION) {
       return localeStorage.messages;
     }
 
-    const messages = (await import(`./messages/${loc}.json`)).default;
+    const messages = (await import(`./messages/${locale}.json`)).default;
 
     if (!messages) {
       throw new Error('Empty translations file');
     }
 
     setStorageItem(STORAGE_KEY, {
-      locale: loc,
+      locale,
       messages,
       version: APP_VERSION,
     });

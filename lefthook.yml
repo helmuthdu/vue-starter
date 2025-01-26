@@ -26,7 +26,7 @@ pre-commit:
       glob: '*.{spec,test}.{[tj]s,[tj]sx}'
       run: >
         npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
-        npx vitest {staged_files} --run
+        npx vitest {staged_files}
 
 pre-push:
   commands:

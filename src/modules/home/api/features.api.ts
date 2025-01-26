@@ -1,4 +1,4 @@
-import type { Feature } from '@/modules/main/models/feature/feature.type';
+import type { Feature } from '@/modules/home/models/feature/feature.type';
 
 const get = (): Promise<Feature[]> => import('./features.json').then((res) => res.default);
 

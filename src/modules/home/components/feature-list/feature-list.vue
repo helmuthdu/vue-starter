@@ -29,8 +29,8 @@
 <script lang="ts">
 import { useObservable, useSubject } from '@/hooks/observer.hook';
 import { useStorage } from '@/hooks/storage.hook';
-import { featuresApi } from '@/modules/main/api/features.api';
-import type { Feature } from '@/modules/main/models/feature/feature.type';
+import { featuresApi } from '@/modules/home/api/features.api';
+import type { Feature } from '@/modules/home/models/feature/feature.type';
 import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 import { defineComponent, ref } from 'vue';
 

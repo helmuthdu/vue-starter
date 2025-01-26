@@ -1,6 +1,6 @@
 import { type Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
-import { store } from '@/modules/user/stores/user.store';
+import { stores } from '@/stores';
 import { Logger } from '@/utils/logger.util';
 import { type Router, createRouter, createWebHistory } from 'vue-router';
 
@@ -37,12 +37,6 @@ export const router: Router = createRouter({
       component: () => import('./network-error/network-error.route.vue'),
     },
     {
-      path: '/404/:resource',
-      name: '404Resource',
-      component: () => import('./not-found/not-found.route.vue'),
-      props: true,
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: '404',
       component: () => import('./not-found/not-found.route.vue'),
@@ -52,6 +46,7 @@ export const router: Router = createRouter({
 
 router.beforeEach(async (to, _from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const { user: userStore } = stores;
 
-  requiresAuth && !store.getters.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
+  requiresAuth && !userStore.getters.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
 });

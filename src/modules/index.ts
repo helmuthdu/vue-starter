@@ -1,10 +1,8 @@
-import * as mainModule from './main';
+import * as homeModule from './home';
 import * as userModule from './user';
 
-export type State = userModule.State;
-
-export const paths = { root: mainModule.paths, user: userModule.paths };
-export const routes = [...mainModule.routes, ...userModule.routes];
+export const paths = { root: homeModule.paths, user: userModule.paths };
+export const routes = [...homeModule.routes, ...userModule.routes];
 export const stores = { ...userModule.stores };
 
 export default {

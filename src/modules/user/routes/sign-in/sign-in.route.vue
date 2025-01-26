@@ -18,7 +18,11 @@ defineOptions({
 });
 
 const {
-  user: { signIn, user, isLoggedIn },
+  user: {
+    state: user,
+    actions: { signIn },
+    getters: { isLoggedIn },
+  },
 } = useStore();
 
 const email = ref('');

@@ -1,3 +1,3 @@
-import * as user from './user.store';
+import * as userStore from './user.store';
 
-export { user };
+export const stores = { [userStore.name]: userStore };

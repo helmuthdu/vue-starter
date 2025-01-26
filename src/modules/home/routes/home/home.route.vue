@@ -64,7 +64,7 @@
 <script lang="ts">
 import { useWorker } from '@/hooks/worker.hook';
 import { useI18n } from '@/locales';
-import FeatureList from '@/modules/main/components/feature-list/feature-list.vue';
+import FeatureList from '@/modules/home/components/feature-list/feature-list.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
