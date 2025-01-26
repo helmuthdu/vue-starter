@@ -1,9 +1,9 @@
-import { getStorageItem, setStorageItem } from '@/utils/storage.util.ts';
-import { useStore as toRef } from '@nanostores/vue';
-import { type MapStore, type Store, computed, map } from 'nanostores';
-import type { DeepReadonly, Ref } from 'vue';
-
-type OmitFirstArg<F> = F extends (x: never, ...args: infer P) => infer R ? (...args: P) => R : never;
+import { Logger } from '@/utils/logger.util.ts';
+import { setStorageItem } from '@/utils/storage.util.ts';
+import { clone } from '@/utils/toolbox.util.ts';
+import { useStore } from '@nanostores/vue';
+import type { MapStore, Store } from 'nanostores';
+import type { DeepReadonly, ShallowRef, UnwrapNestedRefs } from 'vue';
 
 type NanoStore<State, Actions, Getters> = {
   state: State;
@@ -11,54 +11,42 @@ type NanoStore<State, Actions, Getters> = {
   getters: Getters;
 };
 
-export * from 'nanostores';
-
 export const createStore = <
-  State extends object,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Actions extends Record<string, (store: MapStore<State>, ...payload: any) => Promise<void> | void>,
-  Getters extends Record<string, (state: State) => unknown>,
->(
-  name: string,
-  store: NanoStore<State, Actions, Getters>,
-) => {
-  const state = map<State>(getStorageItem<State>(name, store.state));
-
-  return {
-    state,
-    actions: Object.entries(store.actions).reduce<Record<string, unknown>>((acc, [key, fn]) => {
-      acc[key] = async (...payload: unknown[]) => {
-        await fn(state, ...payload);
-        setStorageItem<State>(name, state.get());
-      };
-      return acc;
-    }, {}) as { [K in keyof Actions]: OmitFirstArg<(...payload: Parameters<Actions[K]>) => Promise<void>> },
-    getters: Object.entries(store.getters).reduce<Record<string, unknown>>((acc, [key, fn]) => {
-      acc[key] = computed(state, fn);
-      return acc;
-    }, {}) as {
-      [K in keyof Getters]: ReturnType<Getters[K]>;
-    },
-  };
-};
-
-export const createUseStore = <
   State extends MapStore,
   Actions extends { [K in keyof Actions]: Actions[K] },
   Getters extends { [K in keyof Getters]: Getters[K] },
 >(
+  name: string,
   store: NanoStore<State, Actions, Getters>,
 ) => {
-  const _store = {
-    state: toRef(store.state),
-    getters: Object.entries(store.getters).reduce<Record<string, unknown>>((acc, [key, val]) => {
-      acc[key] = toRef(val as Store<State>);
-      return acc;
-    }, {}) as {
-      [K in keyof Getters]: DeepReadonly<Ref<ReturnType<Getters[K]>>>;
-    },
-    actions: store.actions,
-  };
+  store.state.subscribe((curr, prev) => {
+    Logger.groupCollapsed(name, 'NANOSTORE');
+    Logger.debug('PREV_STATE', clone(prev));
+    Logger.debug('CURR_STATE', clone(curr));
+    Logger.groupEnd();
 
-  return () => _store;
+    setStorageItem(name, curr);
+  });
+
+  return store;
 };
+
+export const createVueStore =
+  <
+    State extends MapStore,
+    Actions extends { [K in keyof Actions]: Actions[K] },
+    Getters extends { [K in keyof Getters]: Getters[K] },
+  >(
+    store: NanoStore<State, Actions, Getters>,
+  ) =>
+  () => ({
+    state: useStore(store.state),
+    getters: Object.entries(store.getters).reduce(
+      (acc, [key, val]) => {
+        acc[key as keyof Getters] = useStore(val as Store);
+        return acc;
+      },
+      {} as { [K in keyof Getters]: DeepReadonly<UnwrapNestedRefs<ShallowRef<Getters[K]>>> },
+    ),
+    actions: store.actions,
+  });
