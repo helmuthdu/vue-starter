@@ -1,29 +1,6 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 import { Logger } from './logger.util';
 
-// TYPES
-
-type OptionalPropertyNames<T> = {
-  [K in keyof T]-?: object extends { [P in K]: T[K] } ? K : never;
-}[keyof T];
-type OptionalObject<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
-type SpreadProperties<L, R, K extends keyof L & keyof R> = {
-  [P in K]: L[P] | Exclude<R[P], undefined>;
-};
-type Spread<L, R> = OptionalObject<
-  Pick<L, Exclude<keyof L, keyof R>> &
-    Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
-    Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>> &
-    SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
->;
-type Merge<A> = A extends [infer L, ...infer R] ? Spread<L, Merge<R>> : unknown;
-type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
-// biome-ignore lint/suspicious/noExplicitAny: -
-type KeyBy<T extends Record<string, any>, K extends keyof T> = Record<T[K], T>;
-type ArgType = 'Null' | 'Undefined' | 'NaN' | 'Promise' | 'Number' | 'String' | 'Object' | 'Array' | 'Function';
-
-// type GroupBy<T extends Record<string, any>, K extends keyof T> = Record<T[K], T[]>;
-
 // FUNCTIONS
 
 /**
@@ -62,6 +39,8 @@ export function typeOf(arg: unknown): ArgType {
 
   return type === 'AsyncFunction' ? 'Promise' : (type as ArgType);
 }
+
+type ArgType = 'Null' | 'Undefined' | 'NaN' | 'Promise' | 'Number' | 'String' | 'Object' | 'Array' | 'Function';
 
 /**
  * Determines if the passed value is an Array.
@@ -105,7 +84,7 @@ export function isFunction(arg: unknown) {
  *
  * @returns {boolean} - Returns true if the value is null or undefined, else false.
  */
-export function isNil(arg: unknown) {
+export function isNil(arg: unknown): arg is null | undefined {
   return arg === undefined || arg === null;
 }
 
@@ -121,7 +100,7 @@ export function isNil(arg: unknown) {
  *
  * @returns {boolean} - Returns true if the value is a Number, else false.
  */
-export function isNumber(arg: unknown) {
+export function isNumber(arg: unknown): arg is number {
   return typeOf(arg) === 'Number';
 }
 
@@ -137,8 +116,18 @@ export function isNumber(arg: unknown) {
  *
  * @returns {boolean} - Returns true if the value is an Object, else false.
  */
-export function isObject(arg: unknown) {
+export function isObject(arg: unknown): arg is Record<string, unknown> {
   return typeOf(arg) === 'Object';
+}
+
+/**
+ * Determines if a value is a plain object (not an array, function, or null).
+ *
+ * @param arg - The value to check.
+ * @returns True if the value is a plain object.
+ */
+export function isPlainObject(arg: unknown): arg is Record<string, unknown> {
+  return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
 /**
@@ -197,79 +186,116 @@ export function isEmpty(arg: unknown) {
 }
 
 /**
- * Checks if the two given arguments are equal.
+ * Deeply compares two values for equality, including objects, arrays, and primitives.
+ * Detects circular references and optimizes performance.
  *
  * @example
+ * isEqual([1, 2, 3], [1, 2, 3]); // true
+ * isEqual({ a: 1, b: 2 }, { a: 1, b: 2 }); // true
+ * isEqual({ a: { b: 2 } }, { a: { b: 2 } }); // true
+ * isEqual({ a: 1 }, { a: 2 }); // false
+ * isEqual({ a: 1 }, { b: 1 }); // false
  *
- * isEquals(null, null); // returns true
- * isEquals(undefined, undefined); // returns true
- * isEquals([], []); // returns true
- * isEquals({}, {}); // returns true
- * isEquals('abc', 'abc'); // returns true
- * isEquals(123, 123); // returns true
- * isEquals([1, 2, 3], [1, 2, 3]); // returns true
- * isEquals({ a: 1, b: 2 }, { a: 1, b: 2 }); // returns true
- *
- * isEquals(null, undefined); // returns false
- * isEquals([], {}); // returns false
- * isEquals('abc', 'def'); // returns false
- * isEquals(123, 456); // returns false
- * isEquals([1, 2, 3], [4, 5, 6]); // returns false
- * isEquals({ a: 1, b: 2 }, { c: 3, d: 4 }); // returns false
- *
- * @param {any} curr the first argument to be compared.
- * @param {any} prev the second argument to be compared.
- *
- * @returns {boolean} - Returns true if the arguments are equal, otherwise it returns false.
+ * @param a - First value to compare.
+ * @param b - Second value to compare.
+ * @param seen - Internal Set to track circular references.
+ * @returns Whether the values are deeply equal.
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: -
-export function isEqual(curr: any, prev: any): boolean {
-  if (curr === prev) return true;
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: -
+export function isEqual(a: unknown, b: unknown, seen = new WeakSet()): boolean {
+  if (a === b) return true; // Strict equality check
 
-  if (typeOf(curr) !== typeOf(prev)) return false;
+  if (typeof a !== typeof b) return false; // Different types cannot be equal
 
-  if (isArray(curr)) {
-    if (curr.toString() !== prev.toString()) return false;
+  if (a === null || b === null) return false; // One is null, but not both
 
-    return !curr.some((val: unknown, idx: number) => val !== prev[idx] && !isEqual(val, prev[idx]));
+  if (typeof a !== 'object' || typeof b !== 'object') return false; // Primitives mismatch
+
+  if (seen.has(a) || seen.has(b)) return true; // Handle circular references
+  seen.add(a);
+  seen.add(b);
+
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false; // Length mismatch
+    return a.every((item, index) => isEqual(item, b[index], seen)); // Element-wise comparison
   }
 
-  if (isObject(curr)) {
-    const keys = Object.keys(curr);
+  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime(); // Compare Dates
 
-    if (keys.length !== Object.keys(prev).length) return false;
+  if (a instanceof RegExp && b instanceof RegExp) return a.toString() === b.toString(); // Compare RegExp
 
-    return !keys.some((key) => curr[key] !== prev[key] && !isEqual(curr[key], prev[key]));
+  if (a instanceof Map && b instanceof Map) {
+    if (a.size !== b.size) return false;
+    return [...a.keys()].every((key) => b.has(key) && isEqual(a.get(key), b.get(key), seen));
   }
 
-  return false;
+  if (a instanceof Set && b instanceof Set) {
+    if (a.size !== b.size) return false;
+    return [...a].every((val) => b.has(val));
+  }
+
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  const keysA = Object.keys(a).concat(Object.getOwnPropertySymbols(a) as any);
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  const keysB = Object.keys(b).concat(Object.getOwnPropertySymbols(b) as any);
+
+  if (keysA.length !== keysB.length) return false; // Property count mismatch
+
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  return keysA.every((key) => isEqual((a as any)[key], (b as any)[key], seen)); // Deep property comparison
 }
 
 /**
- * Asserts that the condition is true. If the condition is false, it throws an error with the provided message.
+ * Asserts that the condition is true. If the condition is false, it throws an error
+ * with the provided message or logs a warning in soft mode.
  *
  * @example
  *
- * assert(Array.isArray([])); // does nothing
- * assert(typeof foo === 'string', 'This is an error message'); // throws an Error with the message 'This is an error message'
+ * assert(Array.isArray([])); // Does nothing
+ * assert(typeof foo === 'string', 'This is an error message'); // Throws an error
+ * assert(x > 0, 'x must be positive', { value: x }); // Throws with context
  *
- * @param condition the condition to assert.
- * @param [message] the error message to throw if the condition is false. Default is 'assertion failed'.
- *
- * @throws {Error} - Throws an error if the condition is false.
+ * @param condition - The condition to assert, or an array of conditions.
+ * @param message - (Optional) The error message to throw. Default is 'Assertion failed'.
+ * @param context - (Optional) Additional debugging information (e.g., variable values).
+ * @param options - (Optional) Assertion options.
+ * @param options.errorType - The error class to throw (default: `Error`).
+ * @param options.soft - If true, logs a warning instead of throwing an error.
  */
-export function assert(condition: boolean, message?: string) {
-  if (!condition) {
-    throw new Error(message ?? 'assertion failed');
+export function assert(
+  condition: boolean | boolean[],
+  message?: string,
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  context?: Record<string, any>,
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  options: { errorType?: new (...args: any[]) => Error; soft?: boolean } = {},
+): void {
+  const { errorType = Error, soft = false } = options;
+
+  // Handle multiple conditions
+  const failed = Array.isArray(condition) ? condition.some((c) => !c) : !condition;
+
+  if (!failed) return;
+
+  // Construct error message
+  const errorMessage = message ?? 'Assertion failed';
+  const errorDetails = context ? `\nContext: ${JSON.stringify(context, null, 2)}` : '';
+
+  if (soft) {
+    Logger.warn(`Warning: ${errorMessage}${errorDetails}`);
+    return;
   }
+
+  throw new errorType(`${errorMessage}${errorDetails}`);
 }
 
 /**
- * Attempts to execute a function and returns its result. If an error occurs during the execution, it logs the error and returns undefined.
+ * Attempts to execute a function and returns its result.
+ * - If `fn` succeeds, it returns the result.
+ * - If `fn` throws an error, it logs the error (unless `silent` is true) and returns `undefined` for sync functions or rejects for async functions.
  *
  * @example
- *
  * const successfulFn = () => 'success';
  * const failingFn = () => { throw new Error('failure'); };
  *
@@ -277,21 +303,34 @@ export function assert(condition: boolean, message?: string) {
  * attempt(failingFn); // logs the error and returns undefined
  *
  * @template R
- * @param fn the function to be executed.
- * @param args the arguments to be passed to the function.
+ * @param fn - The function to be executed.
+ * @param args - The arguments to be passed to the function.
+ * @param silent - (Optional) If `true`, suppresses error logging.
  *
- * @returns R the result of the function execution if successful, otherwise undefined.
+ * @returns The result of the function execution if successful, otherwise `undefined` (for sync) or rejected promise (for async).
  */
-export function attempt<T extends (...args: unknown[]) => R, R>(fn: T, ...args: Parameters<T>) {
-  // biome-ignore lint/style/noArguments: -
-  if (arguments.length === 1) return (..._args: Parameters<T>) => attempt(fn, ..._args) as ReturnType<T>;
+export function attempt<T extends (...args: unknown[]) => unknown>(
+  fn: T,
+  ...args: [...Parameters<T>, boolean?] // Last argument can be `silent` flag
+): ReturnType<T> | undefined {
+  const silent = typeof args[args.length - 1] === 'boolean' ? (args.pop() as boolean) : false;
 
   try {
-    return Promise.resolve(fn(...args)) as ReturnType<T>;
-  } catch (err) {
-    Logger.error('attempt() -> unexpected error', { cause: err });
+    const result = fn(...(args as unknown as Parameters<T>));
 
-    return Promise.reject(err);
+    // Handle both sync and async functions correctly
+    if (result instanceof Promise) {
+      return result.catch((err) => {
+        if (!silent) Logger.error('attempt() -> unexpected async error', { cause: err });
+        return Promise.reject(err);
+      }) as ReturnType<T>;
+    }
+
+    return result as ReturnType<T>;
+  } catch (err) {
+    if (!silent) Logger.error('attempt() -> unexpected error', { cause: err });
+
+    return undefined as ReturnType<T>;
   }
 }
 
@@ -316,60 +355,117 @@ export async function delay<T extends () => void>(fn: T, ms = 700) {
 }
 
 /**
- * Creates a debounced function that delays invoking the provided function until after a specified wait time has elapsed since the last time the debounced function was invoked.
+ * Creates a debounced function that delays invoking the provided function until after
+ * a specified wait time has elapsed since the last invocation.
+ *
+ * Supports `immediate` execution, `cancel()`, and `flush()`.
  *
  * @example
- *
  * const log = () => console.log('Hello, world!');
  * const debouncedLog = debounce(log, 1000);
  *
- * debouncedLog(); // logs 'Hello, world!' after 1 second, subsequent calls within the same second will reset the delay
+ * debouncedLog(); // Logs 'Hello, world!' after 1 second.
+ * debouncedLog.cancel(); // Cancels the pending execution.
  *
- * @param fn the function to debounce.
- * @param ms the number of milliseconds to delay. Default is 300.
- * @param immediate - If true, the function will be called at the start of the delay period instead of the end. Default is false.
+ * @param fn - The function to debounce.
+ * @param ms - The delay in milliseconds. Default is 300ms.
+ * @param immediate - If `true`, execute immediately on the first call.
  *
- * @returns {Function} - A new function that debounces the input function.
+ * @returns A debounced function with `.cancel()` and `.flush()` methods.
  */
-export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms = 300, immediate?: boolean) {
+
+// biome-ignore lint/suspicious/noExplicitAny: -
+export function debounce<T extends (...args: any[]) => void>(fn: T, ms = 300, immediate = false) {
   let timeout: ReturnType<typeof setTimeout> | undefined;
+  let result: ReturnType<T> | undefined;
 
-  return (...args: Parameters<T>) => {
-    if (immediate && !timeout) fn(...args);
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  function debounced(this: any, ...args: Parameters<T>) {
+    if (timeout) clearTimeout(timeout);
 
-    clearTimeout(timeout);
+    const callNow = immediate && !timeout;
+
     timeout = setTimeout(() => {
       timeout = undefined;
-
-      if (!immediate) fn(...args);
+      if (!immediate) result = fn.apply(this, args)!;
     }, ms);
+
+    if (callNow) {
+      result = fn.apply(this, args)!;
+    }
+
+    return result;
+  }
+
+  // Cancels the debounced function execution
+  debounced.cancel = () => {
+    if (timeout) clearTimeout(timeout);
+    timeout = undefined;
   };
+
+  // Executes the function immediately if there’s a pending call
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  debounced.flush = function (this: any) {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = undefined;
+      // biome-ignore lint/style/noArguments: -
+      // biome-ignore lint/suspicious/noExplicitAny: -
+      result = fn.apply(this, arguments as any)!;
+    }
+    return result;
+  };
+
+  return debounced;
 }
 
 /**
- * Creates a function that memoizes the result of the provided function. If the memoized function is called subsequently with the same arguments, it retrieves the cached result instead of invoking the function again.
+ * Creates a function that memoizes the result of the provided function.
+ * Supports expiration (TTL), limited cache size (LRU), and better argument handling.
  *
  * @example
- *
  * const add = (x, y) => x + y;
- * const memoizedAdd = memoize(add);
+ * const memoizedAdd = memoize(add, { ttl: 5000, maxSize: 10 });
  *
  * memoizedAdd(1, 2); // returns 3 and caches the result
- * memoizedAdd(1, 2); // retrieves the result from cache instead of invoking the function again
+ * memoizedAdd(1, 2); // retrieves the result from cache
  *
- * @param fn the function to memoize.
+ * @param fn - The function to memoize.
+ * @param options - Memoization options.
+ * @param options.ttl - Optional time-to-live (TTL) for cache expiration (in milliseconds).
+ * @param options.maxSize - Optional maximum cache size (LRU eviction).
  *
- * @returns {Function} - A new function that memoizes the input function.
+ * @returns A new function that memoizes the input function.
  */
-export function memoize<T extends (...args: unknown[]) => unknown>(fn: T) {
-  const cache: Record<string, ReturnType<T>> = {};
+
+// biome-ignore lint/suspicious/noExplicitAny: -
+export function memoize<T extends (...args: any[]) => any>(
+  fn: T,
+  { ttl, maxSize }: { ttl?: number; maxSize?: number } = {},
+): (...args: Parameters<T>) => ReturnType<T> {
+  const cache = new Map<string, { value: ReturnType<T>; expiresAt?: number }>();
+  const keyGenerator = (args: Parameters<T>) => JSON.stringify(args); // Custom hash function
 
   return (...args: Parameters<T>) => {
-    const key = JSON.stringify(args);
+    const key = keyGenerator(args);
+    const cached = cache.get(key);
 
-    if (!cache[key]) cache[key] = fn(...args) as ReturnType<T>;
+    // Check if the value exists and has not expired
+    if (cached && (!cached.expiresAt || cached.expiresAt > Date.now())) {
+      return cached.value;
+    }
 
-    return cache[key];
+    // Compute and store the new result
+    const result = fn(...args);
+    cache.set(key, { value: result, expiresAt: ttl ? Date.now() + ttl : undefined });
+
+    // Enforce max size (LRU eviction)
+    if (maxSize && cache.size > maxSize) {
+      const firstKey = cache.keys().next().value; // Oldest entry
+      cache.delete(firstKey!);
+    }
+
+    return result;
   };
 }
 
@@ -501,38 +597,61 @@ export function predict<T extends Promise<unknown>>(fn: T, ms = 7000) {
 }
 
 /**
- * Retries an asynchronous function a specified number of times with a delay.
+ * Retries an asynchronous function a specified number of times with delay and optional exponential backoff.
  *
  * @example
  *
- * retry(fn, { times: 3, delay: 1000 })
+ * retry(() => fetchData(), { times: 3, delay: 1000, backoff: 2, signal: abortSignal })
  *   .then(result => console.log(result))
  *   .catch(error => console.error(error));
  *
- * @param fn the asynchronous function to retry.
- * @param options the options for retrying the function.
- * @param options.times the number of times to retry the function.
- * @param options.delay the delay in milliseconds between retries.
+ * @param fn - The asynchronous function to retry.
+ * @param options - Options for retrying the function.
+ * @param options.times - The number of retry attempts (default: 3).
+ * @param options.delay - The delay in milliseconds between retries (default: 250ms).
+ * @param options.backoff - Exponential backoff factor (default: 1 → no backoff).
+ * @param options.signal - An optional `AbortSignal` to allow canceling retries.
  *
- * @returns the result of the asynchronous function.
+ * @returns The result of the asynchronous function.
  */
 export async function retry<T>(
-  fn: () => T,
-  { times = 3, delay = 250 }: { times?: number; delay?: number },
+  fn: () => Promise<T>,
+  {
+    times = 3,
+    delay = 250,
+    backoff = 1,
+    signal,
+  }: {
+    times?: number;
+    delay?: number;
+    backoff?: number;
+    signal?: AbortSignal;
+  },
 ): Promise<T> {
-  try {
-    return await fn();
-  } catch (err) {
-    if (times === 0) {
-      throw err;
+  let attempt = 0;
+  let currentDelay = delay;
+
+  while (attempt <= times) {
+    try {
+      return await fn();
+    } catch (err) {
+      attempt++;
+      if (attempt > times) throw err;
+
+      Logger.warn(`retry() -> ${err}, attempt ${attempt}/${times}, retrying in ${currentDelay}ms`);
+
+      if (signal?.aborted) {
+        Logger.warn(`retry() -> Aborted after ${attempt - 1} attempts`);
+        throw new Error('Retry aborted');
+      }
+
+      if (currentDelay > 0) await sleep(currentDelay);
+
+      currentDelay *= backoff; // Apply exponential backoff
     }
-
-    Logger.warn(`retry() -> ${err}, retrying (${times}x) again in ${delay}ms`);
-
-    if (delay > 0) await sleep(delay);
-
-    return retry(fn, { delay, times: times - 1 });
   }
+
+  throw new Error('Retry failed unexpectedly');
 }
 
 /**
@@ -581,11 +700,11 @@ export function throttle<T extends (...args: unknown[]) => void>(fn: T, ms = 700
 }
 
 /**
- * Generates a unique identifier using the window.crypto API.
+ * Generates a unique identifier.
  *
  * @example
  *
- * uuid(); // returns a unique identifier, e.g., '3e6c4e9c'
+ * uuid(); // returns a unique identifier, e.g., 'm5wo3adksbfzngro3v'
  *
  * @returns a unique identifier.
  */
@@ -625,26 +744,38 @@ export function clone<T>(obj: T) {
  *
  * diff(obj1, obj2); // returns { d: 4 }
  *
- * @param prev the previous object.
- * @param curr the current object.
- *
- * @returns an object containing new/diff properties from a previous object.
+ * @param curr - The current object.
+ * @param prev - The previous object.
+ * @param comparator - (Optional) A custom function to compare values.
+ * @returns An object containing new/modified properties.
  */
-export const diff = <T extends Record<string, unknown>>(curr?: T, prev?: T) => {
-  const data = {} as T;
-  const keys = Object.keys(curr ?? prev ?? {}) as (keyof T)[];
+export function diff<T extends Record<string, unknown>>(
+  curr?: T,
+  prev?: T,
+  comparator: (a: unknown, b: unknown) => boolean = isEqual,
+): Partial<T> {
+  if (!curr && !prev) return {} as Partial<T>;
+
+  const result: Partial<T> = {};
+  const keys = new Set([...Object.keys(curr ?? {}), ...Object.keys(prev ?? {})]);
 
   for (const key of keys) {
-    const _curr = curr?.[key]!;
-    const _prev = prev?.[key]!;
-    if (isObject(_curr) && !isEqual(_curr, _prev)) {
-      data[key] = diff(_curr, _prev);
-    } else if (!isObject(_curr) && !isEqual(_curr, _prev)) {
-      data[key] = _curr;
+    const _curr = curr?.[key];
+    const _prev = prev?.[key];
+
+    // Avoid redundant isEqual calls
+    const hasChanged = !comparator(_curr, _prev);
+
+    if (isPlainObject(_curr) && isPlainObject(_prev)) {
+      const nestedDiff = diff(_curr, _prev, comparator);
+      if (Object.keys(nestedDiff).length) (result as Record<string, unknown>)[key] = nestedDiff;
+    } else if (hasChanged) {
+      (result as Record<string, unknown>)[key] = _curr;
     }
   }
-  return data;
-};
+
+  return result;
+}
 
 /**
  * Returns an array of a given object's own enumerable string-keyed property [key, value] pairs.
@@ -661,6 +792,8 @@ export const diff = <T extends Record<string, unknown>>(curr?: T, prev?: T) => {
 export function entries<T extends Record<string, unknown>>(obj: T): Entries<T> {
   return isObject(obj) ? (Object.entries(obj) as Entries<T>) : [];
 }
+
+type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
 
 /**
  * Retrieves the value at a given path of the object. If the value is undefined, the default value is returned.
@@ -736,49 +869,127 @@ export function keys<T extends Record<string, unknown>, K extends keyof T>(obj: 
 }
 
 /**
- * Merges two or more objects to create a new object. If the input objects have a property with the same key, the property from the last object with that key is used.
+ * Merges multiple objects based on a specified merge strategy.
  *
  * @example
+ * const obj1 = { a: 1, b: { x: 10, y: "hello" }, c: [1] };
+ * const obj2 = { b: { y: 20, z: true }, c: [2] };
+ * const obj3 = { d: false, c: [3] };
  *
- * const obj1 = { a: 1, b: 2 };
- * const obj2 = { b: 3, c: 4 };
- * const obj3 = { c: 5, d: 6 };
+ * merge("deep", obj1, obj2, obj3);
+ * // Returns: { a: 1, b: { x: 10, y: 20, z: true }, c: [1, 2, 3], d: false }
  *
- * merge(obj1, obj2, obj3); // returns { a: 1, b: 3, c: 5, d: 6 }
+ * merge("shallow", obj1, obj2, obj3);
+ * // Returns: { a: 1, b: { y: 20, z: true }, c: [3], d: false }
  *
- * @param args the objects to merge.
- *
- * @returns a new object with properties from the input objects.
+ * @param strategy - The merging strategy to use (default: "deep").
+ * @param objects - The objects to merge.
+ * @returns A new merged object.
  */
-export function merge<T extends Record<string, unknown>[]>(...args: [...T]): Merge<T> {
-  const target = args.shift();
 
-  if (!target) return {} as Merge<T>;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function merge<T extends Record<string, any>[]>(strategy: MergeStrategy = 'deep', ...objects: [...T]): Merge<T> {
+  if (!objects.length) return {} as Merge<T>;
 
-  const source = args.shift();
-
-  if (!source) return target as Merge<T>;
-
-  entries(source).forEach(([key, value]) => {
-    if (isArray(value)) {
-      if (!target[key]) Object.assign(target, { [key]: [] });
-
-      (value as unknown[]).forEach((curr) => {
-        if (!(target[key] as unknown[]).some((prev: unknown) => isEqual(curr, prev))) {
-          (target[key] as unknown[]).push(curr);
-        }
-      });
-    } else if (isObject(value)) {
-      if (!target[key]) Object.assign(target, { [key]: {} });
-
-      merge(target[key] as Record<string, unknown>, value as Record<string, unknown>);
-    } else {
-      Object.assign(target, { [key]: value });
-    }
-  });
-
-  return merge(target, ...args) as unknown as Merge<T>;
+  // @ts-ignore
+  return objects.reduce((acc, obj) => deepMerge(acc, obj, strategy), {} as Merge<T>);
 }
+
+/**
+ * Deeply merges two objects based on the provided strategy.
+ *
+ * - Uses **direct property access** for performance.
+ * - **Avoids redundant deep merging** where unnecessary.
+ * - Optimized **array merging strategies**.
+ *
+ * @param target - The target object.
+ * @param source - The source object.
+ * @param strategy - The merge strategy.
+ * @returns A new merged object.
+ */
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function deepMerge<T extends Record<string, any>, U extends Record<string, any>>(
+  target: T,
+  source: U,
+  strategy: MergeStrategy,
+): DeepMerge<T, U> {
+  if (!isObject(source)) return source as DeepMerge<T, U>;
+
+  const _target = clone(target) as DeepMerge<T, U>;
+
+  for (const key in source) {
+    if (!Object.prototype.hasOwnProperty.call(source, key)) continue; // Avoid prototype pollution
+
+    const sourceValue = source[key];
+    const targetValue = target[key];
+
+    if (Array.isArray(sourceValue)) {
+      // biome-ignore lint/suspicious/noExplicitAny: -
+      _target[key] = handleArrayMerge(targetValue, sourceValue, strategy) as any;
+    } else if (isObject(sourceValue) && isObject(targetValue)) {
+      // biome-ignore lint/suspicious/noExplicitAny: -
+      _target[key] = deepMerge(targetValue, sourceValue, strategy) as any;
+    } else {
+      _target[key] = applyMergeStrategy(targetValue, sourceValue, strategy);
+    }
+  }
+
+  return _target;
+}
+
+/**
+ * Array merge based on strategy.
+ *
+ * - `"arrayConcat"` → Concatenates arrays.
+ * - `"arrayReplace"` → Replaces the existing array.
+ * - Default: **Unique merge** (Set-based optimization).
+ */
+function handleArrayMerge<T, U>(targetArray: T[], sourceArray: U[], strategy: MergeStrategy): (T | U)[] {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  if (strategy === 'arrayConcat') return targetArray.concat(sourceArray as any);
+  if (strategy === 'arrayReplace') return sourceArray;
+  return targetArray ? Array.from(new Set([...targetArray, ...sourceArray])) : sourceArray; // Unique merge
+}
+
+/**
+ * Determines the appropriate value to assign based on the merge strategy.
+ *
+ * - `"lastWins"` → Overwrites with the latest value.
+ * - Custom functions → Allows user-defined behavior.
+ */
+function applyMergeStrategy<T, U>(target: T, source: U, strategy: MergeStrategy): T | U {
+  if (typeof strategy === 'function') return strategy(target, source);
+  return strategy === 'lastWins' ? source : (source ?? target); // Default: Preserve if source is undefined
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type MergeStrategy = 'deep' | 'shallow' | 'lastWins' | 'arrayConcat' | 'arrayReplace' | ((a: any, b: any) => any);
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type Merge<T extends any[]> = T extends [infer First, ...infer Rest]
+  ? Rest extends []
+    ? First
+    : First extends Record<string, unknown>
+      ? Rest extends Record<string, unknown>[]
+        ? DeepMerge<First, Merge<Rest>>
+        : First
+      : First
+  : unknown;
+
+type DeepMerge<T, U> = {
+  [K in keyof (T & U)]: K extends keyof T
+    ? K extends keyof U
+      ? U[K] extends Record<string, unknown>
+        ? T[K] extends Record<string, unknown>
+          ? DeepMerge<T[K], U[K]> // Recursively merge nested objects
+          : U[K]
+        : U[K]
+      : T[K]
+    : K extends keyof U
+      ? U[K]
+      : never;
+};
 
 /**
  * Returns an array of values for an object's properties
@@ -851,11 +1062,11 @@ export function groupBy<T extends Record<string, unknown>, K extends keyof T>(ar
   return arr.reduce(
     (acc, val: T) => {
       const valueKey = String(val[key]);
-      acc[valueKey] ||= [];
+      (acc as Record<string, T[]>)[valueKey] ||= [];
       acc[valueKey].push(val);
       return acc;
     },
-    {} as Record<string, T[]>,
+    {} as { [Key in T[K] as string]: T[] },
   );
 }
 
@@ -872,13 +1083,15 @@ export function groupBy<T extends Record<string, unknown>, K extends keyof T>(ar
  *
  * @returns an object with keys as the generated values and values as the last element responsible for generating the key.
  */
-export function keyBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K): KeyBy<T, K> {
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function keyBy<T extends Record<string, any>, K extends keyof T>(arr: T[], key: K): Record<T[K], T> {
   return arr.reduce(
     (acc, val: T) => {
       acc[val[key]] = val;
       return acc;
     },
-    {} as KeyBy<T, K>,
+    {} as Record<T[K], T>,
   );
 }
 
@@ -930,86 +1143,102 @@ export function rate(min: number, max: number, steps = 5) {
  * Generates an array of dates between a start and end date, with a specified interval and step size.
  *
  * @example
- *
- * const start = '2022-01-01';
- * const end = '2022-01-31';
  * const options = { interval: 'D', steps: 1, latest: false };
+ * dateRange('2022-01-01', '2022-01-31', options);
+ * // Returns an array of dates for every day in January 2022
  *
- * dateRange(start, end, options); // returns an array of dates for every day in January 2022
- *
- * @param start the start date of the range. Can be a Date object or a string in a format recognized by the Date.parse() method.
- * @param end the end date of the range. Can be a Date object or a string in a format recognized by the Date.parse() method.
- * @param options the options for generating the date range.
- * @param options.interval the interval for generating the dates. Can be 'D' for days, 'W' for weeks, 'M' for months, 'MS' for start of the month, 'ME' for end of the month, 'Y' for years, 'YS' for start of the year, 'YE' for end of the year.
- * @param options.steps the step size for generating the dates. For example, if an interval is 'D' and steps is 2, dates will be generated every 2 days.
- * @param options.latest if true, the function will include the latest date even if it falls outside the specified interval.
- *
- * @returns an array of dates between the start and end date, with the specified interval and step size.
+ * @param start - The start date (Date object or ISO string).
+ * @param end - The end date (Date object or ISO string).
+ * @param options - Options for interval and steps.
+ * @returns An array of generated dates.
  */
 export function dateRange(
   start: Date | string,
   end: Date | string,
-  {
-    interval = 'D',
-    steps = 1,
-    latest = false,
-  }: {
-    interval: 'D' | 'W' | 'M' | 'MS' | 'ME' | 'Y' | 'YS' | 'YE';
-    steps: number;
-    latest: boolean;
-  },
-) {
+  { interval = 'D', steps = 1, latest = false }: DateRangeOptions,
+): Date[] {
   try {
-    const dateArray = [];
-    let currentDate = typeof start === 'string' ? new Date(start) : start;
-    let endDate = typeof end === 'string' ? new Date(end) : end;
+    if (!start || !end) throw new Error("Invalid input: 'start' and 'end' must be provided.");
 
-    switch (interval) {
-      case 'MS':
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        break;
-      case 'ME':
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
-        break;
-      case 'YS':
-        currentDate = new Date(currentDate.getFullYear(), 0, 1);
-        break;
-      case 'YE':
-        currentDate = new Date(currentDate.getFullYear(), 11, 31);
-        endDate = new Date(endDate.getFullYear(), 11, 31);
-        break;
+    const startDate = typeof start === 'string' ? new Date(start) : start;
+    const endDate = typeof end === 'string' ? new Date(end) : end;
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      throw new Error('Invalid date format. Use a valid Date object or ISO string.');
     }
 
-    const calculateInterval = {
-      D: () => currentDate.setUTCDate(currentDate.getUTCDate() + steps),
-      W: () => currentDate.setUTCDate(currentDate.getUTCDate() + 7 * steps),
-      M: () => currentDate.setUTCMonth(currentDate.getUTCMonth() + steps),
-      MS: () =>
-        // biome-ignore lint/suspicious/noAssignInExpressions: -
-        (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps, 1)),
-      ME: () =>
-        // biome-ignore lint/suspicious/noAssignInExpressions: -
-        (currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + steps + 1, 0)),
-      Y: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
-      YS: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
-      YE: () => currentDate.setUTCFullYear(currentDate.getUTCFullYear() + steps),
+    const dateArray: Date[] = [];
+    let currentDate = new Date(startDate);
+
+    // Adjust to the beginning/end of the month/year if needed
+    const adjustDate = (date: Date, type: IntervalType) => {
+      switch (type) {
+        case 'MS':
+          return new Date(date.getFullYear(), date.getMonth(), 1);
+        case 'ME':
+          return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        case 'YS':
+          return new Date(date.getFullYear(), 0, 1);
+        case 'YE':
+          return new Date(date.getFullYear(), 11, 31);
+        default:
+          return date;
+      }
+    };
+
+    currentDate = adjustDate(currentDate, interval);
+
+    // Function to increment date based on interval
+    const incrementDate = (date: Date, interval: IntervalType, steps: number) => {
+      const newDate = new Date(date);
+      switch (interval) {
+        case 'D':
+          newDate.setUTCDate(newDate.getUTCDate() + steps);
+          break;
+        case 'W':
+          newDate.setUTCDate(newDate.getUTCDate() + 7 * steps);
+          break;
+        case 'M':
+          newDate.setUTCMonth(newDate.getUTCMonth() + steps);
+          break;
+        case 'MS':
+          return adjustDate(new Date(newDate.getFullYear(), newDate.getMonth() + steps, 1), 'MS');
+        case 'ME':
+          return adjustDate(new Date(newDate.getFullYear(), newDate.getMonth() + steps, 1), 'ME');
+        case 'Y':
+          newDate.setUTCFullYear(newDate.getUTCFullYear() + steps);
+          break;
+        case 'YS':
+        case 'YE':
+          newDate.setUTCFullYear(newDate.getUTCFullYear() + steps);
+          return adjustDate(newDate, interval);
+      }
+      return newDate;
     };
 
     while (currentDate <= endDate) {
       dateArray.push(new Date(currentDate));
-      calculateInterval[interval]();
+      currentDate = incrementDate(currentDate, interval, steps);
+    }
 
-      if (currentDate >= endDate && latest) dateArray.push(new Date(currentDate));
+    if (latest && currentDate > endDate) {
+      dateArray.push(new Date(currentDate));
     }
 
     return dateArray;
   } catch (err) {
     Logger.error('dateRange() -> unexpected error', err);
-
     return [];
   }
 }
+
+type IntervalType = 'D' | 'W' | 'M' | 'MS' | 'ME' | 'Y' | 'YS' | 'YE';
+
+type DateRangeOptions = {
+  interval: IntervalType;
+  steps: number;
+  latest: boolean;
+};
 
 /**
  * Sorts an array of objects by a specific key in ascending order.
@@ -1127,74 +1356,81 @@ export function truncate(str: string, limit = 25, completeWords = false, ellipsi
 /**
  * Performs a fuzzy search on an array of objects, checking all keys and values for a match with the search string.
  *
- * @example
+ * @param arr - The array of objects to search.
+ * @param str - The string to search for.
+ * @param tone - Degree of similarity between 0 and 1.
+ * @param chunkSize - The size of chunks used for similarity comparison.
  *
- * const text = 'Hello World';
- * findBy([
- *   { name: 'Alice', age: 30, city: 'New York' },
- *   { name: 'Bob', age: 25, city: 'Los Angeles' },
- *   { name: 'Charlie', age: 35, city: 'Chicago' },
- * ], 'alic'); // returns [{ name: 'Alice', age: 30, city: 'New York' }]
- *
- * @param arr the array of objects to search.
- * @param str the string to search for.
- * @param tone degree of similarity between 0 and 1.
- *
- * @returns the filtered array of objects that match the search string.
+ * @returns The filtered array of objects that match the search string.
  */
-export function findBy<T extends Record<string, unknown>>(arr: T[], str: string, tone = 0.44): T[] {
-  return arr.filter((obj) => hasValue(obj, str.toLowerCase(), tone));
+export function findBy<T extends Record<string, unknown>>(arr: T[], str: string, tone = 0.44, chunkSize = 2): T[] {
+  if (!str) return [];
+  const lowerStr = str.toLowerCase();
+
+  return arr.filter((obj) => hasValue(obj, lowerStr, tone, chunkSize));
 }
 
-export function hasValue<T extends Record<string, unknown>>(obj: T, str: string, tone = 1): boolean {
+/**
+ * Recursively checks if an object contains a value similar to the search string.
+ *
+ * @param obj - The object to search within.
+ * @param str - The search string.
+ * @param tone - The similarity threshold.
+ * @param chunkSize - The chunk size for comparison.
+ *
+ * @returns Whether the object contains a matching value.
+ */
+function hasValue<T extends Record<string, unknown>>(obj: T, str: string, tone = 1, chunkSize = 2): boolean {
   return Object.entries(obj).some(([key, value]) => {
+    if (value === null || value === undefined) return false;
+
     if (Array.isArray(value)) {
-      return value.some((val) => {
-        if (Array.isArray(val)) {
-          return val.some((v) => hasValue(v, str, tone));
-        }
-
-        if (typeOf(val) === 'Object') {
-          return hasValue(val, str, tone);
-        }
-
-        return isSimilar(String(val), str) >= tone;
-      });
+      return value.some((val) => hasValue(val, str, tone, chunkSize));
     }
 
-    if (typeOf(value) === 'Object') {
-      return hasValue(value as Record<string, unknown>, str);
+    if (typeof value === 'object') {
+      return hasValue(value as Record<string, unknown>, str, tone, chunkSize);
     }
 
-    return [key, String(value)].some((val) => isSimilar(val, str) >= tone);
+    return isSimilar(String(value), str, chunkSize) >= tone || isSimilar(key, str, chunkSize) >= tone;
   });
 }
 
-function isSimilar(str1: string, str2: string, chunkSize = 2) {
-  if (!str1?.length || !str2?.length) {
-    return 0.0;
-  }
+/**
+ * Calculates similarity between two strings based on shared character pairs.
+ *
+ * @param str1 - First string.
+ * @param str2 - Second string.
+ * @param chunkSize - Number of characters in each chunk.
+ *
+ * @returns Similarity score between 0 and 1.
+ */
+export function isSimilar(str1: string, str2: string, chunkSize = 2): number {
+  if (!str1 || !str2) return 0.0;
 
-  const [pairs1, pairs2] = [str1, str2].sort((s1, s2) => s1.length - s2.length).map((str) => toChunks(str, chunkSize));
+  const [chunks1, chunks2] = [str1, str2].map((s) => toChunks(s, chunkSize));
 
-  const chars = new Set<string>(pairs1);
-  let hits = 0;
-  for (const char of pairs2) {
-    if (chars.delete(char)) {
-      hits++;
+  const chunkSet = new Set(chunks1);
+  let matches = 0;
+
+  for (const chunk of chunks2) {
+    if (chunkSet.delete(chunk)) {
+      matches++;
     }
   }
 
-  return Math.floor((hits / pairs2.length) * 100) / 100;
+  return Number.parseFloat((matches / chunks2.length).toFixed(2));
 }
 
-function toChunks(str: string, size: number) {
-  const s = ` ${str.toLowerCase()} `;
-  const v = new Array(s.length - size + 1);
-
-  for (let i = 0; i < v.length; i++) {
-    v[i] = s.slice(i, i + size);
-  }
-
-  return v;
+/**
+ * Splits a string into overlapping chunks of a given size.
+ *
+ * @param str - The input string.
+ * @param size - The chunk size.
+ *
+ * @returns An array of string chunks.
+ */
+function toChunks(str: string, size: number): string[] {
+  const padded = ` ${str.toLowerCase()} `;
+  return Array.from({ length: padded.length - size + 1 }, (_, i) => padded.slice(i, i + size));
 }

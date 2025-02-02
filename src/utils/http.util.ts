@@ -1,12 +1,14 @@
 import axios, { AxiosHeaders, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { Logger } from './logger.util';
 
-export type HttpRequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
+type RequestConfig = AxiosRequestConfig & { id?: string; cancelable?: boolean };
+
+type RequestParams = Record<string, string | number | undefined>;
 
 type ContextProps = {
   expiresIn?: number;
   headers?: AxiosHeaders;
-  params?: Record<string, string | number | undefined>;
+  params?: RequestParams;
   timeout?: number;
   url?: string;
 };
@@ -19,10 +21,7 @@ type RequestData<T> = {
   timeout: ReturnType<typeof setTimeout>;
 };
 
-const REQUEST_TIMEOUT = 1000 * 7; // 7 seconds
-const CACHE_EXPIRES_IN = 1000 * 60 * 2; // 2 minutes
-
-enum TypeSymbol {
+enum ResponseTypeSymbol {
   ERROR = '✕',
   SUCCESS = '✓',
 }
@@ -52,37 +51,60 @@ export enum RequestStatus {
   SUCCESS = 'success',
 }
 
-const requestData: Record<string, RequestData<unknown>> = {};
+const REQUEST_TIMEOUT = 1000 * 5; // 5 seconds
+const CACHE_EXPIRES_IN = 1000 * 60 * 2; // 2 minutes
 
-const log = (type: keyof typeof TypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) => {
-  const elapsed = Math.floor(Date.now() - time);
-  const logType = type.toLowerCase() as Lowercase<keyof typeof TypeSymbol>;
-  const logUrl = (req.url?.replace(/http(s)?:\/\//, '').split('/') as string[]) ?? [];
+const HttpCache = {
+  cache: {} as Record<string, RequestData<unknown>>,
 
-  logUrl.shift();
+  set<T>(id: string, data: RequestData<T>) {
+    HttpCache.cache[id] = data;
+  },
 
-  Logger[logType](`HTTP::${req.method?.toUpperCase()}(…/${logUrl.join('/')}) ${TypeSymbol[type]} ${elapsed}ms`, res);
+  get<T>(id: string): RequestData<T> | undefined {
+    return HttpCache.cache[id] as RequestData<T>;
+  },
+
+  delete(id: string) {
+    if (this.cache[id]?.status === RequestStatus.PENDING) {
+      HttpCache.cache[id].controller.abort('Request aborted');
+    }
+
+    clearTimeout(HttpCache.cache[id]?.expires);
+    clearTimeout(HttpCache.cache[id]?.timeout);
+    delete HttpCache.cache[id];
+  },
 };
 
-function deleteRequest(id: string) {
-  if (requestData[id]?.status === RequestStatus.PENDING) requestData[id].controller.abort('Request aborted');
+function log(type: keyof typeof ResponseTypeSymbol, req: AxiosRequestConfig, res: unknown, time = 0) {
+  const elapsed = Math.floor(Date.now() - time);
+  const logType = type.toLowerCase() as Lowercase<keyof typeof ResponseTypeSymbol>;
+  const logUrl = req.url
+    ?.replace(/http(s)?:\/\//, '')
+    .split('/')
+    .slice(1)
+    .join('/');
 
-  clearTimeout(requestData[id].expires);
-  clearTimeout(requestData[id].timeout);
-  delete requestData[id];
+  Logger[logType](`HTTP::${req.method?.toUpperCase()}(…/${logUrl}) ${ResponseTypeSymbol[type]} ${elapsed}ms`, {
+    res,
+    req,
+    url: req.url,
+  });
 }
 
-const makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
+const makeRequest = <T>(config: RequestConfig, context?: ContextProps): Promise<AxiosResponse<T>> => {
   const { id = JSON.stringify(config), headers, params, cancelable, ...cfg } = config;
-  const data = requestData[id];
+  const cachedRequest = HttpCache.get<T>(id);
 
-  if ((cancelable && data?.status === RequestStatus.PENDING) || data?.status === RequestStatus.ERROR) {
-    deleteRequest(id);
+  if (
+    (cancelable && cachedRequest?.status === RequestStatus.PENDING) ||
+    cachedRequest?.status === RequestStatus.ERROR
+  ) {
+    HttpCache.delete(id);
   }
 
-  if (!data) {
+  if (!cachedRequest) {
     const controller = new AbortController();
-
     const request = fetcher<T>(
       Object.assign({}, cfg, {
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
@@ -93,69 +115,81 @@ const makeRequest = <T>(config: HttpRequestConfig, context?: ContextProps): Prom
         signal: controller.signal,
         url: context?.url ? `${context.url}/${config.url}` : config.url,
       }),
-      id,
+      { id },
     );
 
-    requestData[id] = {
+    HttpCache.set(id, {
       controller,
-      expires: setTimeout(() => delete requestData[id], context?.expiresIn ?? CACHE_EXPIRES_IN),
+      expires: setTimeout(() => HttpCache.delete(id), context?.expiresIn ?? CACHE_EXPIRES_IN),
       request,
       status: RequestStatus.PENDING,
       timeout: setTimeout(() => {
-        if (requestData[id].status === RequestStatus.PENDING) {
+        if (HttpCache.get(id)?.status === RequestStatus.PENDING) {
           controller.abort('Request timeout');
         }
       }, context?.timeout ?? REQUEST_TIMEOUT),
-    };
+    });
   }
 
-  return requestData[id].request as Promise<AxiosResponse<T>>;
+  return HttpCache.get<T>(id)!.request;
 };
 
-export async function fetcher<T>(config: AxiosRequestConfig, id?: string): Promise<AxiosResponse<T>> {
+export function buildUrl(baseUrl: string, params?: RequestParams): string {
+  if (!params) return baseUrl;
+  const searchParams = new URLSearchParams(params as Record<string, string>);
+  return `${baseUrl}?${searchParams.toString()}`;
+}
+
+export async function fetcher<T>(
+  config: AxiosRequestConfig,
+  { id, retries = 2 }: { id?: string; retries?: number },
+): Promise<AxiosResponse<T>> {
   const time = Date.now();
 
-  return axios(config)
-    .then((res) => {
-      log('SUCCESS', config, res.data, time);
+  try {
+    const res = await axios(config);
+    log('SUCCESS', config, res.data, time);
 
-      if (id) {
-        requestData[id].status = RequestStatus.SUCCESS;
-      }
+    if (id) {
+      HttpCache.get(id)!.status = RequestStatus.SUCCESS;
+    }
 
-      return res as AxiosResponse<T>;
-    })
-    .catch((error) => {
-      log('ERROR', config, error, time);
+    return res as AxiosResponse<T>;
+  } catch (error) {
+    log('ERROR', config, error, time);
 
-      if (id) {
-        requestData[id].status = RequestStatus.ERROR;
-      }
+    if (id) {
+      HttpCache.get(id)!.status = RequestStatus.ERROR;
+    }
 
-      throw error;
-    })
-    .finally(() => {
-      if (id && config.method !== RequestMethod.GET) {
-        deleteRequest(id);
-      }
-    });
+    // Retry logic for network-related errors
+    if (retries > 0 && error instanceof TypeError) {
+      return fetcher(config, { id, retries: retries - 1 });
+    }
+
+    throw error;
+  } finally {
+    if (id && config.method !== RequestMethod.GET) {
+      HttpCache.delete(id);
+    }
+  }
 }
 
 export function createHttpService(context = {} as ContextProps) {
   return {
-    delete<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    delete<T>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
       return makeRequest<T>({ url, method: RequestMethod.DELETE, ...config }, context);
     },
-    get<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    get<T>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
       return makeRequest<T>({ url, method: RequestMethod.GET, ...config }, context);
     },
-    patch<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    patch<T>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
       return makeRequest<T>({ url, method: RequestMethod.PATCH, ...config }, context);
     },
-    post<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    post<T>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
       return makeRequest<T>({ url, method: RequestMethod.POST, ...config }, context);
     },
-    put<T>(url: string, config?: HttpRequestConfig): Promise<AxiosResponse<T>> {
+    put<T>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
       return makeRequest<T>({ url, method: RequestMethod.PUT, ...config }, context);
     },
     setHeaders(payload: Record<string, string | undefined>): void {
