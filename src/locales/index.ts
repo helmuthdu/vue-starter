@@ -19,7 +19,7 @@ const getLocaleStorage = () =>
 
 export const isLanguageSupported = (loc: Locale): boolean => Object.values(locales).includes(loc);
 
-export const currentLocale = atom<string>(getLocaleStorage().locale);
+export const settings = atom<string>(getLocaleStorage().locale);
 
 export const setCurrentLocale = (loc: Locale) => {
   if (!isLanguageSupported(loc)) {
@@ -29,39 +29,41 @@ export const setCurrentLocale = (loc: Locale) => {
   Http.setHeaders({ 'Accept-Language': loc });
   (document.querySelector('html') as HTMLElement).setAttribute('lang', loc.split('-')[0]);
 
-  if (currentLocale.get() !== loc) {
-    currentLocale.set(loc);
+  if (settings.get() !== loc) {
+    settings.set(loc);
   }
 };
 
-export const locale = localeFrom(
-  currentLocale,
-  browser({ available: Object.keys(locales), fallback: locales.english }),
-);
+export const locale = localeFrom(settings, browser({ available: Object.keys(locales), fallback: locales.english }));
 
 export const format = formatter(locale);
 
 export const i18n = createI18n(locale, {
-  async get(locale: string) {
+  async get(loc: string) {
     const localeStorage = getLocaleStorage();
 
-    if (localeStorage.locale === locale && localeStorage.version === APP_VERSION) {
+    if (localeStorage.locale === loc && localeStorage.version === APP_VERSION) {
       return localeStorage.messages;
     }
 
-    const messages = (await import(`./messages/${locale}.json`)).default;
+    try {
+      const messages = (await import(`./messages/${loc}.json`)).default;
 
-    if (!messages) {
-      throw new Error('Empty translations file');
+      if (!messages) {
+        throw new Error('Empty translations file');
+      }
+
+      setStorageItem(STORAGE_KEY, {
+        locale: loc,
+        messages,
+        version: APP_VERSION,
+      });
+
+      return messages;
+    } catch (err) {
+      console.error(err);
+      return {};
     }
-
-    setStorageItem(STORAGE_KEY, {
-      locale,
-      messages,
-      version: APP_VERSION,
-    });
-
-    return messages;
   },
 });
 

@@ -61,31 +61,25 @@
   </suspense>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useWorker } from '@/hooks/worker.hook';
 import { useI18n } from '@/locales';
 import FeatureList from '@/modules/home/components/feature-list/feature-list.vue';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
+defineOptions({
   name: 'HomeRoute',
-  components: { FeatureList },
-  setup() {
-    const resolve = (val: number): number => {
-      const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
-
-      return fib(val);
-    };
-    const { message, post } = useWorker('W1', resolve);
-
-    post(43);
-
-    const t = useI18n('home');
-
-    return {
-      message,
-      t,
-    };
+  components: {
+    FeatureList,
   },
 });
+
+const resolve = (val: number): number => {
+  const fib = (i: number): number => (i <= 1 ? i : fib(i - 1) + fib(i - 2));
+  return fib(val);
+};
+
+const { message, post } = useWorker('W1', resolve);
+post(43);
+
+const t = useI18n('home');
 </script>
