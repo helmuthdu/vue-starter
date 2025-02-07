@@ -1,4 +1,4 @@
-export type MessageJSON = {
+export type NotificationMessage = {
   message: string;
   read?: boolean;
   timeout?: number;

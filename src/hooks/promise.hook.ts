@@ -1,4 +1,4 @@
-import { retry } from '@/utils/toolbox.util.ts';
+import { retry } from '@/utils/toolbox.util';
 import { type Ref, ref } from 'vue';
 
 export const usePromise = <T>(

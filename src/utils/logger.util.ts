@@ -1,4 +1,4 @@
-import { isDev } from './env.util.ts';
+import { isDev } from './env.util';
 
 declare global {
   interface Window {

@@ -7,7 +7,7 @@ export type UserRequestPayload = Partial<UserJSON> & {
   password: string;
 };
 
-const signIn = async (payload: UserJSON): Promise<Response & { data: UserJSON }> => {
+const signIn = async (payload: UserRequestPayload): Promise<Response & { data: UserJSON }> => {
   Logger.debug('user.api::signIn()', payload);
 
   return new Promise((resolve) => {

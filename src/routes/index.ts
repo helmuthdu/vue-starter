@@ -1,6 +1,6 @@
 import { type Locale, locales, setCurrentLocale } from '@/locales';
 import { paths, routes } from '@/modules';
-import { stores } from '@/stores';
+import { userStore } from '@/modules/user/stores/user.store';
 import { Logger } from '@/utils/logger.util';
 import { type Router, createRouter, createWebHistory } from 'vue-router';
 
@@ -46,7 +46,6 @@ export const router: Router = createRouter({
 
 router.beforeEach(async (to, _from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const { user: userStore } = stores;
 
   requiresAuth && !userStore.getters.isLoggedIn ? next({ name: paths.user.signIn.path }) : next();
 });

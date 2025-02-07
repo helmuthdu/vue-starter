@@ -1,11 +1,11 @@
-import type { MessageJSON } from '@/models/notification/notification.type';
-import { createStore, createVueStore } from '@/utils/store.util.ts';
+import type { NotificationMessage } from '@/models/notification/notification.type';
+import { createStore, useStore } from '@/utils/store.util';
 import { uuid } from '@/utils/toolbox.util';
 import { map } from 'nanostores';
 
 export type State = Readonly<{
   queue: string[];
-  data: Record<string, MessageJSON>;
+  data: Record<string, NotificationMessage>;
 }>;
 
 export const name = 'notifications' as const;
@@ -20,7 +20,7 @@ export const state = map<State>(initialState);
 export const getters = {};
 
 const actions = {
-  add: (payload: MessageJSON) => {
+  add: (payload: NotificationMessage) => {
     const id = uuid();
     const currentState = state.get();
 
@@ -52,6 +52,6 @@ const actions = {
   reset: () => state.set(initialState),
 };
 
-export const store = createStore(name, { state, getters, actions });
+export const notificationStore = createStore(name, { state, getters, actions });
 
-export const useStore = createVueStore(store);
+export const useNotificationStore = useStore({ state, getters, actions });

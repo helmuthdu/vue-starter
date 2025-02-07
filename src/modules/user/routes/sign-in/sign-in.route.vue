@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '@/stores';
+import { useUserStore } from '@/modules/user/stores/user.store.ts';
 import { ref } from 'vue';
 
 defineOptions({
@@ -18,12 +18,10 @@ defineOptions({
 });
 
 const {
-  user: {
-    state: user,
-    actions: { signIn },
-    getters: { isLoggedIn },
-  },
-} = useStore();
+  state: user,
+  actions: { signIn },
+  getters: { isLoggedIn },
+} = useUserStore();
 
 const email = ref('');
 const password = ref('');

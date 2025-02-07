@@ -1,8 +1,8 @@
 import { type UserRequestPayload, userApi } from '@/modules/user/api/user.api';
 import { User, type UserJSON } from '@/modules/user/models/user';
-import { RequestErrorType, RequestStatus } from '@/utils/http.util.ts';
+import { RequestErrorType, RequestStatus } from '@/utils/http.util';
 import { getStorageItem } from '@/utils/storage.util';
-import { createStore, createVueStore } from '@/utils/store.util.ts';
+import { createStore, useStore } from '@/utils/store.util';
 import { computed, map, task } from 'nanostores';
 
 type State = {
@@ -44,7 +44,7 @@ const getters = Object.freeze({
 });
 
 const actions = Object.freeze({
-  signUp: async (payload: UserRequestPayload) => {
+  signUp: async (payload: UserJSON) => {
     state.setKey('status', RequestStatus.PENDING);
 
     try {
@@ -89,6 +89,6 @@ const actions = Object.freeze({
   },
 });
 
-export const store = createStore(name, { state, actions, getters });
+export const userStore = createStore(name, { state, actions, getters });
 
-export const useStore = createVueStore(store);
+export const useUserStore = useStore({ state, actions, getters });

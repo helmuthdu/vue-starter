@@ -1,7 +1,7 @@
-import { Logger } from '@/utils/logger.util.ts';
-import { setStorageItem } from '@/utils/storage.util.ts';
-import { clone } from '@/utils/toolbox.util.ts';
-import { useStore } from '@nanostores/vue';
+import { Logger } from '@/utils/logger.util';
+import { setStorageItem } from '@/utils/storage.util';
+import { clone } from '@/utils/toolbox.util';
+import { useStore as use } from '@nanostores/vue';
 import type { MapStore, Store } from 'nanostores';
 import type { DeepReadonly, ShallowRef, UnwrapNestedRefs } from 'vue';
 
@@ -31,7 +31,7 @@ export const createStore = <
   return store;
 };
 
-export const createVueStore =
+export const useStore =
   <
     State extends MapStore,
     Actions extends { [K in keyof Actions]: Actions[K] },
@@ -40,10 +40,10 @@ export const createVueStore =
     store: NanoStore<State, Actions, Getters>,
   ) =>
   () => ({
-    state: useStore(store.state),
+    state: use(store.state),
     getters: Object.entries(store.getters).reduce(
       (acc, [key, val]) => {
-        acc[key as keyof Getters] = useStore(val as Store);
+        acc[key as keyof Getters] = use(val as Store);
         return acc;
       },
       {} as { [K in keyof Getters]: DeepReadonly<UnwrapNestedRefs<ShallowRef<Getters[K]>>> },
