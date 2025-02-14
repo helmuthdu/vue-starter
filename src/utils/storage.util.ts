@@ -10,44 +10,41 @@ const generatePrefix = (): string => {
 const getKey = (key: string) => `${generatePrefix()}_${key}`.toLowerCase();
 
 export const removeStorageItem = (key: string): void => {
-  try {
-    localStorage.removeItem(getKey(key));
-    sessionStorage.removeItem(getKey(key));
-  } catch {
-    Logger.error(`Failed to remove item "${getKey(key)}" from storage`);
-  }
+  setStorageItem(key, undefined);
 };
 
 export const setStorageItem = <T>(key: string, value?: T, session = false): void => {
-  try {
-    const storage = session ? sessionStorage : localStorage;
+  if (typeof window === 'undefined') return;
 
+  const storageKey = getKey(key);
+
+  try {
     if (value === undefined) {
-      storage.removeItem(getKey(key));
+      [sessionStorage, localStorage].forEach((s) => s.removeItem(storageKey));
     } else {
-      storage.setItem(getKey(key), typeof value !== 'string' ? JSON.stringify(value) : value);
+      const storage = session ? sessionStorage : localStorage;
+      storage.setItem(storageKey, typeof value !== 'string' ? JSON.stringify(value) : value);
     }
-  } catch {
-    Logger.error(`Failed to save item "${getKey(key)}" into storage`);
+  } catch (error) {
+    Logger.error(`Failed to save item "${storageKey}" into storage: ${error}`);
   }
 };
 
-export const getStorageItem = <T>(key: string, defaultValue?: T, parser?: (val: T) => T): T => {
-  if (typeof window === 'undefined') {
-    return defaultValue as T;
-  }
+export const getStorageItem = <T>(
+  key: string,
+  { defaultValue, parser, session }: { defaultValue?: T; parser?: (val: T) => T; session?: boolean } = {},
+): T => {
+  if (typeof window === 'undefined') return defaultValue as T;
 
-  const item = sessionStorage.getItem(getKey(key)) ?? localStorage.getItem(getKey(key));
+  const storage = session ? sessionStorage : localStorage;
+  const storageKey = getKey(key);
+  const item = storage.getItem(storageKey);
 
   try {
     return item ? (parser ? parser(JSON.parse(item)) : JSON.parse(item)) : defaultValue;
-  } catch {
-    if (item !== undefined) {
-      return item as unknown as T;
-    }
+  } catch (error) {
+    Logger.warn(`Storage item "${storageKey}" could not be parsed: ${error}`);
 
-    Logger.warn(`Storage item "${getKey(key)}" not available`);
-
-    return defaultValue as T;
+    return (item as unknown as T) ?? (defaultValue as T);
   }
 };

@@ -1,5 +1,5 @@
 import type { NotificationMessage } from '@/models/notification/notification.type';
-import { createStore, useStore } from '@/utils/store.util';
+import { createStore, createUseStore } from '@/utils/store.util';
 import { uuid } from '@/utils/toolbox.util';
 import { map } from 'nanostores';
 
@@ -54,4 +54,4 @@ const actions = {
 
 export const notificationStore = createStore(name, { state, getters, actions });
 
-export const useNotificationStore = useStore({ state, getters, actions });
+export const useNotificationStore = createUseStore({ state, getters, actions });

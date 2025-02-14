@@ -18,7 +18,6 @@ type RequestData<T> = {
   expires: ReturnType<typeof setTimeout>;
   request: Promise<AxiosResponse<T>>;
   status: RequestStatus;
-  timeout: ReturnType<typeof setTimeout>;
 };
 
 enum ResponseTypeSymbol {
@@ -58,21 +57,20 @@ const HttpCache = {
   cache: {} as Record<string, RequestData<unknown>>,
 
   set<T>(id: string, data: RequestData<T>) {
-    HttpCache.cache[id] = data;
+    this.cache[id] = data;
   },
 
   get<T>(id: string): RequestData<T> | undefined {
-    return HttpCache.cache[id] as RequestData<T>;
+    return this.cache[id] as RequestData<T>;
   },
 
   delete(id: string) {
     if (this.cache[id]?.status === RequestStatus.PENDING) {
-      HttpCache.cache[id].controller.abort('Request aborted');
+      this.cache[id].controller.abort('Request aborted');
     }
 
-    clearTimeout(HttpCache.cache[id]?.expires);
-    clearTimeout(HttpCache.cache[id]?.timeout);
-    delete HttpCache.cache[id];
+    clearTimeout(this.cache[id]?.expires);
+    delete this.cache[id];
   },
 };
 
@@ -105,6 +103,7 @@ const makeRequest = <T>(config: RequestConfig, context?: ContextProps): Promise<
 
   if (!cachedRequest) {
     const controller = new AbortController();
+    const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(context?.timeout ?? REQUEST_TIMEOUT)]);
     const request = fetcher<T>(
       Object.assign({}, cfg, {
         headers: context?.headers ? { ...context.headers, ...headers } : headers,
@@ -112,7 +111,7 @@ const makeRequest = <T>(config: RequestConfig, context?: ContextProps): Promise<
         paramsSerializer: {
           encode: (parameter: string | number | boolean) => encodeURIComponent(parameter),
         },
-        signal: controller.signal,
+        signal,
         url: context?.url ? `${context.url}/${config.url}` : config.url,
       }),
       { id },
@@ -123,11 +122,6 @@ const makeRequest = <T>(config: RequestConfig, context?: ContextProps): Promise<
       expires: setTimeout(() => HttpCache.delete(id), context?.expiresIn ?? CACHE_EXPIRES_IN),
       request,
       status: RequestStatus.PENDING,
-      timeout: setTimeout(() => {
-        if (HttpCache.get(id)?.status === RequestStatus.PENDING) {
-          controller.abort('Request timeout');
-        }
-      }, context?.timeout ?? REQUEST_TIMEOUT),
     });
   }
 

@@ -2,7 +2,7 @@ import { type UserRequestPayload, userApi } from '@/modules/user/api/user.api';
 import { User, type UserJSON } from '@/modules/user/models/user';
 import { RequestErrorType, RequestStatus } from '@/utils/http.util';
 import { getStorageItem } from '@/utils/storage.util';
-import { createStore, useStore } from '@/utils/store.util';
+import { createStore, createUseStore } from '@/utils/store.util';
 import { computed, map, task } from 'nanostores';
 
 type State = {
@@ -13,18 +13,17 @@ type State = {
 
 export const name = 'user' as const;
 
-export const initialState: State = getStorageItem<State>(
-  name,
-  {
+const initialState: State = getStorageItem<State>(name, {
+  defaultValue: {
     data: User.create(),
     status: RequestStatus.PENDING,
     error: undefined,
   } satisfies State,
-  (state) => ({
+  parser: (state) => ({
     ...state,
     data: User.create(state.data),
   }),
-);
+});
 
 const state = map<State>(initialState);
 
@@ -91,4 +90,4 @@ const actions = Object.freeze({
 
 export const userStore = createStore(name, { state, actions, getters });
 
-export const useUserStore = useStore({ state, actions, getters });
+export const useUserStore = createUseStore({ state, actions, getters });

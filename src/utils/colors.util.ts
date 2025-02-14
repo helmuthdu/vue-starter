@@ -1,82 +1,71 @@
-export function convertHexToRGB(h: string) {
-  if (!/^#([0-9A-F]{3}){1,2}$/i.test(h)) {
+const isHex = (hex: string) => /^#([0-9A-F]{3}){1,2}$/i.test(hex);
+const isRGB = (color: string) => /^rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/i.test(color);
+const isHSL = (color: string) => /^hsl\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/i.test(color);
+const toHex = (value: number | string) => (+value).toString(16).padStart(2, '0');
+
+export function convertHexToRGB(hex: string) {
+  if (!isHex(hex)) {
     throw new Error('Invalid hex color');
   }
 
-  let r = 0;
-  let g = 0;
-  let b = 0;
+  const fullHex =
+    hex.length === 4
+      ? [...hex]
+          .slice(1)
+          .map((c) => c + c)
+          .join('')
+      : hex.slice(1);
 
-  if (h.length === 4) {
-    r = Number.parseInt(`${h[1]}${h[1]}`, 16);
-    g = Number.parseInt(`${h[2]}${h[2]}`, 16);
-    b = Number.parseInt(`${h[3]}${h[3]}`, 16);
-  } else {
-    r = Number.parseInt(`${h[1]}${h[2]}`, 16);
-    g = Number.parseInt(`${h[3]}${h[4]}`, 16);
-    b = Number.parseInt(`${h[5]}${h[6]}`, 16);
-  }
+  const [r, g, b] = fullHex.match(/.{2}/g)!.map((c) => Number.parseInt(c, 16));
 
   return {
-    b,
-    g,
     r,
+    g,
+    b,
     toString: () => `rgb(${r}, ${g}, ${b})`,
   };
 }
 
 export function convertHexToHSL(hex: string) {
-  const color = convertHexToRGB(hex);
+  if (!isHex(hex)) {
+    throw new Error('Invalid hex color');
+  }
 
-  return convertRGBToHSL(color.r, color.g, color.b);
+  const { r, g, b } = convertHexToRGB(hex);
+
+  return convertRGBToHSL(r, g, b);
 }
 
-const toHex = (value: number | string) => {
-  const hex = (+value).toString(16);
-
-  return hex.length === 1 ? `0${hex}` : hex;
-};
-
 export function convertRGBToHex(red: number | string, green: number | string, blue: number | string) {
-  return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
+  return `#${[red, green, blue].map(toHex).join('')}`;
 }
 
 export function convertRGBToHSL(red: number, green: number, blue: number) {
-  // ensure RGB values are within range [0, 255]
-  const clamp = (value: number) => Math.min(255, Math.max(0, value));
-  const r = clamp(red) / 255;
-  const g = clamp(green) / 255;
-  const b = clamp(blue) / 255;
+  const clamp = (value: number) => Math.min(255, Math.max(0, value)) / 255;
+  const [r, g, b] = [red, green, blue].map(clamp);
 
-  // compute min, max, and delta
-  const cmin = Math.min(r, g, b);
   const cmax = Math.max(r, g, b);
+  const cmin = Math.min(r, g, b);
   const delta = cmax - cmin;
 
-  // compute Lightness (L)
-  const l = ((cmax + cmin) / 2) * 100;
-
-  // compute Hue (H)
   let h = 0;
-  if (delta !== 0) {
+  if (delta) {
     if (cmax === r) h = ((g - b) / delta) % 6;
     else if (cmax === g) h = (b - r) / delta + 2;
     else h = (r - g) / delta + 4;
 
     h = Math.round(h * 60);
-    if (h < 0) h += 360; // normalize negative hues
+    if (h < 0) h += 360;
   }
 
-  // compute Saturation (S)
-  const s = delta === 0 ? 0 : (delta / (1 - Math.abs(2 * (l / 100) - 1))) * 100;
+  const l = ((cmax + cmin) / 2) * 100;
+  const s = delta ? (delta / (1 - Math.abs(2 * (l / 100) - 1))) * 100 : 0;
 
   return {
     h: +h.toFixed(1),
     s: +s.toFixed(1),
     l: +l.toFixed(1),
-    toString() {
-      return `hsl(${this.h}, ${this.s}%, ${this.l}%)`;
-    },
+    toString: () => `hsl(${h}, ${s}%, ${l}%)`,
   };
 }
 
@@ -89,26 +78,22 @@ export function convertHSLToRGB(hue: number, saturation: number, lightness: numb
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;
 
-  const lookup = [
+  const [r, g, b] = [
     [c, x, 0], // 0° ≤ h < 60°
     [x, c, 0], // 60° ≤ h < 120°
     [0, c, x], // 120° ≤ h < 180°
     [0, x, c], // 180° ≤ h < 240°
     [x, 0, c], // 240° ≤ h < 300°
     [c, 0, x], // 300° ≤ h < 360°
-  ];
-
-  const [r, g, b] = lookup[Math.floor(h / 60) % 6];
+  ][Math.floor(h / 60)] || [0, 0, 0];
 
   const to255 = (value: number) => Math.round((value + m) * 255);
 
   return {
-    b: to255(b),
-    g: to255(g),
     r: to255(r),
-    toString() {
-      return `rgb(${this.r}, ${this.g}, ${this.b})`;
-    },
+    g: to255(g),
+    b: to255(b),
+    toString: () => `rgb(${to255(r)}, ${to255(g)}, ${to255(b)})`,
   };
 }
 
@@ -121,17 +106,21 @@ export class ColorConverter {
     this.setColor(color);
   }
 
-  private setColor(color: string): void {
-    if (this.isHex(color)) {
+  private extractNumbers(color: string): number[] {
+    return (color.match(/\d+/g) || []).map(Number);
+  }
+
+  setColor(color: string): void {
+    if (isHex(color)) {
+      this.hex = color;
       this.rgb = convertHexToRGB(color);
       this.hsl = convertRGBToHSL(this.rgb.r, this.rgb.g, this.rgb.b);
-      this.hex = color;
-    } else if (this.isRGB(color)) {
+    } else if (isRGB(color)) {
       const [r, g, b] = this.extractNumbers(color);
       this.rgb = { r, g, b };
       this.hsl = convertRGBToHSL(r, g, b);
       this.hex = convertRGBToHex(r, g, b);
-    } else if (this.isHSL(color)) {
+    } else if (isHSL(color)) {
       const [h, s, l] = this.extractNumbers(color);
       this.hsl = { h, s, l };
       this.rgb = convertHSLToRGB(h, s, l);
@@ -141,32 +130,16 @@ export class ColorConverter {
     }
   }
 
-  private isHex(color: string): boolean {
-    return /^#([0-9A-F]{3}){1,2}$/i.test(color);
-  }
-
-  private isRGB(color: string): boolean {
-    return /^rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/i.test(color);
-  }
-
-  private isHSL(color: string): boolean {
-    return /^hsl\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/i.test(color);
-  }
-
-  private extractNumbers(color: string): number[] {
-    return (color.match(/\d+/g) || []).map(Number);
-  }
-
   getFormat(type: 'hex' | 'rgb' | 'hsl'): string {
-    switch (type) {
-      case 'hex':
-        return this.hex;
-      case 'rgb':
-        return `rgb(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b})`;
-      case 'hsl':
-        return `hsl(${this.hsl.h}, ${this.hsl.s}%, ${this.hsl.l}%)`;
-      default:
-        throw new Error("Invalid format type. Use 'hex', 'rgb', or 'hsl'.");
-    }
+    return (
+      {
+        hex: this.hex,
+        rgb: `rgb(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b})`,
+        hsl: `hsl(${this.hsl.h}, ${this.hsl.s}%, ${this.hsl.l}%)`,
+      }[type] ??
+      (() => {
+        throw new Error('Invalid format type.');
+      })()
+    );
   }
 }

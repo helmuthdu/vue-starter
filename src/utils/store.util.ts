@@ -31,7 +31,7 @@ export const createStore = <
   return store;
 };
 
-export const useStore =
+export const createUseStore =
   <
     State extends MapStore,
     Actions extends { [K in keyof Actions]: Actions[K] },
@@ -41,7 +41,7 @@ export const useStore =
   ) =>
   () => ({
     state: use(store.state),
-    getters: Object.entries(store.getters).reduce(
+    getters: Object.entries(store.getters ?? {}).reduce(
       (acc, [key, val]) => {
         acc[key as keyof Getters] = use(val as Store);
         return acc;

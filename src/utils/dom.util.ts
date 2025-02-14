@@ -1,108 +1,118 @@
-const observers = new WeakMap();
+const observers = new WeakMap<Element, IntersectionObserver>();
+
 const intersectionCallback =
   (element: Element, callback: () => void) =>
   (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-    entries.forEach((entry) => {
+    for (const entry of entries) {
       if (entry.isIntersecting) {
         callback();
         observer.unobserve(element);
       }
-    });
+    }
   };
 
+/**
+ * Waits until an element intersects with the viewport.
+ * Uses a single IntersectionObserver per element to avoid duplicates.
+ */
 export function waitUntilElementIntersects(
   element: Element,
   callback: () => void,
-  options = {
-    root: null,
-    threshold: 0,
-  },
+  options: IntersectionObserverInit = { root: null, threshold: 0 },
 ): IntersectionObserver {
-  let observer: IntersectionObserver;
+  if (observers.has(element)) return observers.get(element)!;
 
-  if (observers.has(element)) {
-    observer = observers.get(element);
-  } else {
-    observer = new IntersectionObserver(intersectionCallback(element, callback), options);
-    observer.observe(element);
-    observers.set(element, observer);
-  }
+  const observer = new IntersectionObserver(intersectionCallback(element, callback), options);
+  observer.observe(element);
+  observers.set(element, observer);
 
   return observer;
 }
 
-type WaitUntilElementAppearsConfig = { wait: number; attempts: number; root?: HTMLElement | Document };
+type WaitUntilElementAppearsConfig = {
+  wait?: number;
+  attempts?: number;
+  root?: HTMLElement | Document;
+};
+
+/**
+ * Waits for an element to appear in the DOM, polling at intervals.
+ */
 export function waitUntilElementAppears(
   selectors: string | string[],
-  { wait = 250, attempts = 10, root = document }: WaitUntilElementAppearsConfig = {} as WaitUntilElementAppearsConfig,
+  { wait = 250, attempts = 10, root = document }: WaitUntilElementAppearsConfig = {},
 ): Promise<Element | undefined> {
   let count = 0;
 
   return new Promise((resolve) => {
     const interval = setInterval(() => {
-      const element = (
-        Array.isArray(selectors)
-          ? selectors.map((s) => root.querySelector(s)).find(Boolean)
-          : root.querySelector(selectors)
-      ) as HTMLElement;
+      const element = Array.isArray(selectors)
+        ? selectors.map((s) => root.querySelector(s)).find(Boolean)
+        : root.querySelector(selectors);
 
       if (element || count >= attempts) {
-        resolve(element);
         clearInterval(interval);
+        resolve(element || undefined);
       }
-
       count++;
     }, wait);
   });
 }
 
-export function getHostElement(target: HTMLElement) {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  let node: any = target;
+/**
+ * Gets the root host element for a given target inside a shadow DOM, if applicable.
+ */
+export function getHostElement(target: HTMLElement): HTMLElement | null {
+  let node: Node | null = target;
 
-  while (node.parentNode) node = node.parentNode;
+  while (node) {
+    if (node instanceof ShadowRoot) return node.host as HTMLElement;
+    node = node.parentNode;
+  }
 
-  return (node as ShadowRoot).host;
+  return null;
 }
 
-export const importJS = (url: string, attributes?: Record<string, string>): Promise<boolean> => {
+/**
+ * Dynamically imports a JavaScript file, ensuring it is loaded only once.
+ */
+export function importJS(url: string, attributes: Record<string, string> = {}): Promise<boolean> {
   if (!url) return Promise.reject(new Error('importJS() -> Missing URL Parameter'));
 
-  const scriptElement = document.querySelector(`script[src="${url}"]`);
-
-  if (scriptElement !== null) return Promise.resolve(true);
+  if (document.querySelector(`script[src="${url}"]`)) return Promise.resolve(true);
 
   return new Promise((resolve, reject) => {
-    const element = document.createElement('script');
+    const script = document.createElement('script');
+    Object.assign(script, {
+      async: true,
+      src: url,
+      onload: () => resolve(true),
+      onerror: () => reject(new Error(`Failed to load script: ${url}`)),
+    });
 
-    element.onload = () => resolve(true);
-    element.onerror = () => reject(new Error('Failed to load injected script element'));
-
-    element.setAttribute('async', '');
-    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
-    element.setAttribute('src', url);
-
-    document.head.append(element);
+    Object.entries(attributes).forEach(([key, value]) => script.setAttribute(key, value));
+    document.head.append(script);
   });
-};
+}
 
-export const importCSS = (url: string, attributes?: Record<string, string>): Promise<boolean> => {
+/**
+ * Dynamically imports a CSS file, ensuring it is loaded only once.
+ */
+export function importCSS(url: string, attributes: Record<string, string> = {}): Promise<boolean> {
   if (!url) return Promise.reject(new Error('importCSS() -> Missing URL Parameter'));
 
-  const styleElement = document.querySelector(`link[href="${url}"]`);
-
-  if (styleElement !== null) return Promise.resolve(true);
+  if (document.querySelector(`link[href="${url}"]`)) return Promise.resolve(true);
 
   return new Promise((resolve, reject) => {
-    const element = document.createElement('link');
+    const link = document.createElement('link');
+    Object.assign(link, {
+      rel: 'stylesheet',
+      href: url,
+      onload: () => resolve(true),
+      onerror: () => reject(new Error(`Failed to load CSS: ${url}`)),
+    });
 
-    element.onload = () => resolve(true);
-    element.onerror = () => reject(new Error('Failed to load injected style element'));
-
-    element.setAttribute('rel', 'stylesheet');
-    for (const attr in attributes) element.setAttribute(attr, attributes[attr]);
-    element.setAttribute('href', url);
-
-    document.head.insertBefore(element, document.head.firstChild);
+    Object.entries(attributes).forEach(([key, value]) => link.setAttribute(key, value));
+    document.head.prepend(link);
   });
-};
+}

@@ -1,4 +1,4 @@
-import { isDev } from './env.util';
+import { isProd } from './env.util';
 
 declare global {
   interface Window {
@@ -49,7 +49,7 @@ export const loggerLevel: Record<LoggerLevel, number> = Object.freeze({
 });
 
 const state: Required<LoggerOptions> = Object.seal({
-  logLevel: isDev() ? 'debug' : 'error',
+  logLevel: isProd() ? 'error' : 'debug',
   namespace: '',
   remote: {
     logLevel: 'off',
@@ -57,6 +57,16 @@ const state: Required<LoggerOptions> = Object.seal({
   },
   timestamp: true,
 });
+
+const sendRemoteLog = (type: LoggerType, args: unknown[]) => {
+  if (state.remote.handler && loggerLevel[state.remote.logLevel] <= loggerLevel[type]) {
+    state.remote.handler(type, ...args);
+  }
+};
+
+const shouldLog = (type: LoggerType): boolean => {
+  return loggerLevel[state.logLevel] <= loggerLevel[type];
+};
 
 const getTimestamp = (): string => new Date().toISOString().split('T')[1].substring(0, 12);
 
@@ -83,9 +93,9 @@ const printTimestamp = (stdout: string[]) => {
 };
 
 const print = (type: LoggerType, ...args: unknown[]) => {
-  const { logLevel, namespace, remote, timestamp } = state;
+  const { namespace, timestamp } = state;
 
-  if (loggerLevel[logLevel] > loggerLevel[type]) return;
+  if (!shouldLog(type)) return;
 
   const stdout: string[] = [];
 
@@ -108,11 +118,7 @@ const print = (type: LoggerType, ...args: unknown[]) => {
   const _type = (['debug', 'success'].includes(type) ? 'log' : type.toLowerCase()) as keyof Console;
   (console[_type] as (...args: unknown[]) => void)(...stdout);
 
-  if (remote.handler) {
-    if (loggerLevel[remote.logLevel] > loggerLevel[type]) return;
-
-    remote.handler(type, ...args);
-  }
+  sendRemoteLog(type, args);
 };
 
 export const Logger = {
@@ -144,7 +150,7 @@ export const Logger = {
     state.timestamp = enabled;
   },
   table(...args: unknown[]): void {
-    if (loggerLevel[state.logLevel] > loggerLevel.table) return;
+    if (!shouldLog('table')) return;
 
     console.table(...args);
   },
@@ -170,21 +176,19 @@ export const Logger = {
     print('time', ...args);
   },
   timeEnd(): void {
-    if (loggerLevel[state.logLevel] > loggerLevel.time) return;
+    if (!shouldLog('time')) return;
 
     console.timeEnd();
   },
   groupCollapsed(text: string, label = 'GROUP', time: number = Date.now()): void {
-    const { logLevel, namespace, timestamp } = state;
+    const { namespace, timestamp } = state;
 
-    if (loggerLevel[logLevel] > loggerLevel.success) return;
+    if (!shouldLog('success')) return;
 
     const elapsed = Math.floor(Date.now() - time);
 
     console.groupCollapsed(
-      `%c${label}%c${namespace ? `${namespace}` : ''}%c${timestamp ? `${getTimestamp()}` : ''}%c${text} %c${
-        elapsed ? `${elapsed}ms` : ''
-      } `,
+      `%c${label}%c${namespace ? `${namespace}` : ''}%c${timestamp ? `${getTimestamp()}` : ''}%c${text} %c${elapsed ? `${elapsed}ms` : ''} `,
       `background: ${Colors.group.bg}; color: ${Colors.group.color}; border: 1px solid ${Colors.group.border}; border-radius: 4px; padding: 0 3px; margin-right: 6px; font-weight: bold;`,
       `background: ${Colors.ns.bg}; color: ${Colors.ns.color}; border-radius: 8px; padding: 0 3px; margin-right: 6px; margin-top: 2px; font: italic small-caps bold 12px; font-weight: lighter;`,
       'color: gray; font-weight: lighter; margin-right: 6px;',
@@ -193,7 +197,7 @@ export const Logger = {
     );
   },
   groupEnd(): void {
-    if (loggerLevel[state.logLevel] > loggerLevel.success) return;
+    if (!shouldLog('success')) return;
 
     console.groupEnd();
   },

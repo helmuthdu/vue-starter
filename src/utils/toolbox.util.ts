@@ -1,6 +1,12 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 import { Logger } from './logger.util';
 
+// biome-ignore lint/suspicious/noExplicitAny: -
+type Fn = (...args: any[]) => any;
+
+// biome-ignore lint/suspicious/noExplicitAny: -
+type Data = Record<string, any>;
+
 // FUNCTIONS
 
 /**
@@ -18,11 +24,9 @@ import { Logger } from './logger.util';
  * typeOf([]); // returns 'Array'
  * typeOf(() => {}); // returns 'Function'
  *
- * @param {any} arg the argument whose type is to be determined.
+ * @param arg - The argument whose type is to be determined.
  *
- * @returns {string} the type of the argument. If the argument is a null, it returns 'Null'.
- * If the argument is undefined, it returns 'Undefined'. If the argument is NaN, it returns 'NaN'.
- * If the argument is an async function, it returns 'Promise'. Otherwise, it returns the actual type of the argument.
+ * @returns The type of the argument.
  */
 export function typeOf(arg: unknown): ArgType {
   if (arg === null) {
@@ -50,9 +54,9 @@ type ArgType = 'Null' | 'Undefined' | 'NaN' | 'Promise' | 'Number' | 'String' | 
  * const arr = [1, 2, 3];
  * isArray(arr) // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is an Array, else false.
+ * @returns `true` if the value is an Array, else `false`.
  */
 export const isArray = Array.isArray;
 
@@ -64,9 +68,9 @@ export const isArray = Array.isArray;
  * const func = function() {};
  * isFunction(func) // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is a Function, else false.
+ * @returns `true` if the value is a Function, else `false`.
  */
 export function isFunction(arg: unknown) {
   return typeOf(arg) === 'Function';
@@ -80,9 +84,9 @@ export function isFunction(arg: unknown) {
  * const value = null;
  * isNil(value); // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is null or undefined, else false.
+ * @returns `true` if the value is null or undefined, else `false`.
  */
 export function isNil(arg: unknown): arg is null | undefined {
   return arg === undefined || arg === null;
@@ -96,9 +100,9 @@ export function isNil(arg: unknown): arg is null | undefined {
  * const value = 123;
  * isNumber(value); // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is a Number, else false.
+ * @returns `true` if the value is a Number, else `false`.
  */
 export function isNumber(arg: unknown): arg is number {
   return typeOf(arg) === 'Number';
@@ -112,11 +116,11 @@ export function isNumber(arg: unknown): arg is number {
  * const value = { key: 'value' };
  * isObject(value); // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is an Object, else false.
+ * @returns `true` if the value is an Object, else `false`.
  */
-export function isObject(arg: unknown): arg is Record<string, unknown> {
+export function isObject(arg: unknown): arg is Data {
   return typeOf(arg) === 'Object';
 }
 
@@ -124,9 +128,9 @@ export function isObject(arg: unknown): arg is Record<string, unknown> {
  * Determines if a value is a plain object (not an array, function, or null).
  *
  * @param arg - The value to check.
- * @returns True if the value is a plain object.
+ * @returns `true` if the value is a plain object.
  */
-export function isPlainObject(arg: unknown): arg is Record<string, unknown> {
+export function isPlainObject(arg: unknown): arg is Data {
   return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
@@ -138,9 +142,9 @@ export function isPlainObject(arg: unknown): arg is Record<string, unknown> {
  * const value = new Promise((resolve, reject) => {});
  * isPromise(value); // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is a Promise, else false.
+ * @returns `true` if the value is a Promise, else `false`.
  */
 export function isPromise(arg: unknown) {
   return ['Async', 'Promise'].includes(typeOf(arg));
@@ -154,9 +158,9 @@ export function isPromise(arg: unknown) {
  * const value = 'Hello World';
  * isString(value); // returns true
  *
- * @param {any} arg the value to be checked.
+ * @param arg - The value to be checked.
  *
- * @returns {boolean} - Returns true if the value is a String, else false.
+ * @returns `true` if the value is a String, else `false`.
  */
 export function isString(arg: unknown) {
   return typeOf(arg) === 'String';
@@ -177,9 +181,9 @@ export function isString(arg: unknown) {
  * isEmpty([1, 2, 3]); // returns false
  * isEmpty({ a: 1, b: 2 }); // returns false
  *
- * @param {any} arg the argument to be checked.
+ * @param { -any} arg the argument to be checked.
  *
- * @returns {boolean} - Returns true if the argument is null, undefined, an empty array, or an empty object. Otherwise, it returns false.
+ * @returns `true` if the argument is `null`, `undefined`, `{}`, or an `[]`. Otherwise, it returns `false`.
  */
 export function isEmpty(arg: unknown) {
   return isNil(arg) || ((isArray(arg) || isObject(arg)) && !Object.entries(arg || {}).length);
@@ -257,21 +261,18 @@ export function isEqual(a: unknown, b: unknown, seen = new WeakSet()): boolean {
  * assert(x > 0, 'x must be positive', { value: x }); // Throws with context
  *
  * @param condition - The condition to assert, or an array of conditions.
- * @param message - (Optional) The error message to throw. Default is 'Assertion failed'.
- * @param context - (Optional) Additional debugging information (e.g., variable values).
- * @param options - (Optional) Assertion options.
- * @param options.errorType - The error class to throw (default: `Error`).
- * @param options.soft - If true, logs a warning instead of throwing an error.
+ * @param [message] - (Optional) The error message to throw. Default is 'Assertion failed'.
+ * @param options - Assertion options.
+ * @param [options.context] - (Optional) Additional debugging information (e.g., variable values).
+ * @param [options.errorType] - (Optional) The error class to throw (default: `Error`).
+ * @param [options.soft] - (Optional) If `true`, logs a warning instead of throwing an error.
  */
 export function assert(
   condition: boolean | boolean[],
   message?: string,
-  // biome-ignore lint/suspicious/noExplicitAny: -
-  context?: Record<string, any>,
-  // biome-ignore lint/suspicious/noExplicitAny: -
-  options: { errorType?: new (...args: any[]) => Error; soft?: boolean } = {},
+  options: { context?: Data; errorType?: ErrorConstructor; soft?: boolean } = {},
 ): void {
-  const { errorType = Error, soft = false } = options;
+  const { context, errorType = Error, soft = false } = options;
 
   // Handle multiple conditions
   const failed = Array.isArray(condition) ? condition.some((c) => !c) : !condition;
@@ -305,11 +306,10 @@ export function assert(
  * @template R
  * @param fn - The function to be executed.
  * @param args - The arguments to be passed to the function.
- * @param silent - (Optional) If `true`, suppresses error logging.
  *
  * @returns The result of the function execution if successful, otherwise `undefined` (for sync) or rejected promise (for async).
  */
-export function attempt<T extends (...args: unknown[]) => unknown>(
+export function attempt<T extends Fn>(
   fn: T,
   ...args: [...Parameters<T>, boolean?] // Last argument can be `silent` flag
 ): ReturnType<T> | undefined {
@@ -343,10 +343,10 @@ export function attempt<T extends (...args: unknown[]) => unknown>(
  *
  * delay(log, 1000); // logs 'Hello, world!' after 1 second
  *
- * @param fn the function to be delayed.
- * @param ms the amount of time to delay the function execution, in milliseconds. Default is 700.
+ * @param fn - The function to be delayed.
+ * @param ms - The amount of time to delay the function execution, in milliseconds. Default is 700.
  *
- * @returns {Promise} - A Promise that resolves with the result of the function execution.
+ * @returns A Promise that resolves with the result of the function execution.
  */
 export async function delay<T extends () => void>(fn: T, ms = 700) {
   await sleep(ms);
@@ -358,7 +358,10 @@ export async function delay<T extends () => void>(fn: T, ms = 700) {
  * Creates a debounced function that delays invoking the provided function until after
  * a specified wait time has elapsed since the last invocation.
  *
- * Supports `immediate` execution, `cancel()`, and `flush()`.
+ * Supports:
+ * - Immediate execution (`immediate`)
+ * - Cancelling (`.cancel()`)
+ * - Forcing execution (`.flush()`)
  *
  * @example
  * const log = () => console.log('Hello, world!');
@@ -368,50 +371,57 @@ export async function delay<T extends () => void>(fn: T, ms = 700) {
  * debouncedLog.cancel(); // Cancels the pending execution.
  *
  * @param fn - The function to debounce.
- * @param ms - The delay in milliseconds. Default is 300ms.
- * @param immediate - If `true`, execute immediately on the first call.
+ * @param [delay=300] - The delay in milliseconds.
+ * @param [immediate=false] - If `true`, execute immediately on the first call.
  *
  * @returns A debounced function with `.cancel()` and `.flush()` methods.
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: -
-export function debounce<T extends (...args: any[]) => void>(fn: T, ms = 300, immediate = false) {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
+export function debounce<T extends Fn>(
+  fn: T,
+  delay = 300,
+  immediate = false,
+): {
+  (...args: Parameters<T>): ReturnType<T> | undefined;
+  cancel: () => void;
+  flush: () => ReturnType<T> | undefined;
+} {
+  let timeoutFn: ReturnType<typeof setTimeout> | undefined;
   let result: ReturnType<T> | undefined;
+  let canceled = false;
 
-  // biome-ignore lint/suspicious/noExplicitAny: -
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   function debounced(this: any, ...args: Parameters<T>) {
-    if (timeout) clearTimeout(timeout);
+    if (timeoutFn) clearTimeout(timeoutFn);
 
-    const callNow = immediate && !timeout;
+    const callNow = immediate && !timeoutFn;
 
-    timeout = setTimeout(() => {
-      timeout = undefined;
-      if (!immediate) result = fn.apply(this, args)!;
-    }, ms);
+    timeoutFn = setTimeout(() => {
+      timeoutFn = undefined;
+      if (!canceled && !immediate) {
+        result = fn.apply(this, args);
+      }
+    }, delay);
 
     if (callNow) {
-      result = fn.apply(this, args)!;
+      result = fn.apply(this, args);
     }
 
     return result;
   }
 
-  // Cancels the debounced function execution
+  // cancels any scheduled execution
   debounced.cancel = () => {
-    if (timeout) clearTimeout(timeout);
-    timeout = undefined;
+    if (timeoutFn) clearTimeout(timeoutFn);
+    timeoutFn = undefined;
+    canceled = true;
   };
 
-  // Executes the function immediately if there’s a pending call
-  // biome-ignore lint/suspicious/noExplicitAny: -
-  debounced.flush = function (this: any) {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = undefined;
-      // biome-ignore lint/style/noArguments: -
-      // biome-ignore lint/suspicious/noExplicitAny: -
-      result = fn.apply(this, arguments as any)!;
+  // immediately invokes the debounced function if it's pending.
+  debounced.flush = () => {
+    if (timeoutFn) {
+      clearTimeout(timeoutFn);
+      timeoutFn = undefined;
+      result = fn();
     }
     return result;
   };
@@ -432,14 +442,12 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms = 300, im
  *
  * @param fn - The function to memoize.
  * @param options - Memoization options.
- * @param options.ttl - Optional time-to-live (TTL) for cache expiration (in milliseconds).
- * @param options.maxSize - Optional maximum cache size (LRU eviction).
+ * @param [options.ttl] - Optional time-to-live (TTL) for cache expiration (in milliseconds).
+ * @param [options.maxSize] - Optional maximum cache size (LRU eviction).
  *
  * @returns A new function that memoizes the input function.
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: -
-export function memoize<T extends (...args: any[]) => any>(
+export function memoize<T extends Fn>(
   fn: T,
   { ttl, maxSize }: { ttl?: number; maxSize?: number } = {},
 ): (...args: Parameters<T>) => ReturnType<T> {
@@ -481,20 +489,25 @@ export function memoize<T extends (...args: any[]) => any>(
  *
  * proxyObj.a = 3; // logs 'Property 'a' changed from 1 to 3'
  *
- * @param obj the object to observe.
- * @param fn the function to be invoked when a property of the object is set. It receives the property key, the new value, the previous, and the target object value as arguments.
+ * @param obj - The object to observe.
+ * @param setFn - The function to be invoked when a property of the object is set.
+ * @param getFn - The function to be invoked when a property of the object is accessed.
  *
- * @returns a new Proxy for the given object.
+ * @returns A new Proxy for the given object.
  */
-export function proxy<T extends Record<string, unknown>, K extends keyof T>(
+export function proxy<T extends Data, K extends keyof T>(
   obj: T,
-  fn: (prop: K, curr: T[K], prev: T[K], target: T) => void,
+  setFn?: (prop: K, curr: T[K], prev: T[K], target: T) => T[K],
+  getFn?: (prop: K, val: T[K], target: T) => T[K],
 ) {
   return new Proxy(obj, {
     set(target, prop, val, receiver) {
-      fn(prop as K, val, target[prop as K], target);
+      const value = setFn?.(prop as K, val, target[prop as K], target) ?? val;
 
-      return Reflect.set(target, prop, val, receiver);
+      return Reflect.set(target, prop, value, receiver);
+    },
+    get(target, prop, receiver) {
+      return getFn?.(prop as K, target[prop as K], target) ?? Reflect.get(target, prop, receiver);
     },
   });
 }
@@ -510,10 +523,10 @@ export function proxy<T extends Record<string, unknown>, K extends keyof T>(
  * parseJSON(json, defaultValue); // returns { a: 1, b: 2, c: 3 }
  * parseJSON('invalid', defaultValue); // logs the error and returns { a: 0, b: 0, c: 0 }
  *
- * @param json the JSON string to parse. If not a string, it is returned as is.
- * @param defaultValue the value to return if parsing fails. Default is undefined.
+ * @param json - The JSON string to parse. If not a string, it is returned as is.
+ * @param defaultValue - The value to return if parsing fails. Default is undefined.
  *
- * @returns the parsed object if successful, otherwise the default value.
+ * @returns The parsed object if successful, otherwise the default value.
  */
 export function parseJSON<T>(json?: string, defaultValue?: T): T | undefined {
   try {
@@ -538,16 +551,23 @@ export function parseJSON<T>(json?: string, defaultValue?: T): T | undefined {
  *
  * const composedFn = compose(subtract, multiply, add);
  *
- * composedFn(5); // returns ((5 + 2) * 3) - 4 = 15
+ * composedFn(5); // returns ((5 + 2) * 3) - 4 = 17
  *
- * @param fn the first function to be composed.
- * @param fns the rest of the functions to be composed.
+ * @param fns - List of the functions to be composed.
  *
- * @returns a new function that is the composition of the input functions.
+ * @returns A new function that is the composition of the input functions.
  */
-export function compose<T>(fn: (args: T) => T, ...fns: Array<(args: T) => T>) {
-  return fns.reduce((prevFn, nextFn) => (value) => prevFn(nextFn(value)), fn);
+export function compose<T extends Fn[]>(...fns: T) {
+  if (fns.length === 0) {
+    throw new Error('compose requires at least one function');
+  }
+
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  return (arg: any): FirstReturnType<T> => fns.reduceRight((prevVal, fn) => fn(prevVal), arg);
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: -
+type FirstReturnType<F> = F extends [infer First extends Fn, ...any] ? ReturnType<First> : never;
 
 /**
  * Pipes multiple functions into a single function. It starts from the leftmost function and proceeds to the right.
@@ -558,26 +578,28 @@ export function compose<T>(fn: (args: T) => T, ...fns: Array<(args: T) => T>) {
  * const multiply = (x) => x * 3;
  * const subtract = (x) => x - 4;
  *
- * const pipedFn = pipe(add, multiply, subtract);
+ * const pipedFn = pipe(subtract, multiply, add);
  *
- * pipedFn(5); // returns ((5 * 3) + 2) - 4 = 13
+ * pipedFn(5); // returns ((5 - 4) * 3) + 2 = 5
  *
- * @param fn the first function to be piped.
- * @param fns the rest of the functions to be piped.
+ * @param fns - List of functions to be piped.
  *
- * @returns a new function that is the pipe of the input functions.
+ * @returns A new function that is the pipe of the input functions.
  */
-export function pipe<T extends unknown[], U>(fn: (...args: T) => U, ...fns: Array<(args: U) => U>) {
-  const piped = fns.reduce(
-    (prevFn, nextFn) => (value: U) => nextFn(prevFn(value)),
-    (value) => value,
-  );
+export function pipe<T extends Fn[]>(...fns: T) {
+  if (fns.length === 0) {
+    throw new Error('pipe requires at least one function');
+  }
 
-  return (...args: T) => piped(fn(...args));
+  // biome-ignore lint/suspicious/noExplicitAny: -
+  return (arg: any): LastReturnType<T> => fns.reduce((prevVal, fn) => fn(prevVal), arg);
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: -
+type LastReturnType<L> = L extends [...any, infer Last extends Fn] ? ReturnType<Last> : never;
+
 /**
- * Creates a race between the provided function and a timeout. If the function does not complete within the specified time, the Promise is rejected.
+ * Creates a Promise that can be aborted using an AbortController.
  *
  * @example
  *
@@ -587,13 +609,31 @@ export function pipe<T extends unknown[], U>(fn: (...args: T) => U, ...fns: Arra
  * predict(slowFn, 7000); // rejects after 7 seconds
  * predict(fastFn, 7000); // resolves with 'fast' after 5 seconds
  *
- * @param fn the function to execute.
- * @param ms the number of milliseconds to wait before rejecting the Promise. Default is 7000.
+ * @param fn - The function to execute, which receives an AbortSignal.
+ * @param options - The options for the abortable function.
+ * @param [options.controller] - The AbortController to use for aborting the Promise.
+ * @param [options.timeout=7000] - The timeout in milliseconds after which the Promise will be aborted.
  *
- * @returns a Promise that resolves with the result of the function execution if it completes within the specified time, otherwise it is rejected.
+ * @returns - A Promise that resolves with the result of the callback or rejects if aborted.
  */
-export function predict<T extends Promise<unknown>>(fn: T, ms = 7000) {
-  return Promise.race([fn, new Promise((_, reject) => setTimeout(reject, ms))]);
+export function predict<T>(
+  fn: (signal: AbortSignal) => Promise<T>,
+  options: { signal?: AbortSignal; timeout?: number } = {},
+): Promise<T> {
+  const abortSignalTimeout = AbortSignal.timeout(options.timeout ?? 7000);
+  const signal = options.signal ? AbortSignal.any([abortSignalTimeout, options.signal]) : abortSignalTimeout;
+
+  return new Promise<T>((resolve, reject) => {
+    if (signal.aborted) {
+      return reject(new DOMException('Operation aborted', 'AbortError'));
+    }
+
+    signal.addEventListener('abort', () => {
+      reject(new DOMException('Operation aborted', 'AbortError'));
+    });
+
+    fn(signal).then(resolve).catch(reject);
+  });
 }
 
 /**
@@ -607,10 +647,10 @@ export function predict<T extends Promise<unknown>>(fn: T, ms = 7000) {
  *
  * @param fn - The asynchronous function to retry.
  * @param options - Options for retrying the function.
- * @param options.times - The number of retry attempts (default: 3).
- * @param options.delay - The delay in milliseconds between retries (default: 250ms).
- * @param options.backoff - Exponential backoff factor (default: 1 → no backoff).
- * @param options.signal - An optional `AbortSignal` to allow canceling retries.
+ * @param [options.times=3] - (Optional) The number of retry attempts.
+ * @param [options.delay=250] - (Optional) The delay in milliseconds between retries.
+ * @param [options.backoff=1] - (Optional) Exponential backoff factor (default: 1 → no backoff).
+ * @param [options.signal] - (Optional) An optional `AbortSignal` to allow canceling retries.
  *
  * @returns The result of the asynchronous function.
  */
@@ -661,9 +701,9 @@ export async function retry<T>(
  *
  * sleep(1000).then(() => console.log('Hello, world!')); // logs 'Hello, world!' after 1 second
  *
- * @param ms the number of milliseconds to wait before resolving the Promise.
+ * @param ms - The number of milliseconds to wait before resolving the Promise.
  *
- * @returns a Promise that resolves after the specified time.
+ * @returns A Promise that resolves after the specified time.
  */
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -681,20 +721,20 @@ export async function sleep(ms: number): Promise<void> {
  * throttledLog(); // does nothing because less than 1 second has passed since the last invocation
  * setTimeout(throttledLog, 1000); // logs 'Hello, world!' after 1 second
  *
- * @param fn the function to throttle.
- * @param ms the number of milliseconds to wait before invoking the function again. Default is 700.
+ * @param fn - The function to throttle.
+ * @param [ms=700] - (Optional) The number of milliseconds to wait before invoking the function again.
  *
- * @returns a new function that throttles the input function.
+ * @returns A new function that throttles the input function.
  */
-export function throttle<T extends (...args: unknown[]) => void>(fn: T, ms = 700) {
+export function throttle<T extends Fn>(fn: T, ms = 700) {
   let elapsed = 0;
 
   return (...args: Parameters<T>) => {
     const now = Date.now();
 
     if (now - elapsed >= ms) {
-      fn(...args);
       elapsed = now;
+      return fn(...args);
     }
   };
 }
@@ -706,7 +746,7 @@ export function throttle<T extends (...args: unknown[]) => void>(fn: T, ms = 700
  *
  * uuid(); // returns a unique identifier, e.g., 'm5wo3adksbfzngro3v'
  *
- * @returns a unique identifier.
+ * @returns A unique identifier.
  */
 export function uuid(): string {
   return [Math.random() * 10 ** 17, Date.now()].map((val) => val.toString(36)).join('');
@@ -726,9 +766,9 @@ export function uuid(): string {
  * console.log(obj.b.c); // logs 2
  * console.log(dup.b.c); // logs 3
  *
- * @param obj the data to clone.
+ * @param obj - The data to clone.
  *
- * @returns a deep copy of the provided data.
+ * @returns A deep copy of the provided data.
  */
 export function clone<T>(obj: T) {
   return obj && structuredClone(obj);
@@ -746,10 +786,10 @@ export function clone<T>(obj: T) {
  *
  * @param curr - The current object.
  * @param prev - The previous object.
- * @param comparator - (Optional) A custom function to compare values.
+ * @param [comparator] - (Optional) A custom function to compare values.
  * @returns An object containing new/modified properties.
  */
-export function diff<T extends Record<string, unknown>>(
+export function diff<T extends Data>(
   curr?: T,
   prev?: T,
   comparator: (a: unknown, b: unknown) => boolean = isEqual,
@@ -768,9 +808,9 @@ export function diff<T extends Record<string, unknown>>(
 
     if (isPlainObject(_curr) && isPlainObject(_prev)) {
       const nestedDiff = diff(_curr, _prev, comparator);
-      if (Object.keys(nestedDiff).length) (result as Record<string, unknown>)[key] = nestedDiff;
+      if (Object.keys(nestedDiff).length) (result as Data)[key] = nestedDiff;
     } else if (hasChanged) {
-      (result as Record<string, unknown>)[key] = _curr;
+      (result as Data)[key] = _curr;
     }
   }
 
@@ -785,11 +825,11 @@ export function diff<T extends Record<string, unknown>>(
  * const obj = { a: 1, b: 2, c: 3 };
  * entries(obj); // logs [['a', 1], ['b', 2], ['c', 3]]
  *
- * @param obj the object whose properties are to be returned.
+ * @param obj - The object whose properties are to be returned.
  *
  * @returns an array of the object's own enumerable string-keyed property [key, value] pairs.
  */
-export function entries<T extends Record<string, unknown>>(obj: T): Entries<T> {
+export function entries<T extends Data>(obj: T): Entries<T> {
   return isObject(obj) ? (Object.entries(obj) as Entries<T>) : [];
 }
 
@@ -805,17 +845,13 @@ type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
  * get(obj, 'a.b.c'); // returns 3
  * get(obj, 'a.b.d', 'default'); // returns 'default'
  *
- * @param obj the object to query.
- * @param path the path of the property to get.
- * @param defaultValue the value returned for undefined resolved values. Default is undefined.
+ * @param obj - The object to query.
+ * @param path - The path of the property to get.
+ * @param [defaultValue] - The value returned for undefined resolved values.
  *
- * @returns the resolved value.
+ * @returns The resolved value.
  */
-export function get<T extends Record<string, unknown>, K extends string>(
-  obj: T,
-  path: K | string,
-  defaultValue?: unknown,
-) {
+export function get<T extends Data, K extends string>(obj: T, path: K | string, defaultValue?: unknown) {
   const fragments = path.split(/[,[\].]+?/);
   let value: unknown;
 
@@ -841,12 +877,12 @@ export function get<T extends Record<string, unknown>, K extends string>(
  * has(obj, 'a'); // returns true
  * has(obj, 'd'); // returns false
  *
- * @param obj the object to query.
- * @param prop the property to check.
+ * @param obj - The object to query.
+ * @param prop - The property to check.
  *
  * @returns true if the object has the property, false otherwise.
  */
-export function has<T extends Record<string, unknown>, K extends keyof T>(obj: T, prop: K) {
+export function has<T extends Data, K extends keyof T>(obj: T, prop: K) {
   // biome-ignore lint/suspicious/noPrototypeBuiltins: -
   return obj?.hasOwnProperty(prop);
 }
@@ -860,12 +896,28 @@ export function has<T extends Record<string, unknown>, K extends keyof T>(obj: T
  *
  * keys(obj); // returns ['a', 'b', 'c']
  *
- * @param obj the object to query.
+ * @param obj - The object to query.
  *
  * @returns true if the object has the property, false otherwise.
  */
-export function keys<T extends Record<string, unknown>, K extends keyof T>(obj: T) {
+export function keys<T extends Data, K extends keyof T>(obj: T) {
   return isObject(obj) ? (Object.keys(obj) as K[]) : [];
+}
+
+/**
+ * Returns an array of values for an object's properties
+ *
+ * @example
+ *
+ * const obj = { a: 1, b: 2, c: 3 };
+ * values(obj); // returns [1, 2, 3]
+ *
+ * @param obj - The object whose property values are to be returned.
+ *
+ * @returns an array of the object's own enumerable string-keyed property values.
+ */
+export function values<T extends Data, K extends keyof T>(obj: T) {
+  return isObject(obj) ? (Object.values(obj) as T[K][]) : [];
 }
 
 /**
@@ -882,13 +934,11 @@ export function keys<T extends Record<string, unknown>, K extends keyof T>(obj: 
  * merge("shallow", obj1, obj2, obj3);
  * // Returns: { a: 1, b: { y: 20, z: true }, c: [3], d: false }
  *
- * @param strategy - The merging strategy to use (default: "deep").
+ * @param [strategy='deep'] - The merging strategy to use.
  * @param objects - The objects to merge.
  * @returns A new merged object.
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function merge<T extends Record<string, any>[]>(strategy: MergeStrategy = 'deep', ...objects: [...T]): Merge<T> {
+export function merge<T extends Data[]>(strategy: MergeStrategy = 'deep', ...objects: [...T]): Merge<T> {
   if (!objects.length) return {} as Merge<T>;
 
   // @ts-ignore
@@ -907,13 +957,7 @@ export function merge<T extends Record<string, any>[]>(strategy: MergeStrategy =
  * @param strategy - The merge strategy.
  * @returns A new merged object.
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function deepMerge<T extends Record<string, any>, U extends Record<string, any>>(
-  target: T,
-  source: U,
-  strategy: MergeStrategy,
-): DeepMerge<T, U> {
+function deepMerge<T extends Data, U extends Data>(target: T, source: U, strategy: MergeStrategy): DeepMerge<T, U> {
   if (!isObject(source)) return source as DeepMerge<T, U>;
 
   const _target = clone(target) as DeepMerge<T, U>;
@@ -939,7 +983,7 @@ function deepMerge<T extends Record<string, any>, U extends Record<string, any>>
 }
 
 /**
- * Array merge based on strategy.
+ * Optimized array merge based on strategy.
  *
  * - `"arrayConcat"` → Concatenates arrays.
  * - `"arrayReplace"` → Replaces the existing array.
@@ -970,8 +1014,8 @@ type MergeStrategy = 'deep' | 'shallow' | 'lastWins' | 'arrayConcat' | 'arrayRep
 type Merge<T extends any[]> = T extends [infer First, ...infer Rest]
   ? Rest extends []
     ? First
-    : First extends Record<string, unknown>
-      ? Rest extends Record<string, unknown>[]
+    : First extends Data
+      ? Rest extends Data[]
         ? DeepMerge<First, Merge<Rest>>
         : First
       : First
@@ -980,8 +1024,8 @@ type Merge<T extends any[]> = T extends [infer First, ...infer Rest]
 type DeepMerge<T, U> = {
   [K in keyof (T & U)]: K extends keyof T
     ? K extends keyof U
-      ? U[K] extends Record<string, unknown>
-        ? T[K] extends Record<string, unknown>
+      ? U[K] extends Data
+        ? T[K] extends Data
           ? DeepMerge<T[K], U[K]> // Recursively merge nested objects
           : U[K]
         : U[K]
@@ -990,22 +1034,6 @@ type DeepMerge<T, U> = {
       ? U[K]
       : never;
 };
-
-/**
- * Returns an array of values for an object's properties
- *
- * @example
- *
- * const obj = { a: 1, b: 2, c: 3 };
- * values(obj); // returns [1, 2, 3]
- *
- * @param obj the object whose property values are to be returned.
- *
- * @returns an array of the object's own enumerable string-keyed property values.
- */
-export function values<T extends Record<string, unknown>, K extends keyof T>(obj: T) {
-  return isObject(obj) ? (Object.values(obj) as T[K][]) : [];
-}
 
 // ARRAYS
 
@@ -1017,9 +1045,9 @@ export function values<T extends Record<string, unknown>, K extends keyof T>(obj
  * const arr = [1, [2, [3, [4, [5]]]]];
  * flatten(arr) // returns [1, 2, 3, 4, 5];
  *
- * @param arr the array to flatten.
+ * @param arr - The array to flatten.
  *
- * @returns a single-level array.
+ * @returns A single-level array.
  */
 export function flatten<T>(arr: T | T[]) {
   return isArray(arr) ? arr.flat(Number.POSITIVE_INFINITY) : arr;
@@ -1035,10 +1063,10 @@ export function flatten<T>(arr: T | T[]) {
  *
  * contains(arr, value) // returns true;
  *
- * @param arr the array to check.
- * @param value the value to search for.
+ * @param arr - The array to check.
+ * @param value - The value to search for.
  *
- * @returns returns true if the value is present in the array, else false.
+ * @returns true if the value is present in the array, else false.
  */
 export function contains(arr: unknown[], value: unknown) {
   return arr.some((item) => isEqual(item, value));
@@ -1052,12 +1080,12 @@ export function contains(arr: unknown[], value: unknown) {
  * const data = [{ a: 2 }, { a: 1 }];
  * groupBy(data, 'a') // returns { '1': [{ a: 2 }], '2': [{ a: 1 }] };
  *
- * @param arr the array to group.
- * @param key the key to group the elements by.
+ * @param arr - The array to group.
+ * @param key - The key to group the elements by.
  *
  * @returns an object with keys as the grouped values and values as arrays of elements.
  */
-export function groupBy<T extends Record<string, unknown>, K extends keyof T>(arr: T[], key: K) {
+export function groupBy<T extends Data, K extends keyof T>(arr: T[], key: K) {
   // return Object.groupBy(arr, (val) => val[key] as PropertyKey);
   return arr.reduce(
     (acc, val: T) => {
@@ -1078,14 +1106,12 @@ export function groupBy<T extends Record<string, unknown>, K extends keyof T>(ar
  * const data = [{ a: 1 }, { a: 2 }, { a: 1 }];
  * keyBy(data, 'a') // returns { '1': { a: 1 }, '2': { a: 2 } };
  *
- * @param arr the array to key.
- * @param key the key to generate the object.
+ * @param arr - The array to key.
+ * @param key - The key to generate the object.
  *
  * @returns an object with keys as the generated values and values as the last element responsible for generating the key.
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function keyBy<T extends Record<string, any>, K extends keyof T>(arr: T[], key: K): Record<T[K], T> {
+export function keyBy<T extends Data, K extends keyof T>(arr: T[], key: K): Record<T[K], T> {
   return arr.reduce(
     (acc, val: T) => {
       acc[val[key]] = val;
@@ -1106,11 +1132,11 @@ export function keyBy<T extends Record<string, any>, K extends keyof T>(arr: T[]
  *
  * range(start, stop, step) // returns [0, 2, 4, 6, 8];
  *
- * @param start the start of the range.
- * @param stop the end of the range.
- * @param step the value to increment or decrement by.
+ * @param start - The start of the range.
+ * @param stop - The end of the range.
+ * @param step - The value to increment or decrement by.
  *
- * @returns {number[]} - Returns the range of numbers.
+ * @returns The range of numbers.
  */
 export function range(start: number, stop: number, step: number) {
   return Array.from({ length: Math.floor((stop - start) / step) + 1 }, (_, i) => start + i * step);
@@ -1127,11 +1153,11 @@ export function range(start: number, stop: number, step: number) {
  *
  * rate(min, max, steps) // returns [0, 2.5, 5, 7.5, 10];
  *
- * @param min the start of the range.
- * @param max the end of the range.
- * @param steps the number of steps between min and max.
+ * @param min - The start of the range.
+ * @param max - The end of the range.
+ * @param [steps=5] - The number of steps between min and max.
  *
- * @returns returns the range of numbers.
+ * @returns The range of numbers.
  */
 export function rate(min: number, max: number, steps = 5) {
   const difference = max - min;
@@ -1150,6 +1176,10 @@ export function rate(min: number, max: number, steps = 5) {
  * @param start - The start date (Date object or ISO string).
  * @param end - The end date (Date object or ISO string).
  * @param options - Options for interval and steps.
+ * @param [options.interval='D'] - The interval for the date range ('D', 'W', 'M', 'MS', 'ME', 'Y', 'YS', 'YE').
+ * @param [options.steps=1] - The number of steps between each date.
+ * @param [options.latest=false] - Include the latest date if it exceeds the end date.
+ *
  * @returns An array of generated dates.
  */
 export function dateRange(
@@ -1158,7 +1188,9 @@ export function dateRange(
   { interval = 'D', steps = 1, latest = false }: DateRangeOptions,
 ): Date[] {
   try {
-    if (!start || !end) throw new Error("Invalid input: 'start' and 'end' must be provided.");
+    if (!start || !end) {
+      throw new Error("Invalid input: 'start' and 'end' must be provided.");
+    }
 
     const startDate = typeof start === 'string' ? new Date(start) : start;
     const endDate = typeof end === 'string' ? new Date(end) : end;
@@ -1248,10 +1280,10 @@ type DateRangeOptions = {
  * const data = [{ a: 2 }, { a: 3 }, { a: 1 }];
  * sortBy(data, 'a'); // returns [{ a: 1 }, { a: 2 }, { a: 3 }]
  *
- * @param arr the array of objects to sort.
- * @param key the key to sort by.
+ * @param arr - The array of objects to sort.
+ * @param key - The key to sort by.
  *
- * @returns a new array sorted by the specified key.
+ * @returns A new array sorted by the specified key.
  */
 export function sortBy<T, K extends keyof T>(arr: T[], key: K) {
   return [...arr].sort((a: T, b: T) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0));
@@ -1262,14 +1294,23 @@ export function sortBy<T, K extends keyof T>(arr: T[], key: K) {
  *
  * @example
  *
- * const arr = [1, 2, 2, 3, 3, 3];
- * uniq(arr); // returns [1, 2, 3]
+ * uniq([1, 2, 2, 3, 3, 3]); // returns [1, 2, 3]
+ * const arrObj = [{ id: 1 }, { id: 2 }, { id: 2 }, { id: 3 }, { id: 3 }, { id: 3 }];
+ * uniq(arrObj, 'id'); // returns [{ id: 1 }, { id: 2 }, { id: 3 }]
  *
- * @param arr the array.
+ * @param arr - The array.
+ * @param key - The key to compare objects.
  *
- * @returns a new duplicate-free array.
+ * @returns A new duplicate-free array.
  */
-export function uniq<T>(arr: T[]) {
+export function uniq<T>(arr: T[], key?: keyof T) {
+  assert(isArray(arr), 'Expected an array as input', { errorType: TypeError });
+
+  if (key) {
+    const seen = new Set();
+    return arr.filter((item) => (seen.has(item[key]) ? false : seen.add(item[key])));
+  }
+
   return [...new Set(arr)];
 }
 
@@ -1283,9 +1324,9 @@ export function uniq<T>(arr: T[]) {
  * const text = 'Hello World';
  * toKebabCase(text); // returns 'hello-world'
  *
- * @param str the string to convert.
+ * @param str - The string to convert.
  *
- * @returns the converted string.
+ * @returns The converted string.
  */
 export function toKebabCase(str: string) {
   return str
@@ -1302,9 +1343,9 @@ export function toKebabCase(str: string) {
  * const text = 'Hello World';
  * toPascalCase(text) // returns 'HelloWorld';
  *
- * @param str the string to convert.
+ * @param str - The string to convert.
  *
- * @returns the converted string.
+ * @returns The converted string.
  */
 export function toPascalCase(str: string) {
   return str.replace(/(\w)(\w*)/g, (_, first, rest) => `${first.toUpperCase()}${rest.toLowerCase()}`);
@@ -1318,9 +1359,9 @@ export function toPascalCase(str: string) {
  * const text = 'Hello World';
  * toSnakeCase(text) // returns 'hello_world';
  *
- * @param str the string to convert.
+ * @param str - The string to convert.
  *
- * @returns the converted string.
+ * @returns The converted string.
  */
 export function toSnakeCase(str: string) {
   return str
@@ -1337,12 +1378,12 @@ export function toSnakeCase(str: string) {
  * const text = 'Hello World';
  * truncate(text, 5); // returns 'Hello…'
  *
- * @param str the string to truncate.
- * @param limit the maximum string length.
- * @param completeWords if true, the string is truncated to the nearest word, instead of character.
- * @param ellipsis the characters to end the truncated string with.
+ * @param str - The string to truncate.
+ * @param limit - The maximum string length.
+ * @param completeWords - If true, the string is truncated to the nearest word, instead of character.
+ * @param ellipsis - The characters to end the truncated string with.
  *
- * @returns the truncated string.
+ * @returns The truncated string.
  */
 export function truncate(str: string, limit = 25, completeWords = false, ellipsis = '…'): string {
   let _limit = limit;
@@ -1356,14 +1397,21 @@ export function truncate(str: string, limit = 25, completeWords = false, ellipsi
 /**
  * Performs a fuzzy search on an array of objects, checking all keys and values for a match with the search string.
  *
+ * @example
+ *
+ * const data = [{ name: 'John Doe', age: 25 }, { name: 'Jane Doe', age: 30 }];
+ * fuzzy(data, 'doe', 0.5); // returns [{ name: 'John Doe', age: 25 }, { name: 'Jane Doe', age: 30 }]
+ *
  * @param arr - The array of objects to search.
  * @param str - The string to search for.
- * @param tone - Degree of similarity between 0 and 1.
- * @param chunkSize - The size of chunks used for similarity comparison.
+ * @param [tone=0.44] - Degree of similarity between 0 and 1.
+ * @param [chunkSize=2] - The size of chunks used for similarity comparison.
  *
  * @returns The filtered array of objects that match the search string.
  */
-export function findBy<T extends Record<string, unknown>>(arr: T[], str: string, tone = 0.44, chunkSize = 2): T[] {
+export function fuzzy<T extends Data>(arr: T[], str: string, tone = 0.44, chunkSize = 2): T[] {
+  assert([isArray(arr), isString(str), tone <= 1 && tone >= 0], 'Wrong input values');
+
   if (!str) return [];
   const lowerStr = str.toLowerCase();
 
@@ -1375,12 +1423,12 @@ export function findBy<T extends Record<string, unknown>>(arr: T[], str: string,
  *
  * @param obj - The object to search within.
  * @param str - The search string.
- * @param tone - The similarity threshold.
- * @param chunkSize - The chunk size for comparison.
+ * @param [tone=1] - The similarity threshold.
+ * @param [chunkSize=2] - The chunk size for comparison.
  *
  * @returns Whether the object contains a matching value.
  */
-function hasValue<T extends Record<string, unknown>>(obj: T, str: string, tone = 1, chunkSize = 2): boolean {
+function hasValue<T extends Data>(obj: T, str: string, tone = 1, chunkSize = 2): boolean {
   return Object.entries(obj).some(([key, value]) => {
     if (value === null || value === undefined) return false;
 
@@ -1389,7 +1437,7 @@ function hasValue<T extends Record<string, unknown>>(obj: T, str: string, tone =
     }
 
     if (typeof value === 'object') {
-      return hasValue(value as Record<string, unknown>, str, tone, chunkSize);
+      return hasValue(value as Data, str, tone, chunkSize);
     }
 
     return isSimilar(String(value), str, chunkSize) >= tone || isSimilar(key, str, chunkSize) >= tone;
@@ -1401,7 +1449,7 @@ function hasValue<T extends Record<string, unknown>>(obj: T, str: string, tone =
  *
  * @param str1 - First string.
  * @param str2 - Second string.
- * @param chunkSize - Number of characters in each chunk.
+ * @param [chunkSize=2] - Number of characters in each chunk.
  *
  * @returns Similarity score between 0 and 1.
  */
@@ -1426,11 +1474,11 @@ export function isSimilar(str1: string, str2: string, chunkSize = 2): number {
  * Splits a string into overlapping chunks of a given size.
  *
  * @param str - The input string.
- * @param size - The chunk size.
+ * @param [size=2] - The chunk size.
  *
  * @returns An array of string chunks.
  */
-function toChunks(str: string, size: number): string[] {
+function toChunks(str: string, size = 2): string[] {
   const padded = ` ${str.toLowerCase()} `;
   return Array.from({ length: padded.length - size + 1 }, (_, i) => padded.slice(i, i + size));
 }
